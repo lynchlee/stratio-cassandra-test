@@ -1,4 +1,4 @@
-package com.indexes.TestCases;
+package com.stratio.cassandra.lucene.cases;
 
 /**
  * Created by Jcalderin on 24/03/14.
