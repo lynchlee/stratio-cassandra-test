@@ -3,17 +3,17 @@ package com.stratio.cassandra.lucene.util;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class DataHelper {
+public final class DataHelper {
 
-    private static final Map<String, String> data1;
+    public static final Map<String, String> data1;
 
-    private static final Map<String, String> data2;
+    public static final Map<String, String> data2;
 
-    private static final Map<String, String> data3;
+    public static final Map<String, String> data3;
 
-    private static final Map<String, String> data4;
+    public static final Map<String, String> data4;
 
-    private static final Map<String, String> data5;
+    public static final Map<String, String> data5;
 
     static {
         data1 = new LinkedHashMap<>();
@@ -48,7 +48,7 @@ public class DataHelper {
         data2.put("double_1", "2.0");
         data2.put("float_1", "2.0");
         data2.put("integer_1", "-2");
-        data2.put("inet_1", "'127.0.1.1'");
+        data2.put("inet_1", "'127.0.01.01'");
         data2.put("text_1",
                 "'Frasesinespaciosconarticulosylaspalabrassuficientes'");
         data2.put("varchar_1", "'frasesencillasinespacios'");
@@ -120,30 +120,5 @@ public class DataHelper {
         data5.put("list_1", "['l2','l3']");
         data5.put("set_1", "{'s2','s3'}");
         data5.put("map_1", "{'k2':'v2','k3':'v3'}");
-    }
-
-    public static Map<String, String> getData1() {
-
-        return data1;
-    }
-
-    public static Map<String, String> getData2() {
-
-        return data2;
-    }
-
-    public static Map<String, String> getData3() {
-
-        return data3;
-    }
-
-    public static Map<String, String> getData4() {
-
-        return data4;
-    }
-
-    public static Map<String, String> getData5() {
-
-        return data5;
     }
 }

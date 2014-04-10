@@ -7,7 +7,10 @@ package com.stratio.cassandra.lucene.querytype;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -25,9 +28,9 @@ import com.stratio.cassandra.lucene.util.DataHelper;
 import com.stratio.cassandra.lucene.util.QueryUtils;
 
 @RunWith(JUnit4.class)
-public class PrefixTest extends AbstractWatchedTest {
+public class PhraseTest extends AbstractWatchedTest {
 
-    private static final Logger logger = Logger.getLogger(PrefixTest.class);
+    private static final Logger logger = Logger.getLogger(PhraseTest.class);
 
     private static QueryUtils queryUtils;
 
@@ -74,10 +77,11 @@ public class PrefixTest extends AbstractWatchedTest {
     }
 
     @Test()
-    public void prefixAsciiFieldTest1() {
+    public void phraseTextFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPrefixQuery("ascii_1", "frase ", null));
+                .getPhraseQuery("text_1", Arrays.asList("Frase", "espacios"),
+                        null));
 
         List<Row> rows = queryResult.all();
 
@@ -85,10 +89,26 @@ public class PrefixTest extends AbstractWatchedTest {
     }
 
     @Test()
-    public void prefixAsciiFieldTest2() {
+    public void phraseTextFieldWithSlopTest1() {
+
+        Map<String, String> params = new LinkedHashMap<>();
+        params.put("slop", "2");
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPrefixQuery("ascii_1", "frase", null));
+                .getPhraseQuery("text_1", Arrays.asList("Frase", "espacios"),
+                        params));
+
+        List<Row> rows = queryResult.all();
+
+        assertEquals("Expected 1 result!", 1, rows.size());
+    }
+
+    @Test()
+    public void phraseTextFieldTest2() {
+
+        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
+                .getPhraseQuery("text_1",
+                        Arrays.asList("articulos", "suficientes"), null));
 
         List<Row> rows = queryResult.all();
 
@@ -96,10 +116,25 @@ public class PrefixTest extends AbstractWatchedTest {
     }
 
     @Test()
-    public void prefixAsciiFieldTest3() {
+    public void phraseTextFieldWithSlopTest() {
+
+        Map<String, String> params = new LinkedHashMap<>();
+        params.put("slop", "2");
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPrefixQuery("ascii_1", "F", null));
+                .getPhraseQuery("text_1",
+                        Arrays.asList("articulos", "suficientes"), params));
+
+        List<Row> rows = queryResult.all();
+
+        assertEquals("Expected 1 result!", 1, rows.size());
+    }
+
+    @Test()
+    public void phraseTextFieldTest3() {
+
+        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
+                .getPhraseQuery("text_1", Arrays.asList("con", "los"), null));
 
         List<Row> rows = queryResult.all();
 
@@ -107,117 +142,13 @@ public class PrefixTest extends AbstractWatchedTest {
     }
 
     @Test()
-    public void prefixAsciiFieldTest4() {
+    public void phraseTextFieldTest4() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPrefixQuery("ascii_1", "", null));
+                .getPhraseQuery("text_1", null, null));
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 5 results!", 5, rows.size());
-    }
-
-    @Test()
-    public void prefixInetFieldTest1() {
-
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPrefixQuery("inet_1", "127", null));
-
-        List<Row> rows = queryResult.all();
-
-        assertEquals("Expected 4 results!", 4, rows.size());
-    }
-
-    @Test()
-    public void prefixInetFieldTest2() {
-
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPrefixQuery("inet_1", "", null));
-
-        List<Row> rows = queryResult.all();
-
-        assertEquals("Expected 5 results!", 5, rows.size());
-    }
-
-    @Test()
-    public void prefixInetFieldTest3() {
-
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPrefixQuery("inet_1", "127.0.", null));
-
-        List<Row> rows = queryResult.all();
-
-        assertEquals("Expected 2 results!", 2, rows.size());
-    }
-
-    @Test()
-    public void prefixTextFieldTest1() {
-
-        ResultSet queryResult = cassandraUtils
-                .executeQuery(queryUtils
-                        .getPrefixQuery(
-                                "text_1",
-                                "Frase con espacios articulos y las palabras suficientes",
-                                null));
-
-        List<Row> rows = queryResult.all();
-
-        assertEquals("Expected 1 result!", 1, rows.size());
-    }
-
-    @Test()
-    public void prefixTextFieldTest2() {
-
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPrefixQuery("text_1", "Frase", null));
-
-        List<Row> rows = queryResult.all();
-
-        assertEquals("Expected 4 results!", 4, rows.size());
-    }
-
-    @Test()
-    public void prefixTextFieldTest3() {
-
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPrefixQuery("text_1", "", null));
-
-        List<Row> rows = queryResult.all();
-
-        assertEquals("Expected 5 results!", 5, rows.size());
-    }
-
-    @Test()
-    public void prefixVarcharFieldTest1() {
-
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPrefixQuery("varchar_1",
-                        "frasesencillasinespaciosperomaslarga", null));
-
-        List<Row> rows = queryResult.all();
-
-        assertEquals("Expected 2 results!", 2, rows.size());
-    }
-
-    @Test()
-    public void prefixVarcharFieldTest2() {
-
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPrefixQuery("varchar_1", "frase", null));
-
-        List<Row> rows = queryResult.all();
-
-        assertEquals("Expected 4 results!", 4, rows.size());
-    }
-
-    @Test()
-    public void prefixVarcharFieldTest3() {
-
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPrefixQuery("varchar_1", "", null));
-
-        List<Row> rows = queryResult.all();
-
-        assertEquals("Expected 5 results!", 5, rows.size());
+        assertEquals("Expected 0 results!", 0, rows.size());
     }
 }

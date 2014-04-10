@@ -13,9 +13,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +27,7 @@ import com.stratio.cassandra.lucene.util.DataHelper;
 import com.stratio.cassandra.lucene.util.QueryUtils;
 
 @RunWith(JUnit4.class)
-public class FuzzyTest {
+public class FuzzyTest extends AbstractWatchedTest {
 
     private static final Logger logger = Logger.getLogger(FuzzyTest.class);
 
@@ -56,10 +54,10 @@ public class FuzzyTest {
         queriesList.add(keyspaceCreationQuery);
         queriesList.add(tableCreationQuery);
         queriesList.add(indexCreationQuery);
-        queriesList.add(queryUtils.getInsert(DataHelper.getData1()));
-        queriesList.add(queryUtils.getInsert(DataHelper.getData2()));
-        queriesList.add(queryUtils.getInsert(DataHelper.getData3()));
-        queriesList.add(queryUtils.getInsert(DataHelper.getData4()));
+        queriesList.add(queryUtils.getInsert(DataHelper.data1));
+        queriesList.add(queryUtils.getInsert(DataHelper.data2));
+        queriesList.add(queryUtils.getInsert(DataHelper.data3));
+        queriesList.add(queryUtils.getInsert(DataHelper.data4));
 
         cassandraUtils.executeQueriesList(queriesList);
 
@@ -74,16 +72,6 @@ public class FuzzyTest {
         // Dropping keyspace
         logger.debug("Dropping keyspace");
         cassandraUtils.executeQuery(queryUtils.dropKeyspaceQuery());
-    }
-
-    @Before
-    public void setUp() {
-        logger.debug("*************************************************************");
-    }
-
-    @After
-    public void tearDown() {
-        logger.debug("*************************************************************");
     }
 
     @Test
@@ -171,7 +159,7 @@ public class FuzzyTest {
         try {
             // Adding new data for the test
             cassandraUtils.executeQuery(queryUtils.getInsert(DataHelper
-                    .getData5()));
+                    .data5));
             Thread.sleep(1000);
 
             Map<String, String> params = new LinkedHashMap<>();
@@ -198,7 +186,7 @@ public class FuzzyTest {
         try {
             // Adding new data for the test
             cassandraUtils.executeQuery(queryUtils.getInsert(DataHelper
-                    .getData5()));
+                    .data5));
             Thread.sleep(1000);
 
             Map<String, String> params = new LinkedHashMap<>();
@@ -291,11 +279,11 @@ public class FuzzyTest {
         params.put(TestingConstants.MAX_EDITS_PARAM_CONSTANT, "1");
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getFuzzyQuery("inet_1", "127.0.1.1", params));
+                .getFuzzyQuery("inet_1", "127.0.0.1", params));
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 1 result!", 1, rows.size());
+        assertEquals("Expected 2 results!", 2, rows.size());
     }
 
     @Test
@@ -309,7 +297,7 @@ public class FuzzyTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 0 results!", 0, rows.size());
+        assertEquals("Expected 1 result!", 1, rows.size());
     }
 
     @Test
@@ -381,7 +369,7 @@ public class FuzzyTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 0 results!", 0, rows.size());
+        assertEquals("Expected 3 results!", 3, rows.size());
     }
 
     @Test
@@ -395,11 +383,11 @@ public class FuzzyTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 1 result!", 1, rows.size());
+        assertEquals("Expected 4 results!", 4, rows.size());
     }
 
     @Test
-    public void fuzzyInetFieldWith5MaxEditsAndTranspositionsTest() {
+    public void fuzzyInetFieldWith1MaxEditsAndTranspositionsTest() {
 
         Map<String, String> params = new LinkedHashMap<>();
         params.put(TestingConstants.MAX_EDITS_PARAM_CONSTANT, "1");
@@ -410,7 +398,7 @@ public class FuzzyTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 0 results!", 0, rows.size());
+        assertEquals("Expected 1 result!", 1, rows.size());
     }
 
     @Test
@@ -508,7 +496,7 @@ public class FuzzyTest {
         try {
             // Adding new data for the test
             cassandraUtils.executeQuery(queryUtils.getInsert(DataHelper
-                    .getData5()));
+                    .data5));
             Thread.sleep(1000);
 
             Map<String, String> params = new LinkedHashMap<>();
@@ -539,7 +527,7 @@ public class FuzzyTest {
         try {
             // Adding new data for the test
             cassandraUtils.executeQuery(queryUtils.getInsert(DataHelper
-                    .getData5()));
+                    .data5));
             Thread.sleep(1000);
 
             Map<String, String> params = new LinkedHashMap<>();
@@ -702,7 +690,7 @@ public class FuzzyTest {
         try {
             // Adding new data for the test
             cassandraUtils.executeQuery(queryUtils.getInsert(DataHelper
-                    .getData5()));
+                    .data5));
             Thread.sleep(1000);
 
             Map<String, String> params = new LinkedHashMap<>();
@@ -730,7 +718,7 @@ public class FuzzyTest {
         try {
             // Adding new data for the test
             cassandraUtils.executeQuery(queryUtils.getInsert(DataHelper
-                    .getData5()));
+                    .data5));
             Thread.sleep(1000);
 
             Map<String, String> params = new LinkedHashMap<>();

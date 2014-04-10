@@ -11,9 +11,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +25,7 @@ import com.stratio.cassandra.lucene.util.DataHelper;
 import com.stratio.cassandra.lucene.util.QueryUtils;
 
 @RunWith(JUnit4.class)
-public class WildcardTest {
+public class WildcardTest extends AbstractWatchedTest {
 
     private static final Logger logger = Logger.getLogger(WildcardTest.class);
 
@@ -54,10 +52,10 @@ public class WildcardTest {
         queriesList.add(keyspaceCreationQuery);
         queriesList.add(tableCreationQuery);
         queriesList.add(indexCreationQuery);
-        queriesList.add(queryUtils.getInsert(DataHelper.getData1()));
-        queriesList.add(queryUtils.getInsert(DataHelper.getData2()));
-        queriesList.add(queryUtils.getInsert(DataHelper.getData3()));
-        queriesList.add(queryUtils.getInsert(DataHelper.getData4()));
+        queriesList.add(queryUtils.getInsert(DataHelper.data1));
+        queriesList.add(queryUtils.getInsert(DataHelper.data2));
+        queriesList.add(queryUtils.getInsert(DataHelper.data3));
+        queriesList.add(queryUtils.getInsert(DataHelper.data4));
 
         cassandraUtils.executeQueriesList(queriesList);
 
@@ -72,16 +70,6 @@ public class WildcardTest {
         // Dropping keyspace
         logger.debug("Dropping keyspace");
         cassandraUtils.executeQuery(queryUtils.dropKeyspaceQuery());
-    }
-
-    @Before
-    public void setUp() {
-        logger.debug("*************************************************************");
-    }
-
-    @After
-    public void tearDown() {
-        logger.debug("*************************************************************");
     }
 
     @Test()

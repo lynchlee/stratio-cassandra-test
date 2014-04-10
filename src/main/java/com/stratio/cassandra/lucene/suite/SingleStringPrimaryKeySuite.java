@@ -20,7 +20,7 @@ import com.stratio.cassandra.lucene.util.QueryUtils;
 // @SuiteClasses({ FuzzyTest.class, WildcardTest.class, MatchTest.class,
 // PrefixTest.class, PhraseTest.class, RegExpTest.class, RangeTest.class })
 @SuiteClasses({ MatchTest.class })
-public class SingleNumericPrimaryKeySuite {
+public class SingleStringPrimaryKeySuite {
 
     private static QueryUtils queryUtils;
 
@@ -51,7 +51,7 @@ public class SingleNumericPrimaryKeySuite {
         columns.put("lucene", "text");
 
         Map<String, List<String>> primaryKey = new LinkedHashMap<String, List<String>>();
-        String[] inarray = { "integer_1" };
+        String[] inarray = { "ascii_1" };
         String[] outarray = {};
         List<String> in = Arrays.asList(inarray);
         List<String> out = Arrays.asList(outarray);

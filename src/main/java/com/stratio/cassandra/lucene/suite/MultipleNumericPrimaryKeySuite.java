@@ -12,15 +12,20 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.stratio.cassandra.lucene.querytype.FuzzyTest;
 import com.stratio.cassandra.lucene.querytype.MatchTest;
+import com.stratio.cassandra.lucene.querytype.PhraseTest;
+import com.stratio.cassandra.lucene.querytype.PrefixTest;
+import com.stratio.cassandra.lucene.querytype.RangeTest;
+import com.stratio.cassandra.lucene.querytype.RegExpTest;
+import com.stratio.cassandra.lucene.querytype.WildcardTest;
 import com.stratio.cassandra.lucene.util.CassandraUtils;
 import com.stratio.cassandra.lucene.util.QueryUtils;
 
 @RunWith(Suite.class)
-// @SuiteClasses({ FuzzyTest.class, WildcardTest.class, MatchTest.class,
-// PrefixTest.class, PhraseTest.class, RegExpTest.class, RangeTest.class })
-@SuiteClasses({ MatchTest.class })
-public class SingleNumericPrimaryKeySuite {
+@SuiteClasses({ FuzzyTest.class, WildcardTest.class, MatchTest.class,
+        PrefixTest.class, PhraseTest.class, RegExpTest.class, RangeTest.class })
+public class MultipleNumericPrimaryKeySuite {
 
     private static QueryUtils queryUtils;
 
@@ -52,7 +57,7 @@ public class SingleNumericPrimaryKeySuite {
 
         Map<String, List<String>> primaryKey = new LinkedHashMap<String, List<String>>();
         String[] inarray = { "integer_1" };
-        String[] outarray = {};
+        String[] outarray = { "double_1" };
         List<String> in = Arrays.asList(inarray);
         List<String> out = Arrays.asList(outarray);
         primaryKey.put("in", in);

@@ -1,8 +1,10 @@
 package com.stratio.cassandra.lucene.util;
 
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 
@@ -28,9 +30,9 @@ public class QueryUtils {
                 ":{type:\"bigdec\", integer_digits:10, decimal_digits:10}");
         conversionCassandraLucene.put("double", ":{type:\"double\"}");
         conversionCassandraLucene.put("float", ":{type:\"float\"}");
-        conversionCassandraLucene.put("inet", ":{type:\"string\"}");
+        conversionCassandraLucene.put("inet", ":{type:\"inet\"}");
         conversionCassandraLucene.put("int", ":{type:\"integer\"}");
-        conversionCassandraLucene.put("text", ":{type:\"string\"}");
+        conversionCassandraLucene.put("text", ":{type:\"text\"}");
         conversionCassandraLucene.put("timestamp",
                 ":{type:\"date\", pattern: \"yyyy/MM/dd\"}");
         conversionCassandraLucene.put("uuid", ":{type:\"uuid\"}");
@@ -147,14 +149,15 @@ public class QueryUtils {
         String res = "PRIMARY KEY ";
         if (out != "") {
             out = out.substring(0, out.length() - 1);
-            out = "," + out + ")";
-            res = res + "(";
-        } else if (in != "") {
+            out = "," + out;
+        }
+
+        if (in != "") {
             in = in.substring(0, in.length() - 1);
             in = "(" + in + ")";
         }
 
-        String result = res + in + out;
+        String result = res + "(" + in + out + ")";
 
         return result;
     }
@@ -246,19 +249,68 @@ public class QueryUtils {
         return query;
     }
 
+    // public String getTypedQuery(String type, String field, String value,
+    // Map<String, String> params) {
+    //
+    // StringBuffer query = new StringBuffer();
+    // query.append("SELECT ").append(columnsWithoutLucene).append(" FROM ")
+    // .append(keyspace).append(".").append(table).append(" WHERE ")
+    // .append(indexColumn).append("='{query:{type:\"").append(type)
+    // .append("\", field:\"").append(field).append("\", value:\"")
+    // .append(value).append("\"");
+    // if (params != null) {
+    // for (Map.Entry<String, String> param : params.entrySet()) {
+    // query.append(", ").append(param.getKey()).append(":")
+    // .append(param.getValue());
+    // }
+    // }
+    // query.append("}}';");
+    // logger.debug("Typed query: " + query);
+    //
+    // return query.toString();
+    // }
+
     public String getTypedQuery(String type, String field, String value,
             Map<String, String> params) {
+
+        if (params == null)
+            params = new LinkedHashMap<>();
+
+        params.put("type", type);
+        params.put("field", field);
+        params.put("value", value);
+
+        return getTypedQuery(params);
+    }
+
+    public String getTypedQuery(String type, String field,
+            Map<String, String> params) {
+
+        if (params == null)
+            params = new LinkedHashMap<>();
+
+        params.put("type", type);
+        params.put("field", field);
+
+        return getTypedQuery(params);
+    }
+
+    public String getTypedQuery(Map<String, String> params) {
 
         StringBuffer query = new StringBuffer();
         query.append("SELECT ").append(columnsWithoutLucene).append(" FROM ")
                 .append(keyspace).append(".").append(table).append(" WHERE ")
-                .append(indexColumn).append("='{query:{type:\"").append(type)
-                .append("\", field:\"").append(field).append("\", value:\"")
-                .append(value).append("\"");
+                .append(indexColumn).append("='{query:{");
         if (params != null) {
-            for (Map.Entry<String, String> param : params.entrySet()) {
-                query.append(", ").append(param.getKey()).append(":")
-                        .append(param.getValue());
+            Iterator<Entry<String, String>> paramsIt = params.entrySet()
+                    .iterator();
+            while (paramsIt.hasNext()) {
+                Entry<String, String> value = paramsIt.next();
+                query.append(value.getKey()).append(":\"")
+                        .append(value.getValue()).append("\"");
+                if (paramsIt.hasNext()) {
+                    query.append(",");
+                }
             }
         }
         query.append("}}';");
@@ -279,10 +331,54 @@ public class QueryUtils {
         return getTypedQuery("match", field, value, params);
     }
 
+    public String getPhraseQuery(String field, List<String> values,
+            Map<String, String> params) {
+
+        StringBuffer query = new StringBuffer();
+        query.append("SELECT ").append(columnsWithoutLucene).append(" FROM ")
+                .append(keyspace).append(".").append(table).append(" WHERE ")
+                .append(indexColumn)
+                .append("='{query:{type:\"phrase\", field:\"").append(field)
+                .append("\", values:[");
+
+        if (values != null) {
+            Iterator<String> valuesIt = values.iterator();
+            while (valuesIt.hasNext()) {
+                String value = valuesIt.next();
+                query.append("\"").append(value).append("\"");
+                if (valuesIt.hasNext()) {
+                    query.append(",");
+                }
+            }
+        }
+        query.append("]");
+        if (params != null) {
+            for (Map.Entry<String, String> param : params.entrySet()) {
+                query.append(", ").append(param.getKey()).append(":")
+                        .append(param.getValue());
+            }
+        }
+        query.append("}}';");
+        logger.debug("Typed query: " + query);
+
+        return query.toString();
+    }
+
     public String getPrefixQuery(String field, String value,
             Map<String, String> params) {
 
         return getTypedQuery("prefix", field, value, params);
+    }
+
+    public String getRangeQuery(String field, Map<String, String> params) {
+
+        return getTypedQuery("range", field, params);
+    }
+
+    public String getRegexpQuery(String field, String value,
+            Map<String, String> params) {
+
+        return getTypedQuery("regexp", field, value, params);
     }
 
     public String getWildcardQuery(String field, String value,

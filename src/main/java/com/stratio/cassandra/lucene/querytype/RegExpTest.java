@@ -25,9 +25,9 @@ import com.stratio.cassandra.lucene.util.DataHelper;
 import com.stratio.cassandra.lucene.util.QueryUtils;
 
 @RunWith(JUnit4.class)
-public class PrefixTest extends AbstractWatchedTest {
+public class RegExpTest extends AbstractWatchedTest {
 
-    private static final Logger logger = Logger.getLogger(PrefixTest.class);
+    private static final Logger logger = Logger.getLogger(RegExpTest.class);
 
     private static QueryUtils queryUtils;
 
@@ -56,7 +56,6 @@ public class PrefixTest extends AbstractWatchedTest {
         queriesList.add(queryUtils.getInsert(DataHelper.data2));
         queriesList.add(queryUtils.getInsert(DataHelper.data3));
         queriesList.add(queryUtils.getInsert(DataHelper.data4));
-        queriesList.add(queryUtils.getInsert(DataHelper.data5));
 
         cassandraUtils.executeQueriesList(queriesList);
 
@@ -74,10 +73,21 @@ public class PrefixTest extends AbstractWatchedTest {
     }
 
     @Test()
-    public void prefixAsciiFieldTest1() {
+    public void regexpAsciiFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPrefixQuery("ascii_1", "frase ", null));
+                .getRegexpQuery("ascii_1", "frase.*", null));
+
+        List<Row> rows = queryResult.all();
+
+        assertEquals("Expected 4 results!", 4, rows.size());
+    }
+
+    @Test()
+    public void regexpAsciiFieldTest2() {
+
+        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
+                .getRegexpQuery("ascii_1", "frase .*", null));
 
         List<Row> rows = queryResult.all();
 
@@ -85,10 +95,10 @@ public class PrefixTest extends AbstractWatchedTest {
     }
 
     @Test()
-    public void prefixAsciiFieldTest2() {
+    public void regexpAsciiFieldTest3() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPrefixQuery("ascii_1", "frase", null));
+                .getRegexpQuery("ascii_1", ".*", null));
 
         List<Row> rows = queryResult.all();
 
@@ -96,10 +106,10 @@ public class PrefixTest extends AbstractWatchedTest {
     }
 
     @Test()
-    public void prefixAsciiFieldTest3() {
+    public void regexpAsciiFieldTest4() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPrefixQuery("ascii_1", "F", null));
+                .getRegexpQuery("ascii_1", "", null));
 
         List<Row> rows = queryResult.all();
 
@@ -107,21 +117,21 @@ public class PrefixTest extends AbstractWatchedTest {
     }
 
     @Test()
-    public void prefixAsciiFieldTest4() {
+    public void regexpAsciiFieldTest5() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPrefixQuery("ascii_1", "", null));
+                .getRegexpQuery("ascii_1", "frase tipo ascii", null));
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 5 results!", 5, rows.size());
+        assertEquals("Expected 1 result!", 1, rows.size());
     }
 
     @Test()
-    public void prefixInetFieldTest1() {
+    public void regexpInetFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPrefixQuery("inet_1", "127", null));
+                .getRegexpQuery("inet_1", ".*", null));
 
         List<Row> rows = queryResult.all();
 
@@ -129,21 +139,21 @@ public class PrefixTest extends AbstractWatchedTest {
     }
 
     @Test()
-    public void prefixInetFieldTest2() {
+    public void regexpInetFieldTest2() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPrefixQuery("inet_1", "", null));
+                .getRegexpQuery("inet_1", "127.*", null));
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 5 results!", 5, rows.size());
+        assertEquals("Expected 4 results!", 4, rows.size());
     }
 
     @Test()
-    public void prefixInetFieldTest3() {
+    public void regexpInetFieldTest3() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPrefixQuery("inet_1", "127.0.", null));
+                .getRegexpQuery("inet_1", "127.1.*", null));
 
         List<Row> rows = queryResult.all();
 
@@ -151,11 +161,77 @@ public class PrefixTest extends AbstractWatchedTest {
     }
 
     @Test()
-    public void prefixTextFieldTest1() {
+    public void regexpInetFieldTest4() {
+
+        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
+                .getRegexpQuery("inet_1", "", null));
+
+        List<Row> rows = queryResult.all();
+
+        assertEquals("Expected 0 results!", 0, rows.size());
+    }
+
+    @Test()
+    public void regexpInetFieldTest5() {
+
+        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
+                .getRegexpQuery("inet_1", "127.1.1.1", null));
+
+        List<Row> rows = queryResult.all();
+
+        assertEquals("Expected 2 results!", 2, rows.size());
+    }
+
+    @Test()
+    public void regexpTextFieldTest1() {
+
+        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
+                .getRegexpQuery("text_1", ".*", null));
+
+        List<Row> rows = queryResult.all();
+
+        assertEquals("Expected 4 results!", 4, rows.size());
+    }
+
+    @Test()
+    public void regexpTextFieldTest2() {
+
+        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
+                .getRegexpQuery("text_1", "Frase.*", null));
+
+        List<Row> rows = queryResult.all();
+
+        assertEquals("Expected 4 results!", 4, rows.size());
+    }
+
+    @Test()
+    public void regexpTextFieldTest3() {
+
+        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
+                .getRegexpQuery("text_1", "Frase .*", null));
+
+        List<Row> rows = queryResult.all();
+
+        assertEquals("Expected 1 result!", 1, rows.size());
+    }
+
+    @Test()
+    public void regexpTextFieldTest4() {
+
+        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
+                .getRegexpQuery("text_1", "", null));
+
+        List<Row> rows = queryResult.all();
+
+        assertEquals("Expected 0 results!", 0, rows.size());
+    }
+
+    @Test()
+    public void regexpTextFieldTest5() {
 
         ResultSet queryResult = cassandraUtils
                 .executeQuery(queryUtils
-                        .getPrefixQuery(
+                        .getRegexpQuery(
                                 "text_1",
                                 "Frase con espacios articulos y las palabras suficientes",
                                 null));
@@ -166,10 +242,10 @@ public class PrefixTest extends AbstractWatchedTest {
     }
 
     @Test()
-    public void prefixTextFieldTest2() {
+    public void regexpVarcharFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPrefixQuery("text_1", "Frase", null));
+                .getRegexpQuery("varchar_1", ".*", null));
 
         List<Row> rows = queryResult.all();
 
@@ -177,33 +253,10 @@ public class PrefixTest extends AbstractWatchedTest {
     }
 
     @Test()
-    public void prefixTextFieldTest3() {
+    public void regexpVarcharFieldTest2() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPrefixQuery("text_1", "", null));
-
-        List<Row> rows = queryResult.all();
-
-        assertEquals("Expected 5 results!", 5, rows.size());
-    }
-
-    @Test()
-    public void prefixVarcharFieldTest1() {
-
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPrefixQuery("varchar_1",
-                        "frasesencillasinespaciosperomaslarga", null));
-
-        List<Row> rows = queryResult.all();
-
-        assertEquals("Expected 2 results!", 2, rows.size());
-    }
-
-    @Test()
-    public void prefixVarcharFieldTest2() {
-
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPrefixQuery("varchar_1", "frase", null));
+                .getRegexpQuery("varchar_1", "frase.*", null));
 
         List<Row> rows = queryResult.all();
 
@@ -211,13 +264,35 @@ public class PrefixTest extends AbstractWatchedTest {
     }
 
     @Test()
-    public void prefixVarcharFieldTest3() {
+    public void regexpVarcharFieldTest3() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPrefixQuery("varchar_1", "", null));
+                .getRegexpQuery("varchar_1", "frase .*", null));
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 5 results!", 5, rows.size());
+        assertEquals("Expected 1 results!", 1, rows.size());
+    }
+
+    @Test()
+    public void regexpVarcharFieldTest4() {
+
+        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
+                .getRegexpQuery("varchar_1", "", null));
+
+        List<Row> rows = queryResult.all();
+
+        assertEquals("Expected 0 results!", 0, rows.size());
+    }
+
+    @Test()
+    public void regexpVarcharFieldTest5() {
+
+        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
+                .getRegexpQuery("varchar_1", "frasesencillasinespacios", null));
+
+        List<Row> rows = queryResult.all();
+
+        assertEquals("Expected 1 results!", 1, rows.size());
     }
 }

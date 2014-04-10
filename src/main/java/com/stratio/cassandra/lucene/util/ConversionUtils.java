@@ -8,9 +8,9 @@ import java.util.Map;
 /**
  * Created by Jcalderin on 25/03/14.
  */
-public class ConversionUtils {
+public final class ConversionUtils {
 
-    private static final Map<String, List<String>> dict;
+    public static final Map<String, List<String>> dict;
 
     static {
         dict = new LinkedHashMap<>();
@@ -36,11 +36,5 @@ public class ConversionUtils {
         dict.put("uuid", Arrays.asList(UUID));
         String[] Variant = { "Object" };
         dict.put("variant", Arrays.asList(Variant));
-    }
-
-    public static Map<String, List<String>> cassandraToJava() {
-
-        return dict;
-
     }
 }
