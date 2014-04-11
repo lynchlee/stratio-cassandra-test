@@ -35,27 +35,48 @@ public class CassandraUtils {
 
     public ResultSet executeQuery(String query) {
 
-        return session.execute(query);
+        return executeQuery(query, false);
+    }
+
+    public ResultSet executeQuery(String query, boolean waitForIndexRefresh) {
+
+        ResultSet resultSet = session.execute(query);
+
+        if (waitForIndexRefresh)
+            waitForIndexRefresh();
+
+        return resultSet;
     }
 
     public void executeQueriesList(List<String> queriesList) {
 
+        executeQueriesList(queriesList, false);
+    }
+
+    public void executeQueriesList(List<String> queriesList,
+            boolean waitForIndexRefresh) {
+
         for (String query : queriesList) {
             session.execute(query);
         }
-    }
 
-    private void connect() {
-        // Cluster cluster = Cluster.builder().addContactPoint(host).build();
-        // cluster.getConfiguration().getQueryOptions()
-        // .setConsistencyLevel(ConsistencyLevel.QUORUM);
-        metadata = cluster.getMetadata();
-        logger.debug("Connected to cluster (" + host + "): "
-                + metadata.getClusterName() + "\n");
-        session = cluster.connect();
+        if (waitForIndexRefresh)
+            waitForIndexRefresh();
     }
 
     public void disconnect() {
         session.close();
+    }
+
+    public void waitForIndexRefresh() {
+
+        // Waiting for the custom index to be refreshed
+        logger.debug("Waiting for the index to be refreshed...");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            logger.error("Interruption catched during a Thread.sleep; index might be unstable");
+        }
+        logger.debug("Index ready to rock!");
     }
 }

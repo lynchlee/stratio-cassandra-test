@@ -21,7 +21,6 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.stratio.cassandra.lucene.suite.TestingConstants;
 import com.stratio.cassandra.lucene.util.CassandraUtils;
-import com.stratio.cassandra.lucene.util.DataHelper;
 import com.stratio.cassandra.lucene.util.QueryUtils;
 
 @RunWith(JUnit4.class)
@@ -58,12 +57,7 @@ public class PrefixTest extends AbstractWatchedTest {
         queriesList.add(queryUtils.getInsert(DataHelper.data4));
         queriesList.add(queryUtils.getInsert(DataHelper.data5));
 
-        cassandraUtils.executeQueriesList(queriesList);
-
-        // Waiting for the custom index to be refreshed
-        logger.debug("Waiting for the index to be refreshed...");
-        Thread.sleep(1000);
-        logger.debug("Index ready to rock!");
+        cassandraUtils.executeQueriesList(queriesList, true);
     }
 
     @AfterClass

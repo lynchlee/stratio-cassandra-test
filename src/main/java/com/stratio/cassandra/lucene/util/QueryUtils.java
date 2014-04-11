@@ -249,27 +249,6 @@ public class QueryUtils {
         return query;
     }
 
-    // public String getTypedQuery(String type, String field, String value,
-    // Map<String, String> params) {
-    //
-    // StringBuffer query = new StringBuffer();
-    // query.append("SELECT ").append(columnsWithoutLucene).append(" FROM ")
-    // .append(keyspace).append(".").append(table).append(" WHERE ")
-    // .append(indexColumn).append("='{query:{type:\"").append(type)
-    // .append("\", field:\"").append(field).append("\", value:\"")
-    // .append(value).append("\"");
-    // if (params != null) {
-    // for (Map.Entry<String, String> param : params.entrySet()) {
-    // query.append(", ").append(param.getKey()).append(":")
-    // .append(param.getValue());
-    // }
-    // }
-    // query.append("}}';");
-    // logger.debug("Typed query: " + query);
-    //
-    // return query.toString();
-    // }
-
     public String getTypedQuery(String type, String field, String value,
             Map<String, String> params) {
 

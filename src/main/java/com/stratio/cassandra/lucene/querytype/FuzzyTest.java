@@ -23,7 +23,6 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.stratio.cassandra.lucene.suite.TestingConstants;
 import com.stratio.cassandra.lucene.util.CassandraUtils;
-import com.stratio.cassandra.lucene.util.DataHelper;
 import com.stratio.cassandra.lucene.util.QueryUtils;
 
 @RunWith(JUnit4.class)
@@ -59,12 +58,7 @@ public class FuzzyTest extends AbstractWatchedTest {
         queriesList.add(queryUtils.getInsert(DataHelper.data3));
         queriesList.add(queryUtils.getInsert(DataHelper.data4));
 
-        cassandraUtils.executeQueriesList(queriesList);
-
-        // Waiting for the custom index to be refreshed
-        logger.debug("Waiting for the index to be refreshed...");
-        Thread.sleep(1000);
-        logger.debug("Index ready to rock!");
+        cassandraUtils.executeQueriesList(queriesList, true);
     }
 
     @AfterClass
@@ -158,9 +152,8 @@ public class FuzzyTest extends AbstractWatchedTest {
 
         try {
             // Adding new data for the test
-            cassandraUtils.executeQuery(queryUtils.getInsert(DataHelper
-                    .data5));
-            Thread.sleep(1000);
+            cassandraUtils.executeQuery(queryUtils.getInsert(DataHelper.data5),
+                    true);
 
             Map<String, String> params = new LinkedHashMap<>();
             params.put(TestingConstants.MAX_EXPANSIONS_PARAM_CONSTANT, "1");
@@ -174,8 +167,7 @@ public class FuzzyTest extends AbstractWatchedTest {
         } finally {
             // Removing the specific data
             cassandraUtils.executeQuery(queryUtils
-                    .constructDeleteQueryByCondition("integer_1 = -5"));
-            Thread.sleep(1000);
+                    .constructDeleteQueryByCondition("integer_1 = -5"), true);
         }
     }
 
@@ -185,9 +177,8 @@ public class FuzzyTest extends AbstractWatchedTest {
 
         try {
             // Adding new data for the test
-            cassandraUtils.executeQuery(queryUtils.getInsert(DataHelper
-                    .data5));
-            Thread.sleep(1000);
+            cassandraUtils.executeQuery(queryUtils.getInsert(DataHelper.data5),
+                    true);
 
             Map<String, String> params = new LinkedHashMap<>();
             params.put(TestingConstants.MAX_EXPANSIONS_PARAM_CONSTANT, "10");
@@ -201,8 +192,7 @@ public class FuzzyTest extends AbstractWatchedTest {
         } finally {
             // Removing the specific data
             cassandraUtils.executeQuery(queryUtils
-                    .constructDeleteQueryByCondition("integer_1 = -5"));
-            Thread.sleep(1000);
+                    .constructDeleteQueryByCondition("integer_1 = -5"), true);
         }
     }
 
@@ -495,9 +485,8 @@ public class FuzzyTest extends AbstractWatchedTest {
 
         try {
             // Adding new data for the test
-            cassandraUtils.executeQuery(queryUtils.getInsert(DataHelper
-                    .data5));
-            Thread.sleep(1000);
+            cassandraUtils.executeQuery(queryUtils.getInsert(DataHelper.data5),
+                    true);
 
             Map<String, String> params = new LinkedHashMap<>();
             params.put(TestingConstants.MAX_EXPANSIONS_PARAM_CONSTANT, "1");
@@ -515,8 +504,7 @@ public class FuzzyTest extends AbstractWatchedTest {
         } finally {
             // Removing the specific data
             cassandraUtils.executeQuery(queryUtils
-                    .constructDeleteQueryByCondition("integer_1 = -5"));
-            Thread.sleep(1000);
+                    .constructDeleteQueryByCondition("integer_1 = -5"), true);
         }
     }
 
@@ -526,9 +514,8 @@ public class FuzzyTest extends AbstractWatchedTest {
 
         try {
             // Adding new data for the test
-            cassandraUtils.executeQuery(queryUtils.getInsert(DataHelper
-                    .data5));
-            Thread.sleep(1000);
+            cassandraUtils.executeQuery(queryUtils.getInsert(DataHelper.data5),
+                    true);
 
             Map<String, String> params = new LinkedHashMap<>();
             params.put(TestingConstants.MAX_EXPANSIONS_PARAM_CONSTANT, "10");
@@ -546,8 +533,7 @@ public class FuzzyTest extends AbstractWatchedTest {
         } finally {
             // Removing the specific data
             cassandraUtils.executeQuery(queryUtils
-                    .constructDeleteQueryByCondition("integer_1 = -5"));
-            Thread.sleep(1000);
+                    .constructDeleteQueryByCondition("integer_1 = -5"), true);
         }
     }
 
@@ -689,9 +675,8 @@ public class FuzzyTest extends AbstractWatchedTest {
 
         try {
             // Adding new data for the test
-            cassandraUtils.executeQuery(queryUtils.getInsert(DataHelper
-                    .data5));
-            Thread.sleep(1000);
+            cassandraUtils.executeQuery(queryUtils.getInsert(DataHelper.data5),
+                    true);
 
             Map<String, String> params = new LinkedHashMap<>();
             params.put(TestingConstants.MAX_EXPANSIONS_PARAM_CONSTANT, "1");
@@ -706,8 +691,7 @@ public class FuzzyTest extends AbstractWatchedTest {
         } finally {
             // Removing the specific data
             cassandraUtils.executeQuery(queryUtils
-                    .constructDeleteQueryByCondition("integer_1 = -5"));
-            Thread.sleep(1000);
+                    .constructDeleteQueryByCondition("integer_1 = -5"), true);
         }
     }
 
@@ -717,9 +701,8 @@ public class FuzzyTest extends AbstractWatchedTest {
 
         try {
             // Adding new data for the test
-            cassandraUtils.executeQuery(queryUtils.getInsert(DataHelper
-                    .data5));
-            Thread.sleep(1000);
+            cassandraUtils.executeQuery(queryUtils.getInsert(DataHelper.data5),
+                    true);
 
             Map<String, String> params = new LinkedHashMap<>();
             params.put(TestingConstants.MAX_EXPANSIONS_PARAM_CONSTANT, "10");
@@ -734,8 +717,7 @@ public class FuzzyTest extends AbstractWatchedTest {
         } finally {
             // Removing the specific data
             cassandraUtils.executeQuery(queryUtils
-                    .constructDeleteQueryByCondition("integer_1 = -5"));
-            Thread.sleep(1000);
+                    .constructDeleteQueryByCondition("integer_1 = -5"), true);
         }
     }
 
