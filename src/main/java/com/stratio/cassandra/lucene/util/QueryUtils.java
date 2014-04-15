@@ -187,6 +187,11 @@ public class QueryUtils {
         return query;
     }
 
+    public String dropIndexQuery(String indexName) {
+
+        return "DROP INDEX " + keyspace + "." + indexName + ";";
+    }
+
     public String conversionCassToLucene() {
         String converted = "";
         for (String s : columns.keySet()) {
@@ -238,6 +243,16 @@ public class QueryUtils {
         logger.debug("Insert query [" + insert + "]");
 
         return insert;
+    }
+
+    public String constructValueDeleteQueryByCondition(String field,
+            String condition) {
+
+        String query = "DELETE " + field + " FROM " + keyspace + "." + table
+                + " WHERE " + condition + ";";
+        logger.debug("Deletion query [" + query + "]");
+
+        return query;
     }
 
     public String constructDeleteQueryByCondition(String condition) {

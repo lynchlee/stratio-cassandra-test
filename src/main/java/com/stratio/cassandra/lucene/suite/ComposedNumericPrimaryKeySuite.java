@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.stratio.cassandra.lucene.TestingConstants;
 import com.stratio.cassandra.lucene.querytype.FuzzyTest;
 import com.stratio.cassandra.lucene.querytype.MatchTest;
 import com.stratio.cassandra.lucene.querytype.PhraseTest;

@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.stratio.cassandra.lucene.TestingConstants;
 import com.stratio.cassandra.lucene.querytype.FuzzyTest;
 import com.stratio.cassandra.lucene.querytype.MatchTest;
 import com.stratio.cassandra.lucene.querytype.PhraseTest;
@@ -25,7 +26,6 @@ import com.stratio.cassandra.lucene.util.QueryUtils;
 @RunWith(Suite.class)
 @SuiteClasses({ FuzzyTest.class, WildcardTest.class, MatchTest.class,
         PrefixTest.class, PhraseTest.class, RegExpTest.class, RangeTest.class })
-// @SuiteClasses({ FuzzyTest.class })
 public class SingleTextPrimaryKeySuite {
 
     private static QueryUtils queryUtils;

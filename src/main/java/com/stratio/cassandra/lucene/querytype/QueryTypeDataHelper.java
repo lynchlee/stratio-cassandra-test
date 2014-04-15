@@ -1,9 +1,9 @@
-package com.stratio.cassandra.lucene.story;
+package com.stratio.cassandra.lucene.querytype;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public final class DataHelper {
+public final class QueryTypeDataHelper {
 
     protected static final Map<String, String> data1;
 
@@ -18,7 +18,7 @@ public final class DataHelper {
     static {
         data1 = new LinkedHashMap<>();
 
-        data1.put("ascii_1", "'frase tipo ascii sin espacios'");
+        data1.put("ascii_1", "'frase tipo ascii'");
         data1.put("bigint_1", "1000000000000000");
         data1.put("blob_1", "0x3E0A16");
         data1.put("boolean_1", "true");
@@ -26,7 +26,7 @@ public final class DataHelper {
         data1.put("date_1", String.valueOf(System.currentTimeMillis()));
         data1.put("double_1", "1.0");
         data1.put("float_1", "1.0");
-        data1.put("integer_1", "1");
+        data1.put("integer_1", "-1");
         data1.put("inet_1", "'127.0.0.1'");
         data1.put("text_1",
                 "'Frase con espacios articulos y las palabras suficientes'");
@@ -47,7 +47,7 @@ public final class DataHelper {
         data2.put("date_1", String.valueOf(System.currentTimeMillis()));
         data2.put("double_1", "2.0");
         data2.put("float_1", "2.0");
-        data2.put("integer_1", "2");
+        data2.put("integer_1", "-2");
         data2.put("inet_1", "'127.0.01.01'");
         data2.put("text_1",
                 "'Frasesinespaciosconarticulosylaspalabrassuficientes'");
@@ -68,7 +68,7 @@ public final class DataHelper {
         data3.put("date_1", String.valueOf(System.currentTimeMillis()));
         data3.put("double_1", "3.0");
         data3.put("float_1", "3.0");
-        data3.put("integer_1", "3");
+        data3.put("integer_1", "-3");
         data3.put("inet_1", "'127.1.1.1'");
         data3.put("text_1",
                 "'Frasesinespaciosconarticulosylaspalabrassuficientesperomaslarga'");
@@ -89,7 +89,7 @@ public final class DataHelper {
         data4.put("date_1", String.valueOf(System.currentTimeMillis()));
         data4.put("double_1", "3.0");
         data4.put("float_1", "3.0");
-        data4.put("integer_1", "4");
+        data4.put("integer_1", "-4");
         data4.put("inet_1", "'127.1.1.1'");
         data4.put("text_1",
                 "'Frasesinespaciosconarticulosylaspalabrassuficientesperomaslarga'");
@@ -110,7 +110,7 @@ public final class DataHelper {
         data5.put("date_1", String.valueOf(System.currentTimeMillis()));
         data5.put("double_1", "3.0");
         data5.put("float_1", "3.0");
-        data5.put("integer_1", "5");
+        data5.put("integer_1", "-5");
         data5.put("inet_1", "'192.168.0.1'");
         data5.put("text_1",
                 "'Prasesinespaciosconarticulosylaspalabrassuficientes'");

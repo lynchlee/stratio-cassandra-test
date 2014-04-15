@@ -1,4 +1,4 @@
-package com.stratio.cassandra.lucene.suite;
+package com.stratio.cassandra.lucene;
 
 public final class TestingConstants {
 
@@ -8,7 +8,7 @@ public final class TestingConstants {
 
     public static final int REPLICATION_FACTOR_2_CONSTANT = 2;
 
-    public static final String TABLE_NAME_CONSTANT = "single_pk_index";
+    public static final String TABLE_NAME_CONSTANT = "table_index_test";
 
     public static final String INDEX_NAME_CONSTANT = "lucene_index";
 

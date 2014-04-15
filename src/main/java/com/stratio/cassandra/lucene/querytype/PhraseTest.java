@@ -11,63 +11,32 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
-import org.apache.log4j.Logger;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
-import com.stratio.cassandra.lucene.suite.TestingConstants;
-import com.stratio.cassandra.lucene.util.CassandraUtils;
-import com.stratio.cassandra.lucene.util.QueryUtils;
 
 @RunWith(JUnit4.class)
 public class PhraseTest extends AbstractWatchedTest {
 
-    private static final Logger logger = Logger.getLogger(PhraseTest.class);
-
-    private static QueryUtils queryUtils;
-
-    private static CassandraUtils cassandraUtils;
-
-    @BeforeClass
-    public static void setUpTests() throws InterruptedException {
-
-        Properties context = System.getProperties();
-        queryUtils = (QueryUtils) context.get("queryUtils");
-        cassandraUtils = (CassandraUtils) context.get("cassandraUtils");
+    @Override
+    @Before
+    public void setUpTest() {
 
         // Executing db queries
         List<String> queriesList = new ArrayList<>();
 
-        String keyspaceCreationQuery = queryUtils
-                .createKeyspaceQuery(TestingConstants.REPLICATION_FACTOR_2_CONSTANT);
-        String tableCreationQuery = queryUtils.createTableQuery();
-        String indexCreationQuery = queryUtils
-                .createIndex(TestingConstants.INDEX_NAME_CONSTANT);
-
-        queriesList.add(keyspaceCreationQuery);
-        queriesList.add(tableCreationQuery);
-        queriesList.add(indexCreationQuery);
-        queriesList.add(queryUtils.getInsert(DataHelper.data1));
-        queriesList.add(queryUtils.getInsert(DataHelper.data2));
-        queriesList.add(queryUtils.getInsert(DataHelper.data3));
-        queriesList.add(queryUtils.getInsert(DataHelper.data4));
-        queriesList.add(queryUtils.getInsert(DataHelper.data5));
+        queriesList.add(queryUtils.getInsert(QueryTypeDataHelper.data1));
+        queriesList.add(queryUtils.getInsert(QueryTypeDataHelper.data2));
+        queriesList.add(queryUtils.getInsert(QueryTypeDataHelper.data3));
+        queriesList.add(queryUtils.getInsert(QueryTypeDataHelper.data4));
+        queriesList.add(queryUtils.getInsert(QueryTypeDataHelper.data5));
 
         cassandraUtils.executeQueriesList(queriesList, true);
-    }
-
-    @AfterClass
-    public static void tearDownTests() {
-        // Dropping keyspace
-        logger.debug("Dropping keyspace");
-        cassandraUtils.executeQuery(queryUtils.dropKeyspaceQuery());
     }
 
     @Test()
@@ -79,7 +48,7 @@ public class PhraseTest extends AbstractWatchedTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 1 result!", 1, rows.size());
+        assertEquals("Expected 0 results!", 0, rows.size());
     }
 
     @Test()
@@ -106,7 +75,7 @@ public class PhraseTest extends AbstractWatchedTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 4 results!", 4, rows.size());
+        assertEquals("Expected 0 results!", 0, rows.size());
     }
 
     @Test()
@@ -117,7 +86,7 @@ public class PhraseTest extends AbstractWatchedTest {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
                 .getPhraseQuery("text_1",
-                        Arrays.asList("articulos", "suficientes"), params));
+                        Arrays.asList("articulos", "palabras"), params));
 
         List<Row> rows = queryResult.all();
 

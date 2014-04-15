@@ -28,7 +28,7 @@ public class CassandraUtils {
         this.cluster.getConfiguration().getQueryOptions()
                 .setConsistencyLevel(ConsistencyLevel.QUORUM);
         metadata = cluster.getMetadata();
-        logger.debug("Connected to cluster (" + host + "): "
+        logger.debug("Connected to cluster (" + this.host + "): "
                 + metadata.getClusterName() + "\n");
         session = cluster.connect();
     }
