@@ -3,6 +3,7 @@ package com.stratio.cassandra.lucene;
 public final class TestingConstants {
 
     public static final String CASSANDRA_LOCALHOST_CONSTANT = "127.0.0.1";
+    // public static final String CASSANDRA_LOCALHOST_CONSTANT = "10.200.0.6";
 
     public static final String KEYSPACE_CONSTANT = "lucene";
 

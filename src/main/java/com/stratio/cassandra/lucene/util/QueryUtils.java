@@ -8,6 +8,8 @@ import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 
+import com.stratio.cassandra.lucene.querytype.BooleanSubqueryType;
+
 /**
  * Created by Jcalderin on 21/03/14.
  */
@@ -172,7 +174,7 @@ public class QueryUtils {
                 + " ("
                 + indexColumn
                 + ") USING 'org.apache.cassandra.db.index.stratio.RowIndex' WITH OPTIONS = {"
-                + "'refresh_seconds':'1',"
+                + "'refresh_seconds':'0.5',"
                 + "'num_cached_filters':'1',"
                 + "'ram_buffer_mb':'64',"
                 + "'max_merge_mb':'5',"
@@ -303,7 +305,7 @@ public class QueryUtils {
                 query.append(value.getKey()).append(":\"")
                         .append(value.getValue()).append("\"");
                 if (paramsIt.hasNext()) {
-                    query.append(",");
+                    query.append(", ");
                 }
             }
         }
@@ -311,6 +313,63 @@ public class QueryUtils {
         logger.debug("Typed query: " + query);
 
         return query.toString();
+    }
+
+    public String getBooleanQuery(BooleanSubqueryType type,
+            List<Map<String, String>> subqueries,
+            List<Map<String, String>> notQueries) {
+
+        StringBuffer query = new StringBuffer();
+        query.append("SELECT ").append(columnsWithoutLucene).append(" FROM ")
+                .append(keyspace).append(".").append(table).append(" WHERE ")
+                .append(indexColumn).append("='{query:{type : \"boolean\", ");
+
+        if (notQueries != null) {
+            query.append("not : ").append(flatQueriesList(notQueries))
+                    .append(", ");
+        }
+
+        query.append(type.type()).append(" : ")
+                .append(flatQueriesList(subqueries)).append("}}';");
+
+        logger.debug("Boolean query: " + query);
+
+        return query.toString();
+    }
+
+    private StringBuffer flatQueriesList(List<Map<String, String>> queriesList) {
+
+        StringBuffer query = new StringBuffer();
+        query.append("[");
+
+        Iterator<Map<String, String>> it = queriesList.iterator();
+        while (it.hasNext()) {
+            Map<String, String> subquery = it.next();
+            query.append(flatQueryMap(subquery));
+            if (it.hasNext())
+                query.append(", ");
+        }
+        query.append("]");
+
+        return query;
+    }
+
+    private StringBuffer flatQueryMap(Map<String, String> queryMap) {
+
+        StringBuffer query = new StringBuffer();
+        query.append("{");
+
+        Iterator<Entry<String, String>> it = queryMap.entrySet().iterator();
+        while (it.hasNext()) {
+            Entry<String, String> queryElement = it.next();
+            query.append(queryElement.getKey()).append(" : \"")
+                    .append(queryElement.getValue()).append("\"");
+            if (it.hasNext())
+                query.append(",");
+        }
+        query.append("}");
+
+        return query;
     }
 
     public String getFuzzyQuery(String field, String value,

@@ -8,7 +8,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -130,8 +129,7 @@ public class RegExpTest extends AbstractWatchedTest {
     }
 
     @Test
-    @Ignore
-    // TODO Remove when timeout is fixed
+    // FIXME TSocketException!
     public void regexpTextFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -165,8 +163,7 @@ public class RegExpTest extends AbstractWatchedTest {
     }
 
     @Test
-    @Ignore
-    // TODO Remove when timeout is fixed
+    // FIXME TSocketException!
     public void regexpTextFieldTest4() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -178,8 +175,7 @@ public class RegExpTest extends AbstractWatchedTest {
     }
 
     @Test
-    @Ignore
-    // TODO Remove when timeout is fixed
+    // FIXME TSocketException!
     public void regexpTextFieldTest5() {
 
         ResultSet queryResult = cassandraUtils

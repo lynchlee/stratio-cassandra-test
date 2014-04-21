@@ -81,7 +81,7 @@ public final class QueryTypeDataHelper {
 
         data4 = new LinkedHashMap<>();
 
-        data4.put("ascii_1", "'frasetipoasciisinespaciosperomaslarga'");
+        data4.put("ascii_1", "'frasetipoasciisinespaciosperomaslargaaaa'");
         data4.put("bigint_1", "3000000000000000");
         data4.put("blob_1", "0x3E0A16");
         data4.put("boolean_1", "true");

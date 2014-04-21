@@ -10,7 +10,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -23,8 +22,6 @@ import com.stratio.cassandra.lucene.TestingConstants;
 public class RangeTest extends AbstractWatchedTest {
 
     @Test
-    @Ignore
-    // TODO Remove when timeout is fixed
     public void rangeAsciiFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -231,8 +228,6 @@ public class RangeTest extends AbstractWatchedTest {
     }
 
     @Test
-    @Ignore
-    // TODO Remove when timeout is fixed
     public void rangeBlobTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -308,8 +303,6 @@ public class RangeTest extends AbstractWatchedTest {
     }
 
     @Test
-    @Ignore
-    // TODO Remove when timeout is fixed
     public void rangeBooleanTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -321,8 +314,6 @@ public class RangeTest extends AbstractWatchedTest {
     }
 
     @Test
-    @Ignore
-    // TODO Remove when timeout is fixed
     public void rangeDecimalTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -593,8 +584,6 @@ public class RangeTest extends AbstractWatchedTest {
     }
 
     @Test
-    @Ignore
-    // TODO Remove when timeout is fixed
     public void rangeUuidTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -657,8 +646,6 @@ public class RangeTest extends AbstractWatchedTest {
     }
 
     @Test
-    @Ignore
-    // TODO Remove when timeout is fixed
     public void rangeTimeuuidTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -721,8 +708,6 @@ public class RangeTest extends AbstractWatchedTest {
     }
 
     @Test
-    @Ignore
-    // TODO Remove when timeout is fixed
     public void rangeInetFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -781,8 +766,6 @@ public class RangeTest extends AbstractWatchedTest {
     }
 
     @Test
-    @Ignore
-    // TODO Remove when timeout is fixed
     public void rangeTextFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -794,8 +777,7 @@ public class RangeTest extends AbstractWatchedTest {
     }
 
     @Test
-    @Ignore
-    // TODO Remove when timeout is fixed
+    // FIXME TSocketException!
     public void rangeTextFieldTest2() {
 
         Map<String, String> params = new LinkedHashMap<>();
@@ -811,8 +793,7 @@ public class RangeTest extends AbstractWatchedTest {
     }
 
     @Test
-    @Ignore
-    // TODO Remove when timeout is fixed
+    // FIXME TSocketException!
     public void rangeTextFieldTest3() {
 
         Map<String, String> params = new LinkedHashMap<>();
@@ -829,8 +810,7 @@ public class RangeTest extends AbstractWatchedTest {
     }
 
     @Test
-    @Ignore
-    // TODO Remove when timeout is fixed
+    // FIXME TSocketException!
     public void rangeTextFieldTest4() {
 
         Map<String, String> params = new LinkedHashMap<>();
@@ -849,8 +829,7 @@ public class RangeTest extends AbstractWatchedTest {
     }
 
     @Test
-    @Ignore
-    // TODO Remove when timeout is fixed
+    // FIXME TSocketException!
     public void rangeTextFieldTest5() {
 
         Map<String, String> params = new LinkedHashMap<>();
@@ -868,8 +847,6 @@ public class RangeTest extends AbstractWatchedTest {
     }
 
     @Test
-    @Ignore
-    // TODO Remove when timeout is fixed
     public void rangeVarcharFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils

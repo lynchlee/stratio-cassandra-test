@@ -8,10 +8,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -265,16 +265,13 @@ public class MatchTest extends AbstractWatchedTest {
     }
 
     @Test
-    @Ignore
-    // TODO Remove when timeout is fixed
     public void matchDateTest1() {
 
         DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
         Date date = new Date();
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getMatchQuery("date_1",
-                        String.valueOf(System.currentTimeMillis()), null));
+                .getMatchQuery("date_1", df.format(date), null));
 
         List<Row> rows = queryResult.all();
 
@@ -282,14 +279,15 @@ public class MatchTest extends AbstractWatchedTest {
     }
 
     @Test
-    @Ignore
-    // TODO Remove when timeout is fixed
     public void matchDateTest2() {
 
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, -1);
+        Date date = calendar.getTime();
+
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getMatchQuery("date_1",
-                        String.valueOf(System.currentTimeMillis() - 87000000),
-                        null));
+                .getMatchQuery("date_1", df.format(date), null));
 
         List<Row> rows = queryResult.all();
 
@@ -297,12 +295,10 @@ public class MatchTest extends AbstractWatchedTest {
     }
 
     @Test
-    @Ignore
-    // TODO Remove when timeout is fixed
     public void matchDateTest3() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getMatchQuery("date_1", "0", null));
+                .getMatchQuery("date_1", "1970/01/01 00:00:00.000", null));
 
         List<Row> rows = queryResult.all();
 
@@ -310,14 +306,15 @@ public class MatchTest extends AbstractWatchedTest {
     }
 
     @Test
-    @Ignore
-    // TODO Remove when timeout is fixed
     public void matchDateTest4() {
 
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, -1);
+        Date date = calendar.getTime();
+
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getMatchQuery("date_1",
-                        String.valueOf(System.currentTimeMillis() + 87000000),
-                        null));
+                .getMatchQuery("date_1", df.format(date), null));
 
         List<Row> rows = queryResult.all();
 
@@ -608,8 +605,7 @@ public class MatchTest extends AbstractWatchedTest {
     }
 
     @Test
-    @Ignore
-    // TODO Remove ignore when "" doesn't fail
+    // FIXME TSocketException!
     public void matchTextFieldTest4() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils

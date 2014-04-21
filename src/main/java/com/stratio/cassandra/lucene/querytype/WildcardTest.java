@@ -118,6 +118,7 @@ public class WildcardTest extends AbstractWatchedTest {
     }
 
     @Test()
+    // FIXME Returns 0 and I'm expecting 4...
     public void wildcardTextFieldTest2() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -129,6 +130,7 @@ public class WildcardTest extends AbstractWatchedTest {
     }
 
     @Test()
+    // FIXME Returns 0 and I'm expecting 3...
     public void wildcardTextFieldTest3() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils

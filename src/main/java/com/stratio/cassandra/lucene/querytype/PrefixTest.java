@@ -129,6 +129,7 @@ public class PrefixTest extends AbstractWatchedTest {
     }
 
     @Test()
+    // FIXME Returns 0 but I'm expecting 4
     public void prefixTextFieldTest2() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils

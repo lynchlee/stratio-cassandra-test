@@ -13,6 +13,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.stratio.cassandra.lucene.TestingConstants;
+import com.stratio.cassandra.lucene.querytype.BooleanTest;
 import com.stratio.cassandra.lucene.querytype.FuzzyTest;
 import com.stratio.cassandra.lucene.querytype.MatchTest;
 import com.stratio.cassandra.lucene.querytype.PhraseTest;
@@ -25,8 +26,9 @@ import com.stratio.cassandra.lucene.util.QueryUtils;
 
 @RunWith(Suite.class)
 @SuiteClasses({ FuzzyTest.class, WildcardTest.class, MatchTest.class,
-        PrefixTest.class, PhraseTest.class, RegExpTest.class, RangeTest.class })
-// @SuiteClasses({ PhraseTest.class })
+        PrefixTest.class, PhraseTest.class, RegExpTest.class, RangeTest.class,
+        BooleanTest.class })
+// @SuiteClasses({ BooleanTest.class })
 public class SingleNumericPrimaryKeySuite {
 
     private static QueryUtils queryUtils;

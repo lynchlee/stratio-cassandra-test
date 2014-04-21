@@ -10,7 +10,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -347,8 +346,7 @@ public class FuzzyTest extends AbstractWatchedTest {
     }
 
     @Test
-    @Ignore
-    // TODO Remove when fixed the timeout
+    // FIXME TSocketException!
     public void emptyFuzzyTextFieldTest() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -618,6 +616,7 @@ public class FuzzyTest extends AbstractWatchedTest {
     }
 
     @Test
+    // FIXME Returns 4 results: row -5 twice!
     public void fuzzyVarcharFieldWith10MaxExpansionsTest()
             throws InterruptedException {
 
