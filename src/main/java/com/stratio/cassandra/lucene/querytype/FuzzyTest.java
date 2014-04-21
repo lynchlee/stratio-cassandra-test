@@ -633,7 +633,7 @@ public class FuzzyTest extends AbstractWatchedTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 3 results!", 3, rows.size());
+        assertEquals("Expected 4 results!", 4, rows.size());
     }
 
     @Test

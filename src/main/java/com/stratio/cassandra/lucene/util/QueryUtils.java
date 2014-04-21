@@ -174,7 +174,7 @@ public class QueryUtils {
                 + " ("
                 + indexColumn
                 + ") USING 'org.apache.cassandra.db.index.stratio.RowIndex' WITH OPTIONS = {"
-                + "'refresh_seconds':'0.5',"
+                + "'refresh_seconds':'0.1',"
                 + "'num_cached_filters':'1',"
                 + "'ram_buffer_mb':'64',"
                 + "'max_merge_mb':'5',"

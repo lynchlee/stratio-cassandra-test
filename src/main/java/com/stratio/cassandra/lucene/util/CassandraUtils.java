@@ -73,7 +73,7 @@ public class CassandraUtils {
         // Waiting for the custom index to be refreshed
         logger.debug("Waiting for the index to be refreshed...");
         try {
-            Thread.sleep(2000);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             logger.error("Interruption catched during a Thread.sleep; index might be unstable");
         }
