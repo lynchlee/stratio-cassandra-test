@@ -16,6 +16,7 @@ import org.junit.runners.JUnit4;
 
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
+import com.datastax.driver.core.exceptions.InvalidQueryException;
 import com.stratio.cassandra.lucene.TestingConstants;
 
 @RunWith(JUnit4.class)
@@ -345,8 +346,7 @@ public class FuzzyTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, rows.size());
     }
 
-    @Test
-    // FIXME TSocketException!
+    @Test(expected = InvalidQueryException.class)
     public void emptyFuzzyTextFieldTest() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils

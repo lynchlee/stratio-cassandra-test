@@ -5,7 +5,9 @@ package com.stratio.cassandra.lucene.querytype;
  */
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -134,4 +136,58 @@ public class BooleanTest extends AbstractWatchedTest {
 
         assertEquals("Expected 3 results!", 3, rows.size());
     }
+
+    @Test
+    public void booleanMustWithBoostTest() {
+
+        // Executing db queries
+        List<String> queriesList = new ArrayList<>();
+
+        queriesList.add(queryUtils.getInsert(QueryTypeDataHelper.data5));
+        queriesList.add(queryUtils.getInsert(QueryTypeDataHelper.data6));
+        queriesList.add(queryUtils.getInsert(QueryTypeDataHelper.data7));
+
+        cassandraUtils.executeQueriesList(queriesList, true);
+
+        Map<String, String> query1 = new LinkedHashMap<>();
+        query1.put("type", "match");
+        query1.put("value", "frase");
+        query1.put("field", "text_1");
+        query1.put("boost", "0.9");
+        Map<String, String> query2 = new LinkedHashMap<>();
+        query2.put("type", "fuzzy");
+        query2.put("value", "127.1.0.1");
+        query2.put("field", "inet_1");
+        query2.put("boost", "0.1");
+
+        List<Map<String, String>> subqueries = new LinkedList<>();
+        subqueries.add(query1);
+        subqueries.add(query2);
+
+        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
+                .getBooleanQuery(BooleanSubqueryType.MUST, subqueries, null));
+
+        List<Row> firstRows = queryResult.all();
+
+        assertEquals("Expected 3 results!", 3, firstRows.size());
+
+        // Modifying boost values
+        query1.put("boost", "0.1");
+        query2.put("boost", "0.9");
+
+        queryResult = cassandraUtils.executeQuery(queryUtils.getBooleanQuery(
+                BooleanSubqueryType.MUST, subqueries, null));
+
+        List<Row> secondRows = queryResult.all();
+
+        assertEquals("Expected 3 results!", 3, secondRows.size());
+
+        Row firstSetFirstRow = firstRows.get(0);
+        Row secondSetFirstRow = secondRows.get(0);
+
+        assertNotEquals("Expected different values!",
+                firstSetFirstRow.getInt("integer_1"),
+                secondSetFirstRow.getInt("integer_1"));
+    }
+
 }

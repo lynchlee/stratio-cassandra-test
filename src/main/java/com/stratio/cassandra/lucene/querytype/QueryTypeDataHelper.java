@@ -15,6 +15,10 @@ public final class QueryTypeDataHelper {
 
     protected static final Map<String, String> data5;
 
+    protected static final Map<String, String> data6;
+
+    protected static final Map<String, String> data7;
+
     static {
         data1 = new LinkedHashMap<>();
 
@@ -92,7 +96,7 @@ public final class QueryTypeDataHelper {
         data4.put("integer_1", "-4");
         data4.put("inet_1", "'127.1.1.1'");
         data4.put("text_1",
-                "'Frasesinespaciosconarticulosylaspalabrassuficientesperomaslargaaaaa'");
+                "'Frasesinespaciosconarticulosylaspalabrassuficientesperomaslargaaaaa  '");
         data4.put("varchar_1", "'frasesencillasinespaciosperomaslarga'");
         data4.put("uuid_1", "60297440-b4fa-11e3-8b5a-0002a5d5c51d");
         data4.put("timeuuid_1", "a4a70900-24e1-11df-8924-001ff3591713");
@@ -120,5 +124,45 @@ public final class QueryTypeDataHelper {
         data5.put("list_1", "['l2','l3']");
         data5.put("set_1", "{'s2','s3'}");
         data5.put("map_1", "{'k2':'v2','k3':'v3'}");
+
+        data6 = new LinkedHashMap<>();
+
+        data6.put("ascii_1", "'frase frase y una frase'");
+        data6.put("bigint_1", "3000000000000000");
+        data6.put("blob_1", "0x3E0A16");
+        data6.put("boolean_1", "true");
+        data6.put("decimal_1", "3000000000.0");
+        data6.put("date_1", String.valueOf(System.currentTimeMillis()));
+        data6.put("double_1", "6.0");
+        data6.put("float_1", "3.0");
+        data6.put("integer_1", "-6");
+        data6.put("inet_1", "'127.1.1.1'");
+        data6.put("text_1", "'frase y frase  '");
+        data6.put("varchar_1", "'frasesencillasinespaciosperomaslarga'");
+        data6.put("uuid_1", "60297440-b4fa-11e3-8b5a-0002a5d5c51d");
+        data6.put("timeuuid_1", "a4a70900-24e1-11df-8924-001ff3591713");
+        data6.put("list_1", "['l2','l3']");
+        data6.put("set_1", "{'s2','s3'}");
+        data6.put("map_1", "{'k2':'v2','k3':'v3'}");
+
+        data7 = new LinkedHashMap<>();
+
+        data7.put("ascii_1", "'frase frase y una frase sin frase'");
+        data7.put("bigint_1", "3000000000000000");
+        data7.put("blob_1", "0x3E0A16");
+        data7.put("boolean_1", "true");
+        data7.put("decimal_1", "3000000000.0");
+        data7.put("date_1", String.valueOf(System.currentTimeMillis()));
+        data7.put("double_1", "7.0");
+        data7.put("float_1", "3.0");
+        data7.put("integer_1", "-7");
+        data7.put("inet_1", "'127.1.1.1'");
+        data7.put("text_1", "'frase, frase con frase y frase'");
+        data7.put("varchar_1", "'prasesencillasinespaciosperomaslarga'");
+        data7.put("uuid_1", "60297440-b4fa-11e3-8b5a-0002a5d5c51d");
+        data7.put("timeuuid_1", "a4a70900-24e1-11df-8924-001ff3591713");
+        data7.put("list_1", "['l2','l3']");
+        data7.put("set_1", "{'s2','s3'}");
+        data7.put("map_1", "{'k2':'v2','k3':'v3'}");
     }
 }

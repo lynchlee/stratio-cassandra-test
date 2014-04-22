@@ -14,11 +14,12 @@ import org.junit.runners.JUnit4;
 
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
+import com.datastax.driver.core.exceptions.InvalidQueryException;
 
 @RunWith(JUnit4.class)
 public class WildcardTest extends AbstractWatchedTest {
 
-    @Test()
+    @Test
     public void wildcardAsciiFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -29,7 +30,7 @@ public class WildcardTest extends AbstractWatchedTest {
         assertEquals("Expected 4 results!", 4, rows.size());
     }
 
-    @Test()
+    @Test
     public void wildcardAsciiFieldTest2() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -40,7 +41,7 @@ public class WildcardTest extends AbstractWatchedTest {
         assertEquals("Expected 4 results!", 4, rows.size());
     }
 
-    @Test()
+    @Test
     public void wildcardAsciiFieldTest3() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -51,7 +52,7 @@ public class WildcardTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, rows.size());
     }
 
-    @Test()
+    @Test(expected = InvalidQueryException.class)
     public void wildcardAsciiFieldTest4() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -62,7 +63,7 @@ public class WildcardTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, rows.size());
     }
 
-    @Test()
+    @Test
     public void wildcardInetFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -73,7 +74,7 @@ public class WildcardTest extends AbstractWatchedTest {
         assertEquals("Expected 4 results!", 4, rows.size());
     }
 
-    @Test()
+    @Test
     public void wildcardInetFieldTest2() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -84,7 +85,7 @@ public class WildcardTest extends AbstractWatchedTest {
         assertEquals("Expected 4 results!", 4, rows.size());
     }
 
-    @Test()
+    @Test
     public void wildcardInetFieldTest3() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -95,7 +96,7 @@ public class WildcardTest extends AbstractWatchedTest {
         assertEquals("Expected 2 results!", 2, rows.size());
     }
 
-    @Test()
+    @Test(expected = InvalidQueryException.class)
     public void wildcardInetFieldTest4() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -106,7 +107,7 @@ public class WildcardTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, rows.size());
     }
 
-    @Test()
+    @Test
     public void wildcardTextFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -117,7 +118,7 @@ public class WildcardTest extends AbstractWatchedTest {
         assertEquals("Expected 4 results!", 4, rows.size());
     }
 
-    @Test()
+    @Test
     // FIXME Returns 0 and I'm expecting 4...
     public void wildcardTextFieldTest2() {
 
@@ -129,7 +130,7 @@ public class WildcardTest extends AbstractWatchedTest {
         assertEquals("Expected 4 results!", 4, rows.size());
     }
 
-    @Test()
+    @Test
     // FIXME Returns 0 and I'm expecting 3...
     public void wildcardTextFieldTest3() {
 
@@ -141,7 +142,7 @@ public class WildcardTest extends AbstractWatchedTest {
         assertEquals("Expected 3 results!", 3, rows.size());
     }
 
-    @Test()
+    @Test(expected = InvalidQueryException.class)
     public void wildcardTextFieldTest4() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -152,7 +153,7 @@ public class WildcardTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, rows.size());
     }
 
-    @Test()
+    @Test
     public void wildcardVarcharFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -163,7 +164,7 @@ public class WildcardTest extends AbstractWatchedTest {
         assertEquals("Expected 4 results!", 4, rows.size());
     }
 
-    @Test()
+    @Test
     public void wildcardVarcharFieldTest2() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -174,7 +175,7 @@ public class WildcardTest extends AbstractWatchedTest {
         assertEquals("Expected 4 results!", 4, rows.size());
     }
 
-    @Test()
+    @Test
     public void wildcardVarcharFieldTest3() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -185,7 +186,7 @@ public class WildcardTest extends AbstractWatchedTest {
         assertEquals("Expected 1 results!", 1, rows.size());
     }
 
-    @Test()
+    @Test(expected = InvalidQueryException.class)
     public void wildcardVarcharFieldTest4() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils

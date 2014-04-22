@@ -28,7 +28,6 @@ import com.stratio.cassandra.lucene.util.QueryUtils;
 @SuiteClasses({ FuzzyTest.class, WildcardTest.class, MatchTest.class,
         PrefixTest.class, PhraseTest.class, RegExpTest.class, RangeTest.class,
         BooleanTest.class })
-// @SuiteClasses({ BooleanTest.class })
 public class SingleNumericPrimaryKeySuite {
 
     private static QueryUtils queryUtils;

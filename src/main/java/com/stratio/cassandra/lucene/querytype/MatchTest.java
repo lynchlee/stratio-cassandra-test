@@ -18,6 +18,7 @@ import org.junit.runners.JUnit4;
 
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
+import com.datastax.driver.core.exceptions.InvalidQueryException;
 
 @RunWith(JUnit4.class)
 public class MatchTest extends AbstractWatchedTest {
@@ -601,11 +602,10 @@ public class MatchTest extends AbstractWatchedTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 2 results!", 2, rows.size());
+        assertEquals("Expected 1 result!", 1, rows.size());
     }
 
-    @Test
-    // FIXME TSocketException!
+    @Test(expected = InvalidQueryException.class)
     public void matchTextFieldTest4() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils

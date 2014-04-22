@@ -14,6 +14,7 @@ import org.junit.runners.JUnit4;
 
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
+import com.datastax.driver.core.exceptions.InvalidQueryException;
 
 @RunWith(JUnit4.class)
 public class RegExpTest extends AbstractWatchedTest {
@@ -162,8 +163,7 @@ public class RegExpTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, rows.size());
     }
 
-    @Test
-    // FIXME TSocketException!
+    @Test(expected = InvalidQueryException.class)
     public void regexpTextFieldTest4() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
