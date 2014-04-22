@@ -337,6 +337,28 @@ public class QueryUtils {
         return query.toString();
     }
 
+    public String getBooleanFilter(BooleanSubqueryType type,
+            List<Map<String, String>> subqueries,
+            List<Map<String, String>> notQueries) {
+
+        StringBuffer query = new StringBuffer();
+        query.append("SELECT ").append(columnsWithoutLucene).append(" FROM ")
+                .append(keyspace).append(".").append(table).append(" WHERE ")
+                .append(indexColumn).append("='{filter:{type : \"boolean\", ");
+
+        if (notQueries != null) {
+            query.append("not : ").append(flatQueriesList(notQueries))
+                    .append(", ");
+        }
+
+        query.append(type.type()).append(" : ")
+                .append(flatQueriesList(subqueries)).append("}}';");
+
+        logger.debug("Boolean query: " + query);
+
+        return query.toString();
+    }
+
     private StringBuffer flatQueriesList(List<Map<String, String>> queriesList) {
 
         StringBuffer query = new StringBuffer();
@@ -438,5 +460,122 @@ public class QueryUtils {
             Map<String, String> params) {
 
         return getTypedQuery("wildcard", field, value, params);
+    }
+
+    public String getTypedFilter(String type, String field, String value,
+            Map<String, String> params) {
+
+        if (params == null)
+            params = new LinkedHashMap<>();
+
+        params.put("type", type);
+        params.put("field", field);
+        params.put("value", value);
+
+        return getTypedFilter(params);
+    }
+
+    public String getTypedFilter(String type, String field,
+            Map<String, String> params) {
+
+        if (params == null)
+            params = new LinkedHashMap<>();
+
+        params.put("type", type);
+        params.put("field", field);
+
+        return getTypedFilter(params);
+    }
+
+    public String getTypedFilter(Map<String, String> params) {
+
+        StringBuffer query = new StringBuffer();
+        query.append("SELECT ").append(columnsWithoutLucene).append(" FROM ")
+                .append(keyspace).append(".").append(table).append(" WHERE ")
+                .append(indexColumn).append("='{filter:{");
+        if (params != null) {
+            Iterator<Entry<String, String>> paramsIt = params.entrySet()
+                    .iterator();
+            while (paramsIt.hasNext()) {
+                Entry<String, String> value = paramsIt.next();
+                query.append(value.getKey()).append(":\"")
+                        .append(value.getValue()).append("\"");
+                if (paramsIt.hasNext()) {
+                    query.append(", ");
+                }
+            }
+        }
+        query.append("}}';");
+        logger.debug("Typed query: " + query);
+
+        return query.toString();
+    }
+
+    public String getFuzzyFilter(String field, String value,
+            Map<String, String> params) {
+
+        return getTypedQuery("fuzzy", field, value, params);
+    }
+
+    public String getMatchFilter(String field, String value,
+            Map<String, String> params) {
+
+        return getTypedQuery("match", field, value, params);
+    }
+
+    public String getPhraseFilter(String field, List<String> values,
+            Map<String, String> params) {
+
+        StringBuffer query = new StringBuffer();
+        query.append("SELECT ").append(columnsWithoutLucene).append(" FROM ")
+                .append(keyspace).append(".").append(table).append(" WHERE ")
+                .append(indexColumn)
+                .append("='{query:{type:\"phrase\", field:\"").append(field)
+                .append("\", values:[");
+
+        if (values != null) {
+            Iterator<String> valuesIt = values.iterator();
+            while (valuesIt.hasNext()) {
+                String value = valuesIt.next();
+                query.append("\"").append(value).append("\"");
+                if (valuesIt.hasNext()) {
+                    query.append(",");
+                }
+            }
+        }
+        query.append("]");
+        if (params != null) {
+            for (Map.Entry<String, String> param : params.entrySet()) {
+                query.append(", ").append(param.getKey()).append(":")
+                        .append(param.getValue());
+            }
+        }
+        query.append("}}';");
+        logger.debug("Typed query: " + query);
+
+        return query.toString();
+    }
+
+    public String getPrefixFilter(String field, String value,
+            Map<String, String> params) {
+
+        return getTypedQuery("prefix", field, value, params);
+    }
+
+    public String getRangeFilter(String field, Map<String, String> params) {
+
+        return getTypedFilter("range", field, params);
+    }
+
+    public String getRegexpFilter(String field, String value,
+            Map<String, String> params) {
+
+        return getTypedFilter("regexp", field, value, params);
+    }
+
+    public String getWildcardFilter(String field, String value,
+            Map<String, String> params) {
+
+        return getTypedFilter("wildcard", field, value, params);
     }
 }
