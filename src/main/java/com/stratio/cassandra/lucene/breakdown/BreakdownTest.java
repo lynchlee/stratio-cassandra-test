@@ -103,7 +103,7 @@ public class BreakdownTest {
     };
 
     @Test
-    public void tokenSearchTest1() {
+    public void breakdownTest1() {
 
         Map<String, String> data4Modified = new LinkedHashMap<>(
                 QueryTypeDataHelper.data4);

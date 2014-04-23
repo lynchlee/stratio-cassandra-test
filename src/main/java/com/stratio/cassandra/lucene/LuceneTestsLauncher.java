@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 
+import com.stratio.cassandra.lucene.suite.BreakDownSuite;
 import com.stratio.cassandra.lucene.suite.CollectionsSuite;
 import com.stratio.cassandra.lucene.suite.ComposedNumericPrimaryKeySuite;
 import com.stratio.cassandra.lucene.suite.DeletionSuite;
@@ -32,9 +33,9 @@ public class LuceneTestsLauncher {
                     TestingConstants.CONSISTENCY_LEVEL_CONSTANT_NAME, args[1]);
         }
 
-        Result result = JUnitCore.runClasses(CollectionsSuite.class,
-                ComposedNumericPrimaryKeySuite.class, DeletionSuite.class,
-                MultipleNumericPrimaryKeySuite.class,
+        Result result = JUnitCore.runClasses(BreakDownSuite.class,
+                CollectionsSuite.class, ComposedNumericPrimaryKeySuite.class,
+                DeletionSuite.class, MultipleNumericPrimaryKeySuite.class,
                 SingleNumericPrimaryKeySuite.class,
                 SingleStringPrimaryKeySuite.class,
                 SingleTextPrimaryKeySuite.class, StoriesSuite.class,

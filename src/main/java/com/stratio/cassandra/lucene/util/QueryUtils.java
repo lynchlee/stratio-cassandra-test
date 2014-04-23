@@ -68,7 +68,7 @@ public class QueryUtils {
 
         if (replicationFactorString == null
                 || Integer.parseInt(replicationFactorString) < 1)
-            replicationFactorString = "1";
+            replicationFactorString = "2";
 
         this.replicationFactor = replicationFactorString;
 
