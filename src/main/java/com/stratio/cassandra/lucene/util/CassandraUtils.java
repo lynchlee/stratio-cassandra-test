@@ -9,6 +9,7 @@ import com.datastax.driver.core.ConsistencyLevel;
 import com.datastax.driver.core.Metadata;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Session;
+import com.stratio.cassandra.lucene.TestingConstants;
 
 public class CassandraUtils {
 
@@ -22,11 +23,22 @@ public class CassandraUtils {
 
     private Session session;
 
+    private ConsistencyLevel consistencyLevel;
+
     public CassandraUtils(String host) {
+
+        String consistencyLevelString = System
+                .getProperty(TestingConstants.CONSISTENCY_LEVEL_CONSTANT_NAME);
+
+        if (consistencyLevelString == null)
+            consistencyLevelString = "ONE";
+
+        consistencyLevel = ConsistencyLevel.valueOf(consistencyLevelString);
+
         this.host = host;
         this.cluster = Cluster.builder().addContactPoint(host).build();
         this.cluster.getConfiguration().getQueryOptions()
-                .setConsistencyLevel(ConsistencyLevel.QUORUM);
+                .setConsistencyLevel(consistencyLevel);
         metadata = cluster.getMetadata();
         logger.debug("Connected to cluster (" + this.host + "): "
                 + metadata.getClusterName() + "\n");

@@ -90,7 +90,7 @@ public class ComposedKeyDataHandlingTest {
         List<String> queriesList = new ArrayList<>();
 
         String keyspaceCreationQuery = queryUtils
-                .createKeyspaceQuery(TestingConstants.REPLICATION_FACTOR_2_CONSTANT);
+                .createKeyspaceQuery();
         String tableCreationQuery = queryUtils.createTableQuery();
         String indexCreationQuery = queryUtils
                 .createIndex(TestingConstants.INDEX_NAME_CONSTANT);

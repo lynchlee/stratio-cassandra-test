@@ -78,8 +78,7 @@ public class AllowFilteringWith1000MixedRowsTest extends
         // Executing db queries
         List<String> queriesList = new ArrayList<>();
 
-        String keyspaceCreationQuery = queryUtils
-                .createKeyspaceQuery(TestingConstants.REPLICATION_FACTOR_2_CONSTANT);
+        String keyspaceCreationQuery = queryUtils.createKeyspaceQuery();
         String tableCreationQuery = queryUtils.createTableQuery();
         String indexCreationQuery = queryUtils
                 .createIndex(TestingConstants.INDEX_NAME_CONSTANT);

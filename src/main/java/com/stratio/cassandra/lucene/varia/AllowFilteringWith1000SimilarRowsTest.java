@@ -26,7 +26,8 @@ import com.stratio.cassandra.lucene.util.CassandraUtils;
 import com.stratio.cassandra.lucene.util.QueryUtils;
 
 @RunWith(JUnit4.class)
-public class AllowFilteringWith1000SimilarRowsTest extends Abstract1000RegistersWatchedTest {
+public class AllowFilteringWith1000SimilarRowsTest extends
+        Abstract1000RegistersWatchedTest {
 
     private static final Logger logger = Logger
             .getLogger(AllowFilteringWith1000SimilarRowsTest.class);
@@ -77,8 +78,7 @@ public class AllowFilteringWith1000SimilarRowsTest extends Abstract1000Registers
         // Executing db queries
         List<String> queriesList = new ArrayList<>();
 
-        String keyspaceCreationQuery = queryUtils
-                .createKeyspaceQuery(TestingConstants.REPLICATION_FACTOR_2_CONSTANT);
+        String keyspaceCreationQuery = queryUtils.createKeyspaceQuery();
         String tableCreationQuery = queryUtils.createTableQuery();
         String indexCreationQuery = queryUtils
                 .createIndex(TestingConstants.INDEX_NAME_CONSTANT);

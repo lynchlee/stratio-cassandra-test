@@ -78,7 +78,7 @@ public class TokenCriteriaWithComplexKeyTest {
         List<String> queriesList = new ArrayList<>();
 
         String keyspaceCreationQuery = queryUtils
-                .createKeyspaceQuery(TestingConstants.REPLICATION_FACTOR_2_CONSTANT);
+                .createKeyspaceQuery();
         String tableCreationQuery = queryUtils.createTableQuery();
         String indexCreationQuery = queryUtils
                 .createIndex(TestingConstants.INDEX_NAME_CONSTANT);
@@ -89,6 +89,8 @@ public class TokenCriteriaWithComplexKeyTest {
         queriesList.add(queryUtils.getInsert(VariaDataHelper.data1));
         queriesList.add(queryUtils.getInsert(VariaDataHelper.data2));
         queriesList.add(queryUtils.getInsert(VariaDataHelper.data3));
+        queriesList.add(queryUtils.getInsert(VariaDataHelper.data4));
+        queriesList.add(queryUtils.getInsert(VariaDataHelper.data5));
         queriesList.add(queryUtils.getInsert(VariaDataHelper.data6));
         queriesList.add(queryUtils.getInsert(VariaDataHelper.data7));
         queriesList.add(queryUtils.getInsert(VariaDataHelper.data8));

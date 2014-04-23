@@ -37,6 +37,8 @@ public class SimpleKeyIndexHandlingTest {
 
     private static CassandraUtils cassandraUtils;
 
+    private static String keyspaceSufix;
+
     @BeforeClass
     public static void setUpSuite() {
 
@@ -86,11 +88,12 @@ public class SimpleKeyIndexHandlingTest {
     @Before
     public void setUp() throws InterruptedException {
 
+        keyspaceSufix = String.valueOf(System.currentTimeMillis());
+
         // Executing db queries
         List<String> queriesList = new ArrayList<>();
 
-        String keyspaceCreationQuery = queryUtils
-                .createKeyspaceQuery(TestingConstants.REPLICATION_FACTOR_2_CONSTANT);
+        String keyspaceCreationQuery = queryUtils.createKeyspaceQuery();
         String tableCreationQuery = queryUtils.createTableQuery();
 
         queriesList.add(keyspaceCreationQuery);

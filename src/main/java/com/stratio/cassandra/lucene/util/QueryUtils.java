@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 
+import com.stratio.cassandra.lucene.TestingConstants;
 import com.stratio.cassandra.lucene.querytype.BooleanSubqueryType;
 
 /**
@@ -56,9 +57,20 @@ public class QueryUtils {
 
     private final String columnsWithoutLucene;
 
+    private String replicationFactor;
+
     public QueryUtils(String keyspace, String table,
             Map<String, String> columns, Map<String, List<String>> primaryKey,
             String indexColumn) {
+
+        String replicationFactorString = System
+                .getProperty(TestingConstants.REPLICATION_FACTOR_CONSTANT_NAME);
+
+        if (replicationFactorString == null
+                || Integer.parseInt(replicationFactorString) < 1)
+            replicationFactorString = "1";
+
+        this.replicationFactor = replicationFactorString;
 
         this.keyspace = keyspace;
         this.table = table;
@@ -86,12 +98,12 @@ public class QueryUtils {
         return result;
     }
 
-    public String createKeyspaceQuery(int replicationFactor) {
+    public String createKeyspaceQuery() {
 
         String query = "create keyspace "
                 + keyspace
                 + " with replication = { 'class' : 'SimpleStrategy', 'replication_factor' : '"
-                + (replicationFactor > 0 ? replicationFactor : 1) + "' };";
+                + replicationFactor + "' };";
         logger.debug("Keyspace creation query [" + query + "]");
 
         return query;

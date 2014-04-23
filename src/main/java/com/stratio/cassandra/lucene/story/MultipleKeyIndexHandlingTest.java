@@ -90,7 +90,7 @@ public class MultipleKeyIndexHandlingTest {
         List<String> queriesList = new ArrayList<>();
 
         String keyspaceCreationQuery = queryUtils
-                .createKeyspaceQuery(TestingConstants.REPLICATION_FACTOR_2_CONSTANT);
+                .createKeyspaceQuery();
         String tableCreationQuery = queryUtils.createTableQuery();
 
         queriesList.add(keyspaceCreationQuery);

@@ -7,7 +7,9 @@ public final class TestingConstants {
 
     public static final String KEYSPACE_CONSTANT = "lucene";
 
-    public static final int REPLICATION_FACTOR_2_CONSTANT = 2;
+    public static final String REPLICATION_FACTOR_CONSTANT_NAME = "replicationFactor";
+
+    public static final String CONSISTENCY_LEVEL_CONSTANT_NAME = "consistencyLevel";
 
     public static final String TABLE_NAME_CONSTANT = "table_index_test";
 
