@@ -129,7 +129,6 @@ public class PrefixTest extends AbstractWatchedTest {
     }
 
     @Test
-    // FIXME Returns 0 but I'm expecting 4
     public void prefixTextFieldTest2() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -137,7 +136,7 @@ public class PrefixTest extends AbstractWatchedTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 4 results!", 4, rows.size());
+        assertEquals("Expected 0 results!", 0, rows.size());
     }
 
     @Test

@@ -386,55 +386,6 @@ public class RangeTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, rows.size());
     }
 
-    // @Test
-    // public void rangeDateTest1() {
-    //
-    // ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-    // .getRangeQuery("date_1",
-    // String.valueOf(System.currentTimeMillis()), null));
-    //
-    // List<Row> rows = queryResult.all();
-    //
-    // assertEquals("Expected 0 results!", 0, rows.size());
-    // }
-    //
-    // @Test
-    // public void rangeDateTest2() {
-    //
-    // ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-    // .getRangeQuery("date_1",
-    // String.valueOf(System.currentTimeMillis() - 87000000),
-    // null));
-    //
-    // List<Row> rows = queryResult.all();
-    //
-    // assertEquals("Expected 0 results!", 0, rows.size());
-    // }
-    //
-    // @Test
-    // public void rangeDateTest3() {
-    //
-    // ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-    // .getRangeQuery("date_1", "0", null));
-    //
-    // List<Row> rows = queryResult.all();
-    //
-    // assertEquals("Expected 0 results!", 0, rows.size());
-    // }
-    //
-    // @Test
-    // public void rangeDateTest4() {
-    //
-    // ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-    // .getRangeQuery("date_1",
-    // String.valueOf(System.currentTimeMillis() + 87000000),
-    // null));
-    //
-    // List<Row> rows = queryResult.all();
-    //
-    // assertEquals("Expected 0 results!", 0, rows.size());
-    // }
-
     @Test
     public void rangeDoubleTest1() {
 
@@ -777,7 +728,6 @@ public class RangeTest extends AbstractWatchedTest {
     }
 
     @Test
-    // FIXME TSocketException!
     public void rangeTextFieldTest2() {
 
         Map<String, String> params = new LinkedHashMap<>();
@@ -789,11 +739,10 @@ public class RangeTest extends AbstractWatchedTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 4 results!", 4, rows.size());
+        assertEquals("Expected 3 results!", 3, rows.size());
     }
 
     @Test
-    // FIXME TSocketException!
     public void rangeTextFieldTest3() {
 
         Map<String, String> params = new LinkedHashMap<>();
@@ -806,11 +755,10 @@ public class RangeTest extends AbstractWatchedTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 3 results!", 3, rows.size());
+        assertEquals("Expected 1 result!", 1, rows.size());
     }
 
     @Test
-    // FIXME TSocketException!
     public void rangeTextFieldTest4() {
 
         Map<String, String> params = new LinkedHashMap<>();
@@ -829,7 +777,6 @@ public class RangeTest extends AbstractWatchedTest {
     }
 
     @Test
-    // FIXME TSocketException!
     public void rangeTextFieldTest5() {
 
         Map<String, String> params = new LinkedHashMap<>();

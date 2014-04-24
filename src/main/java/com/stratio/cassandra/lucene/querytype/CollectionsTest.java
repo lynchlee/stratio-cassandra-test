@@ -594,7 +594,7 @@ public class CollectionsTest extends AbstractWatchedTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 2 results!", 2, rows.size());
+        assertEquals("Expected 4 results!", 4, rows.size());
     }
 
     @Test
@@ -639,7 +639,7 @@ public class CollectionsTest extends AbstractWatchedTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 2 results!", 2, rows.size());
+        assertEquals("Expected 0 results!", 0, rows.size());
     }
 
     @Test
@@ -753,7 +753,7 @@ public class CollectionsTest extends AbstractWatchedTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 2 results!", 2, rows.size());
+        assertEquals("Expected 0 results!", 0, rows.size());
     }
 
     @Test

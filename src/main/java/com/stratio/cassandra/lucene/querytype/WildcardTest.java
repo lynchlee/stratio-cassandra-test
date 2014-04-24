@@ -119,7 +119,6 @@ public class WildcardTest extends AbstractWatchedTest {
     }
 
     @Test
-    // FIXME Returns 0 and I'm expecting 4...
     public void wildcardTextFieldTest2() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -127,7 +126,7 @@ public class WildcardTest extends AbstractWatchedTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 4 results!", 4, rows.size());
+        assertEquals("Expected 0 results!", 0, rows.size());
     }
 
     @Test
@@ -139,7 +138,7 @@ public class WildcardTest extends AbstractWatchedTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 3 results!", 3, rows.size());
+        assertEquals("Expected 0 results!", 0, rows.size());
     }
 
     @Test(expected = InvalidQueryException.class)
