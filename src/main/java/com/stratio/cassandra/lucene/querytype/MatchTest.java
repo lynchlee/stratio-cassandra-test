@@ -56,7 +56,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, rows.size());
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void matchAsciiFieldTest4() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -122,7 +122,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, rows.size());
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void matchBlobTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -177,7 +177,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, rows.size());
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void matchBooleanTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -557,7 +557,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, rows.size());
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void matchInetFieldTest4() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -650,7 +650,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, rows.size());
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void matchVarcharFieldTest4() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils

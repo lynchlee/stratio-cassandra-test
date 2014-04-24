@@ -52,7 +52,7 @@ public class RegExpTest extends AbstractWatchedTest {
         assertEquals("Expected 4 results!", 4, rows.size());
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void regexpAsciiFieldTest4() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -107,7 +107,7 @@ public class RegExpTest extends AbstractWatchedTest {
         assertEquals("Expected 2 results!", 2, rows.size());
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void regexpInetFieldTest4() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -149,7 +149,7 @@ public class RegExpTest extends AbstractWatchedTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 1 result!", 1, rows.size());
+        assertEquals("Expected 4 results!", 4, rows.size());
     }
 
     @Test
@@ -175,7 +175,6 @@ public class RegExpTest extends AbstractWatchedTest {
     }
 
     @Test
-    // FIXME TSocketException!
     public void regexpTextFieldTest5() {
 
         ResultSet queryResult = cassandraUtils
@@ -187,7 +186,7 @@ public class RegExpTest extends AbstractWatchedTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 1 result!", 1, rows.size());
+        assertEquals("Expected 0 results!", 0, rows.size());
     }
 
     @Test
@@ -223,7 +222,7 @@ public class RegExpTest extends AbstractWatchedTest {
         assertEquals("Expected 1 results!", 1, rows.size());
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void regexpVarcharFieldTest4() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils

@@ -806,7 +806,7 @@ public class RangeTest extends AbstractWatchedTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 0 results!", 0, rows.size());
+        assertEquals("Expected 3 results!", 3, rows.size());
     }
 
     @Test
