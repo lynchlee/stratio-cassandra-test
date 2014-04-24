@@ -23,7 +23,7 @@ import com.stratio.cassandra.lucene.TestingConstants;
 @RunWith(JUnit4.class)
 public class CollectionsTest extends AbstractWatchedTest {
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void matchListFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -56,7 +56,7 @@ public class CollectionsTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, rows.size());
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void matchSetFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -89,7 +89,7 @@ public class CollectionsTest extends AbstractWatchedTest {
         assertEquals("Expected 2 results!", 2, rows.size());
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void matchMapFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -657,7 +657,7 @@ public class CollectionsTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, rows.size());
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void regexpListFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -690,7 +690,7 @@ public class CollectionsTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, rows.size());
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void regexpSetFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -723,7 +723,7 @@ public class CollectionsTest extends AbstractWatchedTest {
         assertEquals("Expected 4 results!", 4, rows.size());
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void regexpMapFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
