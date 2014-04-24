@@ -44,10 +44,10 @@ public class CollectionsSuite {
         columns.put("varchar_1", "varchar");
         columns.put("uuid_1", "uuid");
         columns.put("timeuuid_1", "timeuuid");
-        columns.put("list_1", "list<text>");
-        columns.put("set_1", "set<text>");
-        columns.put("map_1", "map<text,text>");
-        columns.put("lucene", "text");
+        columns.put("list_1", "list<ascii>");
+        columns.put("set_1", "set<ascii>");
+        columns.put("map_1", "map<ascii,ascii>");
+        columns.put("lucene", "ascii");
 
         Map<String, List<String>> primaryKey = new LinkedHashMap<String, List<String>>();
         String[] inarray = { "integer_1" };

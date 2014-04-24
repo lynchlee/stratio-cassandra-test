@@ -36,7 +36,7 @@ public class PrefixTest extends AbstractWatchedTest {
         cassandraUtils.executeQueriesList(queriesList, true);
     }
 
-    @Test()
+    @Test
     public void prefixAsciiFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -47,7 +47,7 @@ public class PrefixTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, rows.size());
     }
 
-    @Test()
+    @Test
     public void prefixAsciiFieldTest2() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -58,7 +58,7 @@ public class PrefixTest extends AbstractWatchedTest {
         assertEquals("Expected 4 results!", 4, rows.size());
     }
 
-    @Test()
+    @Test
     public void prefixAsciiFieldTest3() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -69,7 +69,7 @@ public class PrefixTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, rows.size());
     }
 
-    @Test()
+    @Test
     public void prefixAsciiFieldTest4() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -80,7 +80,7 @@ public class PrefixTest extends AbstractWatchedTest {
         assertEquals("Expected 5 results!", 5, rows.size());
     }
 
-    @Test()
+    @Test
     public void prefixInetFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -91,7 +91,7 @@ public class PrefixTest extends AbstractWatchedTest {
         assertEquals("Expected 4 results!", 4, rows.size());
     }
 
-    @Test()
+    @Test
     public void prefixInetFieldTest2() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -102,7 +102,7 @@ public class PrefixTest extends AbstractWatchedTest {
         assertEquals("Expected 5 results!", 5, rows.size());
     }
 
-    @Test()
+    @Test
     public void prefixInetFieldTest3() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -113,7 +113,7 @@ public class PrefixTest extends AbstractWatchedTest {
         assertEquals("Expected 2 results!", 2, rows.size());
     }
 
-    @Test()
+    @Test
     public void prefixTextFieldTest1() {
 
         ResultSet queryResult = cassandraUtils
@@ -128,7 +128,7 @@ public class PrefixTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, rows.size());
     }
 
-    @Test()
+    @Test
     // FIXME Returns 0 but I'm expecting 4
     public void prefixTextFieldTest2() {
 
@@ -140,7 +140,7 @@ public class PrefixTest extends AbstractWatchedTest {
         assertEquals("Expected 4 results!", 4, rows.size());
     }
 
-    @Test()
+    @Test
     public void prefixTextFieldTest3() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -151,7 +151,7 @@ public class PrefixTest extends AbstractWatchedTest {
         assertEquals("Expected 5 results!", 5, rows.size());
     }
 
-    @Test()
+    @Test
     public void prefixVarcharFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -163,7 +163,7 @@ public class PrefixTest extends AbstractWatchedTest {
         assertEquals("Expected 2 results!", 2, rows.size());
     }
 
-    @Test()
+    @Test
     public void prefixVarcharFieldTest2() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -174,7 +174,7 @@ public class PrefixTest extends AbstractWatchedTest {
         assertEquals("Expected 4 results!", 4, rows.size());
     }
 
-    @Test()
+    @Test
     public void prefixVarcharFieldTest3() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils

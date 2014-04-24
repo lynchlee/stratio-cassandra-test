@@ -33,7 +33,7 @@ public class FuzzyTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, rows.size());
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void emptyFuzzyAsciiFieldTest() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -193,7 +193,7 @@ public class FuzzyTest extends AbstractWatchedTest {
         assertEquals("Expected 4 results!", 4, rows.size());
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void emptyFuzzyInetFieldTest() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -524,7 +524,7 @@ public class FuzzyTest extends AbstractWatchedTest {
         assertEquals("Expected 2 results!", 2, rows.size());
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void emptyFuzzyVarcharFieldTest() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -616,7 +616,6 @@ public class FuzzyTest extends AbstractWatchedTest {
     }
 
     @Test
-    // FIXME Returns 4 results: row -5 twice!
     public void fuzzyVarcharFieldWith10MaxExpansionsTest()
             throws InterruptedException {
 
@@ -633,7 +632,7 @@ public class FuzzyTest extends AbstractWatchedTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 4 results!", 4, rows.size());
+        assertEquals("Expected 3 results!", 3, rows.size());
     }
 
     @Test

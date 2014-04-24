@@ -17,6 +17,7 @@ import org.junit.runners.JUnit4;
 
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
+import com.datastax.driver.core.exceptions.InvalidQueryException;
 import com.stratio.cassandra.lucene.TestingConstants;
 
 @RunWith(JUnit4.class)
@@ -132,7 +133,7 @@ public class CollectionsTest extends AbstractWatchedTest {
         assertEquals("Expected 2 results!", 2, rows.size());
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void fuzzyListFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -176,7 +177,7 @@ public class CollectionsTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, rows.size());
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void fuzzySetFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -195,7 +196,7 @@ public class CollectionsTest extends AbstractWatchedTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 4 results!", 4, rows.size());
+        assertEquals("Expected 2 results!", 2, rows.size());
     }
 
     @Test
@@ -220,7 +221,7 @@ public class CollectionsTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, rows.size());
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void fuzzyMapFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
@@ -294,7 +295,7 @@ public class CollectionsTest extends AbstractWatchedTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 1 result!", 1, rows.size());
+        assertEquals("Expected 0 results!", 0, rows.size());
     }
 
     @Test
@@ -518,7 +519,7 @@ public class CollectionsTest extends AbstractWatchedTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 0 results!", 0, rows.size());
+        assertEquals("Expected 4 results!", 4, rows.size());
     }
 
     @Test
@@ -548,7 +549,7 @@ public class CollectionsTest extends AbstractWatchedTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 2 results!", 2, rows.size());
+        assertEquals("Expected 0 results!", 0, rows.size());
     }
 
     @Test
@@ -563,7 +564,7 @@ public class CollectionsTest extends AbstractWatchedTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 0 results!", 0, rows.size());
+        assertEquals("Expected 4 results!", 4, rows.size());
     }
 
     @Test
@@ -608,7 +609,7 @@ public class CollectionsTest extends AbstractWatchedTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 0 results!", 0, rows.size());
+        assertEquals("Expected 2 results!", 2, rows.size());
     }
 
     @Test
@@ -623,7 +624,7 @@ public class CollectionsTest extends AbstractWatchedTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 4 results!", 4, rows.size());
+        assertEquals("Expected 2 results!", 2, rows.size());
     }
 
     @Test
@@ -638,7 +639,7 @@ public class CollectionsTest extends AbstractWatchedTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 4 results!", 4, rows.size());
+        assertEquals("Expected 2 results!", 2, rows.size());
     }
 
     @Test
@@ -653,14 +654,14 @@ public class CollectionsTest extends AbstractWatchedTest {
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 2 results!", 2, rows.size());
+        assertEquals("Expected 0 results!", 0, rows.size());
     }
 
     @Test
     public void regexpListFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getMatchQuery("list_1", "", null));
+                .getRegexpQuery("list_1", "", null));
 
         List<Row> rows = queryResult.all();
 
@@ -671,7 +672,7 @@ public class CollectionsTest extends AbstractWatchedTest {
     public void regexpListFieldTest2() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getMatchQuery("list_1", "l.*", null));
+                .getRegexpQuery("list_1", "l.*", null));
 
         List<Row> rows = queryResult.all();
 
@@ -682,7 +683,7 @@ public class CollectionsTest extends AbstractWatchedTest {
     public void regexpListFieldTest3() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getMatchQuery("list_1", "s.*", null));
+                .getRegexpQuery("list_1", "s.*", null));
 
         List<Row> rows = queryResult.all();
 
@@ -693,7 +694,7 @@ public class CollectionsTest extends AbstractWatchedTest {
     public void regexpSetFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getMatchQuery("set_1", "", null));
+                .getRegexpQuery("set_1", "", null));
 
         List<Row> rows = queryResult.all();
 
@@ -704,7 +705,7 @@ public class CollectionsTest extends AbstractWatchedTest {
     public void regexpSetFieldTest2() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getMatchQuery("set_1", "l.*", null));
+                .getRegexpQuery("set_1", "l.*", null));
 
         List<Row> rows = queryResult.all();
 
@@ -715,7 +716,7 @@ public class CollectionsTest extends AbstractWatchedTest {
     public void regexpSetFieldTest3() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getMatchQuery("set_1", "s.*", null));
+                .getRegexpQuery("set_1", "s.*", null));
 
         List<Row> rows = queryResult.all();
 
@@ -726,7 +727,7 @@ public class CollectionsTest extends AbstractWatchedTest {
     public void regexpMapFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getMatchQuery("map_1.k1", "", null));
+                .getRegexpQuery("map_1.k1", "", null));
 
         List<Row> rows = queryResult.all();
 
@@ -737,7 +738,7 @@ public class CollectionsTest extends AbstractWatchedTest {
     public void regexpMapFieldTest2() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getMatchQuery("map_1.k1", "l.*", null));
+                .getRegexpQuery("map_1.k1", "l.*", null));
 
         List<Row> rows = queryResult.all();
 
@@ -748,7 +749,7 @@ public class CollectionsTest extends AbstractWatchedTest {
     public void regexpMapFieldTest3() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getMatchQuery("map_1.k1", "k.*", null));
+                .getRegexpQuery("map_1.k1", "k.*", null));
 
         List<Row> rows = queryResult.all();
 
@@ -759,18 +760,18 @@ public class CollectionsTest extends AbstractWatchedTest {
     public void regexpMapFieldTest4() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getMatchQuery("map_1.k1", "v.*", null));
+                .getRegexpQuery("map_1.k1", "v.*", null));
 
         List<Row> rows = queryResult.all();
 
         assertEquals("Expected 2 results!", 2, rows.size());
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void wildcardListFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getFuzzyQuery("list_1", "", null));
+                .getWildcardQuery("list_1", "", null));
 
         List<Row> rows = queryResult.all();
 
@@ -781,7 +782,7 @@ public class CollectionsTest extends AbstractWatchedTest {
     public void wildcardListFieldTest2() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getFuzzyQuery("list_1", "l*", null));
+                .getWildcardQuery("list_1", "l*", null));
 
         List<Row> rows = queryResult.all();
 
@@ -792,18 +793,18 @@ public class CollectionsTest extends AbstractWatchedTest {
     public void wildcardListFieldTest3() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getFuzzyQuery("list_1", "s*", null));
+                .getWildcardQuery("list_1", "s*", null));
 
         List<Row> rows = queryResult.all();
 
         assertEquals("Expected 0 results!", 0, rows.size());
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void wildcardSetFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getFuzzyQuery("set_1", "", null));
+                .getWildcardQuery("set_1", "", null));
 
         List<Row> rows = queryResult.all();
 
@@ -814,7 +815,7 @@ public class CollectionsTest extends AbstractWatchedTest {
     public void wildcardSetFieldTest2() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getFuzzyQuery("set_1", "l*", null));
+                .getWildcardQuery("set_1", "l*", null));
 
         List<Row> rows = queryResult.all();
 
@@ -825,18 +826,18 @@ public class CollectionsTest extends AbstractWatchedTest {
     public void wildcardSetFieldTest3() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getFuzzyQuery("set_1", "s*", null));
+                .getWildcardQuery("set_1", "s*", null));
 
         List<Row> rows = queryResult.all();
 
         assertEquals("Expected 4 results!", 4, rows.size());
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void wildcardMapFieldTest1() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getFuzzyQuery("map_1.k1", "", null));
+                .getWildcardQuery("map_1.k1", "", null));
 
         List<Row> rows = queryResult.all();
 
@@ -847,7 +848,7 @@ public class CollectionsTest extends AbstractWatchedTest {
     public void wildcardMapFieldTest2() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getFuzzyQuery("map_1.k1", "l*", null));
+                .getWildcardQuery("map_1.k1", "l*", null));
 
         List<Row> rows = queryResult.all();
 
@@ -858,7 +859,7 @@ public class CollectionsTest extends AbstractWatchedTest {
     public void wildcardMapFieldTest3() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getFuzzyQuery("map_1.k1", "k*", null));
+                .getWildcardQuery("map_1.k1", "k*", null));
 
         List<Row> rows = queryResult.all();
 
@@ -869,7 +870,7 @@ public class CollectionsTest extends AbstractWatchedTest {
     public void wildcardMapFieldTest4() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getFuzzyQuery("map_1.k1", "v*", null));
+                .getWildcardQuery("map_1.k1", "v*", null));
 
         List<Row> rows = queryResult.all();
 
