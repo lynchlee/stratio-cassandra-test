@@ -29,6 +29,11 @@
             <artifactId>junit</artifactId>
             <version>4.11</version>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.testng</groupId>-->
+            <!--<artifactId>testng</artifactId>-->
+            <!--<version>6.8.8</version>-->
+        <!--</dependency>-->
     </dependencies>
     <build>
         <pluginManagement>
@@ -43,7 +48,20 @@
                         <encoding>UTF-8</encoding>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>distro-assembly</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>single</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
+        <testSourceDirectory>src/main/java/com/stratio/cassandra/lucene</testSourceDirectory>
     </build>
 </project>
