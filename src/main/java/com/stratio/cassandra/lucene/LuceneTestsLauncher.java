@@ -38,8 +38,8 @@ public class LuceneTestsLauncher {
                 DeletionSuite.class, MultipleNumericPrimaryKeySuite.class,
                 SingleNumericPrimaryKeySuite.class,
                 SingleStringPrimaryKeySuite.class,
-                SingleTextPrimaryKeySuite.class, StoriesSuite.class,
-                VariaSuite.class);
+                SingleTextPrimaryKeySuite.class, VariaSuite.class,
+                StoriesSuite.class);
 
         logger.info("Tests finished!");
     }

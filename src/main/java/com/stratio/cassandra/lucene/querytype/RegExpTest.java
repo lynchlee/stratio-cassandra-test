@@ -145,7 +145,7 @@ public class RegExpTest extends AbstractWatchedTest {
     public void regexpTextFieldTest2() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getRegexpQuery("text_1", "Frase.*", null));
+                .getRegexpQuery("text_1", "frase.*", null));
 
         List<Row> rows = queryResult.all();
 
@@ -156,11 +156,11 @@ public class RegExpTest extends AbstractWatchedTest {
     public void regexpTextFieldTest3() {
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getRegexpQuery("text_1", "Frase .*", null));
+                .getRegexpQuery("text_1", "frase .*", null));
 
         List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 1 result!", 1, rows.size());
+        assertEquals("Expected 0 results!", 0, rows.size());
     }
 
     @Test(expected = InvalidQueryException.class)
