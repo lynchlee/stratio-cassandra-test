@@ -6,8 +6,10 @@ import org.junit.runner.Result;
 
 import com.stratio.cassandra.lucene.suite.BreakDownSuite;
 import com.stratio.cassandra.lucene.suite.CollectionsSuite;
+import com.stratio.cassandra.lucene.suite.ComplexNumericPrimaryKeySuite;
 import com.stratio.cassandra.lucene.suite.ComposedNumericPrimaryKeySuite;
 import com.stratio.cassandra.lucene.suite.DeletionSuite;
+import com.stratio.cassandra.lucene.suite.IndexesSuite;
 import com.stratio.cassandra.lucene.suite.MultipleNumericPrimaryKeySuite;
 import com.stratio.cassandra.lucene.suite.SingleNumericPrimaryKeySuite;
 import com.stratio.cassandra.lucene.suite.SingleStringPrimaryKeySuite;
@@ -33,13 +35,14 @@ public class LuceneTestsLauncher {
                     TestingConstants.CONSISTENCY_LEVEL_CONSTANT_NAME, args[1]);
         }
 
-        Result result = JUnitCore.runClasses(BreakDownSuite.class,
-                CollectionsSuite.class, ComposedNumericPrimaryKeySuite.class,
-                DeletionSuite.class, MultipleNumericPrimaryKeySuite.class,
+        Result result = JUnitCore.runClasses(CollectionsSuite.class,
+                ComplexNumericPrimaryKeySuite.class,
+                ComposedNumericPrimaryKeySuite.class, DeletionSuite.class,
+                IndexesSuite.class, MultipleNumericPrimaryKeySuite.class,
                 SingleNumericPrimaryKeySuite.class,
                 SingleStringPrimaryKeySuite.class,
                 SingleTextPrimaryKeySuite.class, VariaSuite.class,
-                StoriesSuite.class);
+                BreakDownSuite.class, StoriesSuite.class);
 
         logger.info("Tests finished!");
     }
