@@ -17,6 +17,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -89,8 +90,7 @@ public class MultipleKeyIndexHandlingTest {
         // Executing db queries
         List<String> queriesList = new ArrayList<>();
 
-        String keyspaceCreationQuery = queryUtils
-                .createKeyspaceQuery();
+        String keyspaceCreationQuery = queryUtils.createKeyspaceQuery();
         String tableCreationQuery = queryUtils.createTableQuery();
 
         queriesList.add(keyspaceCreationQuery);
@@ -108,6 +108,7 @@ public class MultipleKeyIndexHandlingTest {
     }
 
     @Test
+    @Ignore("Waiting for Cassandra to fix the keyspace recreation bug")
     public void createIndexAfterInsertionsTest() {
 
         List<String> queriesList = new ArrayList<>();
@@ -141,6 +142,7 @@ public class MultipleKeyIndexHandlingTest {
     }
 
     @Test
+    @Ignore("Waiting for Cassandra to fix the keyspace recreation bug")
     public void createIndexDuringInsertionsTest1() {
 
         List<String> queriesList = new ArrayList<>();
@@ -176,6 +178,7 @@ public class MultipleKeyIndexHandlingTest {
     }
 
     @Test
+    @Ignore("Waiting for Cassandra to fix the keyspace recreation bug")
     public void createIndexDuringInsertionsTest2() {
 
         List<String> queriesList = new ArrayList<>();
@@ -211,6 +214,7 @@ public class MultipleKeyIndexHandlingTest {
     }
 
     @Test
+    @Ignore("Waiting for Cassandra to fix the keyspace recreation bug")
     public void createIndexDuringInsertionsTest3() {
 
         List<String> queriesList = new ArrayList<>();
@@ -246,6 +250,7 @@ public class MultipleKeyIndexHandlingTest {
     }
 
     @Test
+    @Ignore("Waiting for Cassandra to fix the keyspace recreation bug")
     public void recreateIndexAfterInsertionsTest() {
 
         List<String> queriesList = new ArrayList<>();
