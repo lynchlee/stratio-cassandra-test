@@ -17,6 +17,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -111,6 +112,7 @@ public class SimpleKeyIndexHandlingTest {
     }
 
     @Test
+    @Ignore("Waiting for Cassandra to fix the keyspace recreation bug")
     public void createIndexAfterInsertionsTest() {
 
         List<String> queriesList = new ArrayList<>();
@@ -139,6 +141,7 @@ public class SimpleKeyIndexHandlingTest {
     }
 
     @Test
+    @Ignore("Waiting for Cassandra to fix the keyspace recreation bug")
     public void createIndexDuringInsertionsTest() {
 
         List<String> queriesList = new ArrayList<>();
@@ -169,6 +172,7 @@ public class SimpleKeyIndexHandlingTest {
     }
 
     @Test
+    @Ignore("Waiting for Cassandra to fix the keyspace recreation bug")
     public void recreateIndexAfterInsertionsTest() {
 
         List<String> queriesList = new ArrayList<>();

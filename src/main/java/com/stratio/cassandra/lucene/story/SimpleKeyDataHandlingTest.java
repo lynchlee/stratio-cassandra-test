@@ -91,8 +91,7 @@ public class SimpleKeyDataHandlingTest {
         // Executing db queries
         List<String> queriesList = new ArrayList<>();
 
-        String keyspaceCreationQuery = queryUtils
-                .createKeyspaceQuery();
+        String keyspaceCreationQuery = queryUtils.createKeyspaceQuery();
         String tableCreationQuery = queryUtils.createTableQuery();
         String indexCreationQuery = queryUtils
                 .createIndex(TestingConstants.INDEX_NAME_CONSTANT);
@@ -118,8 +117,8 @@ public class SimpleKeyDataHandlingTest {
     public void singleInsertion() {
 
         // Data4 insertion
-        cassandraUtils.executeQuery(queryUtils.getInsert(StoryDataHelper.data4),
-                true);
+        cassandraUtils.executeQuery(
+                queryUtils.getInsert(StoryDataHelper.data4), true);
 
         ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
                 .getWildcardQuery("ascii_1", "*", null));
@@ -129,8 +128,8 @@ public class SimpleKeyDataHandlingTest {
         assertEquals("Expected 4 results!", 4, rows.size());
 
         // Data5 insertion
-        cassandraUtils.executeQuery(queryUtils.getInsert(StoryDataHelper.data5),
-                true);
+        cassandraUtils.executeQuery(
+                queryUtils.getInsert(StoryDataHelper.data5), true);
 
         queryResult = cassandraUtils.executeQuery(queryUtils.getWildcardQuery(
                 "ascii_1", "*", null));
