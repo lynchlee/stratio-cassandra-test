@@ -16,8 +16,10 @@ public class MyRunnable extends Thread {
     @Override
     public void run() {
 
-        Cluster cluster = Cluster.builder().addContactPoint("127.0.0.1")
-                .build();
+        Cluster cluster = Cluster
+                .builder()
+                .addContactPoints("172.31.11.69", "172.31.10.149",
+                        "172.31.6.56").build();
         Session session = cluster.connect();
 
         String query = "SELECT * FROM twitter.tweets limit 10;";
