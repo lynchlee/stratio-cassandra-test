@@ -3,12 +3,21 @@ package com.stratio.cassandra.lucene.performance;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Session;
+
 public class ReadingPerformance {
 
     private final static int NUMBER_OF_THREADS = 48;
     private final static int NUMBER_OF_TASKS = 100;
 
     public static void main(String[] args) {
+
+        Cluster cluster = Cluster
+                .builder()
+                .addContactPoints("172.31.11.69", "172.31.10.149",
+                        "172.31.6.56").build();
+        Session session = cluster.connect();
 
         ExecutorService executor = Executors
                 .newFixedThreadPool(NUMBER_OF_THREADS);
@@ -17,7 +26,7 @@ public class ReadingPerformance {
 
         for (int i = 0; i < NUMBER_OF_TASKS; i++) {
 
-            Runnable worker = new MyRunnable("Thread-" + i);
+            Runnable worker = new MyRunnable("Thread-" + i, session);
             executor.execute(worker);
         }
         executor.shutdown();

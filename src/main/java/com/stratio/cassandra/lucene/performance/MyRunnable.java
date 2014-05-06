@@ -5,34 +5,32 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Session;
 
 public class MyRunnable implements Runnable {
 
     private static final Logger logger = Logger.getLogger(MyRunnable.class);
-    
+
     public static long numQueries;
     public static long totalQueryTime;
-    
-    private String name;
 
-    public MyRunnable(String name) {
+    private String name;
+    private static Session session;
+
+    public MyRunnable(String name, Session session) {
         this.name = name;
+
+        if (session == null)
+            MyRunnable.session = session;
+
     }
 
     @Override
     public void run() {
 
-        Cluster cluster = Cluster
-                .builder()
-                .addContactPoints("172.31.11.69", "172.31.10.149",
-                        "172.31.6.56").build();
-        Session session = cluster.connect();
-        
         List<String> queries = new LinkedList<>();
-        
+
         queries.add("SELECT * FROM  twitter.tweets WHERE lucene='{filter:{type:\"range\", field:\"createdat\", lower:\"2014-01-01\", upper:\"2014-03-01\"}}' limit 10;");
         queries.add("SELECT * FROM  twitter.tweets WHERE lucene='{query:{type:\"match\", field:\"message\", value:\"dios\"}}' limit 10;");
         queries.add("SELECT * FROM  twitter.tweets WHERE lucene='{query:{type:\"match\", field:\"message\", value:\"dios\"}, filter:{type:\"range\", field:\"createdat\", lower:\"2014-01-01\", upper:\"2014-03-01\"}}' limit 10;");
@@ -62,12 +60,13 @@ public class MyRunnable implements Runnable {
         queries.add("SELECT * FROM  twitter.tweets WHERE lucene='{query:{type:\"phrase\", field:\"message\", values:[\"rechazar\",\"la\",\"violencia\"]}, filter:{type:\"range\", field:\"createdat\", lower:\"2014-01-01\", upper:\"2014-03-01\"}}' limit 10;");
 
         for (String query : queries) {
-        	long queryStart = System.currentTimeMillis();
-        	ResultSet rs = session.execute(query);
-        	long queryTime = System.currentTimeMillis() - queryStart;
-        	numQueries++;
-        	totalQueryTime += queryTime;
-        	logger.info("[" + this.name + "] [" + queryTime + "ms] [" + rs.all().size() + "rows] " + query);
+            long queryStart = System.currentTimeMillis();
+            ResultSet rs = session.execute(query);
+            long queryTime = System.currentTimeMillis() - queryStart;
+            numQueries++;
+            totalQueryTime += queryTime;
+            logger.info("[" + this.name + "] [" + queryTime + "ms] ["
+                    + rs.all().size() + "rows] " + query);
         }
     }
 
