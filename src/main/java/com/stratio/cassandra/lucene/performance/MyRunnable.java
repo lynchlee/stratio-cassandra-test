@@ -21,7 +21,7 @@ public class MyRunnable implements Runnable {
     public MyRunnable(String name, Session session) {
         this.name = name;
 
-        if (session == null)
+        if (MyRunnable.session == null)
             MyRunnable.session = session;
 
     }
