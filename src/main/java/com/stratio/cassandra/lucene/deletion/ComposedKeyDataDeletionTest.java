@@ -197,10 +197,12 @@ public class ComposedKeyDataDeletionTest {
         assertEquals("Expected 10 results!", 10, rows.size());
 
         int integerValue;
+        String stringValue;
         List<String> listValue = null;
         for (Row row : rows) {
             integerValue = row.getInt("integer_1");
-            if (integerValue == 1) {
+            stringValue = row.getString("ascii_1");
+            if (integerValue == 1 && stringValue.equals("ascii")) {
                 listValue = row.getList("list_1", String.class);
             }
         }
@@ -209,21 +211,17 @@ public class ComposedKeyDataDeletionTest {
         assertEquals("Lenght unexpected", 1, listValue.size());
     }
 
-    @Test
-    public void totalPartitionDeletion() {
+	@Test
+	public void totalPartitionDeletion() {
 
-        cassandraUtils
-                .executeQuery(
-                        queryUtils
-                                .constructDeleteQueryByCondition("integer_1 = 1 and ascii_1 = 'ascii'"),
-                        true);
+		cassandraUtils.executeQuery(queryUtils.constructDeleteQueryByCondition("integer_1 = 1 and ascii_1 = 'ascii'"),
+		                            true);
 
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getWildcardQuery("ascii_1", "*", null));
+		ResultSet queryResult = cassandraUtils.executeQuery(queryUtils.getWildcardQuery("ascii_1", "*", null));
 
-        List<Row> rows = queryResult.all();
+		List<Row> rows = queryResult.all();
 
-        assertEquals("Expected 9 results!", 9, rows.size());
+		assertEquals("Expected 9 results!", 9, rows.size());
 
-    }
+	}
 }
