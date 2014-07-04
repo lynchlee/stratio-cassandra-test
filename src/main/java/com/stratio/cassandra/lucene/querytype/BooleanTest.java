@@ -172,8 +172,8 @@ public class BooleanTest extends AbstractWatchedTest {
         assertEquals("Expected 3 results!", 3, firstRows.size());
 
         // Modifying boost values
-        query1.put("boost", "0.1");
-        query2.put("boost", "0.9");
+        query1.put("boost", "0.9");
+        query2.put("boost", "0.1");
 
         queryResult = cassandraUtils.executeQuery(queryUtils.getBooleanQuery(
                 BooleanSubqueryType.MUST, subqueries, null));
