@@ -158,7 +158,7 @@ public class BooleanTest extends AbstractWatchedTest {
         query2.put("type", "fuzzy");
         query2.put("value", "127.1.0.1");
         query2.put("field", "inet_1");
-        query2.put("boost", "0.1");
+        query2.put("boost", "0.0");
 
         List<Map<String, String>> subqueries = new LinkedList<>();
         subqueries.add(query1);
@@ -172,8 +172,8 @@ public class BooleanTest extends AbstractWatchedTest {
         assertEquals("Expected 3 results!", 3, firstRows.size());
 
         // Modifying boost values
-        query1.put("boost", "0.9");
-        query2.put("boost", "0.1");
+        query1.put("boost", "0.0");
+        query2.put("boost", "0.9");
 
         queryResult = cassandraUtils.executeQuery(queryUtils.getBooleanQuery(
                 BooleanSubqueryType.MUST, subqueries, null));
