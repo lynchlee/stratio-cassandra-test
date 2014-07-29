@@ -1,3 +1,18 @@
+/*
+ * Copyright 2014, Stratio.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.stratio.cassandra.lucene.querytype;
 
 /**
@@ -6,112 +21,94 @@ package com.stratio.cassandra.lucene.querytype;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 
 @RunWith(JUnit4.class)
 public class PhraseTest extends AbstractWatchedTest {
 
-    @Override
-    @Before
-    public void setUpTest() {
+	@Test()
+	public void phraseTextFieldTest1() {
 
-        // Executing db queries
-        List<String> queriesList = new ArrayList<>();
+		List<Row> rows = cassandraUtils.execute(queryUtils.getPhraseQuery("text_1",
+		                                                                         Arrays.asList("Frase", "espacios"),
+		                                                                         null));
 
-        queriesList.add(queryUtils.getInsert(QueryTypeDataHelper.data1));
-        queriesList.add(queryUtils.getInsert(QueryTypeDataHelper.data2));
-        queriesList.add(queryUtils.getInsert(QueryTypeDataHelper.data3));
-        queriesList.add(queryUtils.getInsert(QueryTypeDataHelper.data4));
-        queriesList.add(queryUtils.getInsert(QueryTypeDataHelper.data5));
+		
 
-        cassandraUtils.executeQueriesList(queriesList, true);
-    }
+		assertEquals("Expected 0 results!", 0, rows.size());
+	}
 
-    @Test()
-    public void phraseTextFieldTest1() {
+	@Test()
+	public void phraseTextFieldWithSlopTest1() {
 
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPhraseQuery("text_1", Arrays.asList("Frase", "espacios"),
-                        null));
+		Map<String, String> params = new LinkedHashMap<>();
+		params.put("slop", "2");
 
-        List<Row> rows = queryResult.all();
+		List<Row> rows = cassandraUtils.execute(queryUtils.getPhraseQuery("text_1",
+		                                                                         Arrays.asList("Frase", "espacios"),
+		                                                                         params));
 
-        assertEquals("Expected 0 results!", 0, rows.size());
-    }
+		
 
-    @Test()
-    public void phraseTextFieldWithSlopTest1() {
+		assertEquals("Expected 1 result!", 1, rows.size());
+	}
 
-        Map<String, String> params = new LinkedHashMap<>();
-        params.put("slop", "2");
+	@Test()
+	public void phraseTextFieldTest2() {
 
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPhraseQuery("text_1", Arrays.asList("Frase", "espacios"),
-                        params));
+		List<Row> rows = cassandraUtils.execute(queryUtils.getPhraseQuery("text_1",
+		                                                                         Arrays.asList("articulos",
+		                                                                                       "suficientes"),
+		                                                                         null));
 
-        List<Row> rows = queryResult.all();
+		
 
-        assertEquals("Expected 1 result!", 1, rows.size());
-    }
+		assertEquals("Expected 0 results!", 0, rows.size());
+	}
 
-    @Test()
-    public void phraseTextFieldTest2() {
+	@Test()
+	public void phraseTextFieldWithSlopTest() {
 
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPhraseQuery("text_1",
-                        Arrays.asList("articulos", "suficientes"), null));
+		Map<String, String> params = new LinkedHashMap<>();
+		params.put("slop", "2");
 
-        List<Row> rows = queryResult.all();
+		List<Row> rows = cassandraUtils.execute(queryUtils.getPhraseQuery("text_1",
+		                                                                         Arrays.asList("articulos", "palabras"),
+		                                                                         params));
 
-        assertEquals("Expected 0 results!", 0, rows.size());
-    }
+		
 
-    @Test()
-    public void phraseTextFieldWithSlopTest() {
+		assertEquals("Expected 1 result!", 1, rows.size());
+	}
 
-        Map<String, String> params = new LinkedHashMap<>();
-        params.put("slop", "2");
+	@Test()
+	public void phraseTextFieldTest3() {
 
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPhraseQuery("text_1",
-                        Arrays.asList("articulos", "palabras"), params));
+		List<Row> rows = cassandraUtils.execute(queryUtils.getPhraseQuery("text_1",
+		                                                                         Arrays.asList("con", "los"),
+		                                                                         null));
 
-        List<Row> rows = queryResult.all();
+		
 
-        assertEquals("Expected 1 result!", 1, rows.size());
-    }
+		assertEquals("Expected 0 results!", 0, rows.size());
+	}
 
-    @Test()
-    public void phraseTextFieldTest3() {
+	@Test()
+	public void phraseTextFieldTest4() {
 
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPhraseQuery("text_1", Arrays.asList("con", "los"), null));
+		List<Row> rows = cassandraUtils.execute(queryUtils.getPhraseQuery("text_1", null, null));
 
-        List<Row> rows = queryResult.all();
+		
 
-        assertEquals("Expected 0 results!", 0, rows.size());
-    }
-
-    @Test()
-    public void phraseTextFieldTest4() {
-
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getPhraseQuery("text_1", null, null));
-
-        List<Row> rows = queryResult.all();
-
-        assertEquals("Expected 0 results!", 0, rows.size());
-    }
+		assertEquals("Expected 0 results!", 0, rows.size());
+	}
 }

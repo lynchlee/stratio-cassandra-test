@@ -1,3 +1,18 @@
+/*
+ * Copyright 2014, Stratio.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.stratio.cassandra.lucene.varia;
 
 /**
@@ -6,7 +21,6 @@ package com.stratio.cassandra.lucene.varia;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -19,157 +33,139 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.stratio.cassandra.lucene.TestingConstants;
 import com.stratio.cassandra.lucene.util.CassandraUtils;
 import com.stratio.cassandra.lucene.util.QueryUtils;
+import com.stratio.cassandra.lucene.util.QueryUtilsBuilder;
 
 @RunWith(JUnit4.class)
 public class TokenCriteriaWithComplexKeyTest {
 
-    private static final Logger logger = Logger
-            .getLogger(TokenCriteriaWithComplexKeyTest.class);
+	private static final Logger logger = Logger.getLogger(TokenCriteriaWithComplexKeyTest.class);
 
-    private static QueryUtils queryUtils;
+	private static QueryUtils queryUtils;
 
-    private static CassandraUtils cassandraUtils;
+	private static CassandraUtils cassandraUtils;
 
-    @BeforeClass
-    public static void setUpSuite() {
+	@BeforeClass
+	public static void setUpSuite() {
 
-        // Initializing suite data
-        Map<String, String> columns = new LinkedHashMap<String, String>();
-        columns.put("ascii_1", "ascii");
-        columns.put("bigint_1", "bigint");
-        columns.put("blob_1", "blob");
-        columns.put("boolean_1", "boolean");
-        columns.put("decimal_1", "decimal");
-        columns.put("date_1", "timestamp");
-        columns.put("double_1", "double");
-        columns.put("float_1", "float");
-        columns.put("integer_1", "int");
-        columns.put("inet_1", "inet");
-        columns.put("text_1", "text");
-        columns.put("varchar_1", "varchar");
-        columns.put("uuid_1", "uuid");
-        columns.put("timeuuid_1", "timeuuid");
-        columns.put("list_1", "list<text>");
-        columns.put("set_1", "set<text>");
-        columns.put("map_1", "map<text,text>");
-        columns.put("lucene", "text");
+		// Initializing suite data
+		Map<String, String> columns = new LinkedHashMap<String, String>();
+		columns.put("ascii_1", "ascii");
+		columns.put("bigint_1", "bigint");
+		columns.put("blob_1", "blob");
+		columns.put("boolean_1", "boolean");
+		columns.put("decimal_1", "decimal");
+		columns.put("date_1", "timestamp");
+		columns.put("double_1", "double");
+		columns.put("float_1", "float");
+		columns.put("integer_1", "int");
+		columns.put("inet_1", "inet");
+		columns.put("text_1", "text");
+		columns.put("varchar_1", "varchar");
+		columns.put("uuid_1", "uuid");
+		columns.put("timeuuid_1", "timeuuid");
+		columns.put("list_1", "list<text>");
+		columns.put("set_1", "set<text>");
+		columns.put("map_1", "map<text,text>");
+		columns.put("lucene", "text");
 
-        Map<String, List<String>> primaryKey = new LinkedHashMap<String, List<String>>();
-        String[] inarray = { "integer_1", "ascii_1" };
-        String[] outarray = { "double_1" };
-        List<String> in = Arrays.asList(inarray);
-        List<String> out = Arrays.asList(outarray);
-        primaryKey.put("in", in);
-        primaryKey.put("out", out);
+		Map<String, List<String>> primaryKey = new LinkedHashMap<String, List<String>>();
+		String[] inarray = { "integer_1", "ascii_1" };
+		String[] outarray = { "double_1" };
+		List<String> in = Arrays.asList(inarray);
+		List<String> out = Arrays.asList(outarray);
+		primaryKey.put("in", in);
+		primaryKey.put("out", out);
 
-        queryUtils = new QueryUtils(TestingConstants.KEYSPACE_CONSTANT,
-                TestingConstants.TABLE_NAME_CONSTANT, columns, primaryKey,
-                TestingConstants.INDEX_COLUMN_CONSTANT);
+		queryUtils = new QueryUtilsBuilder(TestingConstants.TABLE_NAME_CONSTANT,
+		                                   columns,
+		                                   primaryKey,
+		                                   TestingConstants.INDEX_COLUMN_CONSTANT).build();
 
-        cassandraUtils = new CassandraUtils(
-                TestingConstants.CASSANDRA_LOCALHOST_CONSTANT);
+		cassandraUtils = new CassandraUtils(TestingConstants.CASSANDRA_LOCALHOST_CONSTANT);
 
-        // Executing db queries
-        List<String> queriesList = new ArrayList<>();
+		cassandraUtils.execute(queryUtils.createKeyspaceQuery(),
+		                       queryUtils.createTableQuery(),
+		                       queryUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT),
+		                       queryUtils.getInsert(VariaDataHelper.data1),
+		                       queryUtils.getInsert(VariaDataHelper.data2),
+		                       queryUtils.getInsert(VariaDataHelper.data3),
+		                       queryUtils.getInsert(VariaDataHelper.data4),
+		                       queryUtils.getInsert(VariaDataHelper.data5),
+		                       queryUtils.getInsert(VariaDataHelper.data6),
+		                       queryUtils.getInsert(VariaDataHelper.data7),
+		                       queryUtils.getInsert(VariaDataHelper.data8),
+		                       queryUtils.getInsert(VariaDataHelper.data9),
+		                       queryUtils.getInsert(VariaDataHelper.data10),
+		                       queryUtils.getInsert(VariaDataHelper.data11),
+		                       queryUtils.getInsert(VariaDataHelper.data12),
+		                       queryUtils.getInsert(VariaDataHelper.data13),
+		                       queryUtils.getInsert(VariaDataHelper.data14),
+		                       queryUtils.getInsert(VariaDataHelper.data15),
+		                       queryUtils.getInsert(VariaDataHelper.data16),
+		                       queryUtils.getInsert(VariaDataHelper.data17),
+		                       queryUtils.getInsert(VariaDataHelper.data18),
+		                       queryUtils.getInsert(VariaDataHelper.data19),
+		                       queryUtils.getInsert(VariaDataHelper.data20));
+	};
 
-        String keyspaceCreationQuery = queryUtils
-                .createKeyspaceQuery();
-        String tableCreationQuery = queryUtils.createTableQuery();
-        String indexCreationQuery = queryUtils
-                .createIndex(TestingConstants.INDEX_NAME_CONSTANT);
+	@AfterClass
+	public static void tearDownSuite() {
 
-        queriesList.add(keyspaceCreationQuery);
-        queriesList.add(tableCreationQuery);
-        queriesList.add(indexCreationQuery);
-        queriesList.add(queryUtils.getInsert(VariaDataHelper.data1));
-        queriesList.add(queryUtils.getInsert(VariaDataHelper.data2));
-        queriesList.add(queryUtils.getInsert(VariaDataHelper.data3));
-        queriesList.add(queryUtils.getInsert(VariaDataHelper.data4));
-        queriesList.add(queryUtils.getInsert(VariaDataHelper.data5));
-        queriesList.add(queryUtils.getInsert(VariaDataHelper.data6));
-        queriesList.add(queryUtils.getInsert(VariaDataHelper.data7));
-        queriesList.add(queryUtils.getInsert(VariaDataHelper.data8));
-        queriesList.add(queryUtils.getInsert(VariaDataHelper.data9));
-        queriesList.add(queryUtils.getInsert(VariaDataHelper.data10));
-        queriesList.add(queryUtils.getInsert(VariaDataHelper.data11));
-        queriesList.add(queryUtils.getInsert(VariaDataHelper.data12));
-        queriesList.add(queryUtils.getInsert(VariaDataHelper.data13));
-        queriesList.add(queryUtils.getInsert(VariaDataHelper.data14));
-        queriesList.add(queryUtils.getInsert(VariaDataHelper.data15));
-        queriesList.add(queryUtils.getInsert(VariaDataHelper.data16));
-        queriesList.add(queryUtils.getInsert(VariaDataHelper.data17));
-        queriesList.add(queryUtils.getInsert(VariaDataHelper.data18));
-        queriesList.add(queryUtils.getInsert(VariaDataHelper.data19));
-        queriesList.add(queryUtils.getInsert(VariaDataHelper.data20));
+		logger.debug("Dropping keyspace");
+		cassandraUtils.execute(queryUtils.dropKeyspaceQuery());
 
-        cassandraUtils.executeQueriesList(queriesList, true);
-    };
+		cassandraUtils.disconnect();
+	};
 
-    @AfterClass
-    public static void tearDownSuite() {
+	@Test
+	public void tokenSearchTest1() {
 
-        logger.debug("Dropping keyspace");
-        cassandraUtils.executeQuery(queryUtils.dropKeyspaceQuery());
+		// Building up query
+		String query = queryUtils.getWildcardQuery("ascii_1", "*", null);
+		query = query.substring(0, query.length() - 1);
+		query += " and TOKEN(integer_1, ascii_1) > TOKEN(1, 'ascii');";
 
-        cassandraUtils.disconnect();
-    };
+		logger.debug("token search query [" + query + "]");
 
-    @Test
-    public void tokenSearchTest1() {
+		// Checking data
+		List<Row> rows = cassandraUtils.execute(query);
 
-        // Building up query
-        String query = queryUtils.getWildcardQuery("ascii_1", "*", null);
-        query = query.substring(0, query.length() - 1);
-        query += " and TOKEN(integer_1, ascii_1) > TOKEN(1, 'ascii');";
+		assertEquals("Expected 8 results!", 8, rows.size());
+	}
 
-        logger.debug("token search query [" + query + "]");
+	@Test
+	public void tokenSearchTest2() {
 
-        // Checking data
-        ResultSet queryResult = cassandraUtils.executeQuery(query);
+		// Building up query
+		String query = queryUtils.getWildcardQuery("ascii_1", "*", null);
+		query = query.substring(0, query.length() - 1);
+		query += " and TOKEN(integer_1, ascii_1) > TOKEN(1, 'ascii') and double_1 = 2;";
 
-        List<Row> rows = queryResult.all();
+		logger.debug("token search query [" + query + "]");
 
-        assertEquals("Expected 8 results!", 8, rows.size());
-    }
+		// Checking data
+		List<Row> rows = cassandraUtils.execute(query);
 
-    @Test
-    public void tokenSearchTest2() {
+		assertEquals("Expected 4 results!", 4, rows.size());
+	}
 
-        // Building up query
-        String query = queryUtils.getWildcardQuery("ascii_1", "*", null);
-        query = query.substring(0, query.length() - 1);
-        query += " and TOKEN(integer_1, ascii_1) > TOKEN(1, 'ascii') and double_1 = 2;";
+	@Test
+	public void tokenSearchTest3() {
 
-        logger.debug("token search query [" + query + "]");
+		// Building up query
+		String query = queryUtils.getWildcardQuery("ascii_1", "*", null);
+		query = query.substring(0, query.length() - 1);
+		query += " and TOKEN(integer_1, ascii_1) > TOKEN(1, 'ascii') and TOKEN(integer_1, ascii_1) < TOKEN(3, 'ascii');";
 
-        // Checking data
-        ResultSet queryResult = cassandraUtils.executeQuery(query);
+		logger.debug("token search query [" + query + "]");
 
-        List<Row> rows = queryResult.all();
+		// Checking data
+		List<Row> rows = cassandraUtils.execute(query);
 
-        assertEquals("Expected 4 results!", 4, rows.size());
-    }
-
-    @Test
-    public void tokenSearchTest3() {
-
-        // Building up query
-        String query = queryUtils.getWildcardQuery("ascii_1", "*", null);
-        query = query.substring(0, query.length() - 1);
-        query += " and TOKEN(integer_1, ascii_1) > TOKEN(1, 'ascii') and TOKEN(integer_1, ascii_1) < TOKEN(3, 'ascii');";
-
-        logger.debug("token search query [" + query + "]");
-
-        // Checking data
-        ResultSet queryResult = cassandraUtils.executeQuery(query);
-
-        List<Row> rows = queryResult.all();
-
-        assertEquals("Expected 6 results!", 6, rows.size());
-    }
+		assertEquals("Expected 6 results!", 6, rows.size());
+	}
 }

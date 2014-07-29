@@ -1,3 +1,18 @@
+/*
+ * Copyright 2014, Stratio.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.stratio.cassandra.lucene.querytype;
 
 /**
@@ -12,235 +27,215 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.exceptions.InvalidQueryException;
 
 @RunWith(JUnit4.class)
 public class RegExpTest extends AbstractWatchedTest {
 
-    @Test
-    public void regexpAsciiFieldTest1() {
+	@Test
+	public void regexpAsciiFieldTest1() {
 
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getRegexpQuery("ascii_1", "frase.*", null));
+		List<Row> rows = cassandraUtils.execute(queryUtils.getRegexpQuery("ascii_1", "frase.*", null));
 
-        List<Row> rows = queryResult.all();
+		
 
-        assertEquals("Expected 4 results!", 4, rows.size());
-    }
+		assertEquals("Expected 4 results!", 4, rows.size());
+	}
 
-    @Test
-    public void regexpAsciiFieldTest2() {
+	@Test
+	public void regexpAsciiFieldTest2() {
 
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getRegexpQuery("ascii_1", "frase .*", null));
+		List<Row> rows = cassandraUtils.execute(queryUtils.getRegexpQuery("ascii_1", "frase .*", null));
 
-        List<Row> rows = queryResult.all();
+		
 
-        assertEquals("Expected 1 result!", 1, rows.size());
-    }
+		assertEquals("Expected 1 result!", 1, rows.size());
+	}
 
-    @Test
-    public void regexpAsciiFieldTest3() {
+	@Test
+	public void regexpAsciiFieldTest3() {
 
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getRegexpQuery("ascii_1", ".*", null));
+		List<Row> rows = cassandraUtils.execute(queryUtils.getRegexpQuery("ascii_1", ".*", null));
 
-        List<Row> rows = queryResult.all();
+		
 
-        assertEquals("Expected 4 results!", 4, rows.size());
-    }
+		assertEquals("Expected 5 results!", 5, rows.size());
+	}
 
-    @Test(expected = InvalidQueryException.class)
-    public void regexpAsciiFieldTest4() {
+	@Test(expected = InvalidQueryException.class)
+	public void regexpAsciiFieldTest4() {
 
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getRegexpQuery("ascii_1", "", null));
+		List<Row> rows = cassandraUtils.execute(queryUtils.getRegexpQuery("ascii_1", "", null));
 
-        List<Row> rows = queryResult.all();
+		
 
-        assertEquals("Expected 0 results!", 0, rows.size());
-    }
+		assertEquals("Expected 0 results!", 0, rows.size());
+	}
 
-    @Test
-    public void regexpAsciiFieldTest5() {
+	@Test
+	public void regexpAsciiFieldTest5() {
 
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getRegexpQuery("ascii_1", "frase tipo ascii", null));
+		List<Row> rows = cassandraUtils.execute(queryUtils.getRegexpQuery("ascii_1", "frase tipo ascii", null));
 
-        List<Row> rows = queryResult.all();
+		
 
-        assertEquals("Expected 1 result!", 1, rows.size());
-    }
+		assertEquals("Expected 1 result!", 1, rows.size());
+	}
 
-    @Test
-    public void regexpInetFieldTest1() {
+	@Test
+	public void regexpInetFieldTest1() {
 
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getRegexpQuery("inet_1", ".*", null));
+		List<Row> rows = cassandraUtils.execute(queryUtils.getRegexpQuery("inet_1", ".*", null));
 
-        List<Row> rows = queryResult.all();
+		
 
-        assertEquals("Expected 4 results!", 4, rows.size());
-    }
+		assertEquals("Expected 5 results!", 5, rows.size());
+	}
 
-    @Test
-    public void regexpInetFieldTest2() {
+	@Test
+	public void regexpInetFieldTest2() {
 
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getRegexpQuery("inet_1", "127.*", null));
+		List<Row> rows = cassandraUtils.execute(queryUtils.getRegexpQuery("inet_1", "127.*", null));
 
-        List<Row> rows = queryResult.all();
+		
 
-        assertEquals("Expected 4 results!", 4, rows.size());
-    }
+		assertEquals("Expected 4 results!", 4, rows.size());
+	}
 
-    @Test
-    public void regexpInetFieldTest3() {
+	@Test
+	public void regexpInetFieldTest3() {
 
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getRegexpQuery("inet_1", "127.1.*", null));
+		List<Row> rows = cassandraUtils.execute(queryUtils.getRegexpQuery("inet_1", "127.1.*", null));
 
-        List<Row> rows = queryResult.all();
+		
 
-        assertEquals("Expected 2 results!", 2, rows.size());
-    }
+		assertEquals("Expected 2 results!", 2, rows.size());
+	}
 
-    @Test(expected = InvalidQueryException.class)
-    public void regexpInetFieldTest4() {
+	@Test(expected = InvalidQueryException.class)
+	public void regexpInetFieldTest4() {
 
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getRegexpQuery("inet_1", "", null));
+		List<Row> rows = cassandraUtils.execute(queryUtils.getRegexpQuery("inet_1", "", null));
 
-        List<Row> rows = queryResult.all();
+		
 
-        assertEquals("Expected 0 results!", 0, rows.size());
-    }
+		assertEquals("Expected 0 results!", 0, rows.size());
+	}
 
-    @Test
-    public void regexpInetFieldTest5() {
+	@Test
+	public void regexpInetFieldTest5() {
 
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getRegexpQuery("inet_1", "127.1.1.1", null));
+		List<Row> rows = cassandraUtils.execute(queryUtils.getRegexpQuery("inet_1", "127.1.1.1", null));
 
-        List<Row> rows = queryResult.all();
+		
 
-        assertEquals("Expected 2 results!", 2, rows.size());
-    }
+		assertEquals("Expected 2 results!", 2, rows.size());
+	}
 
-    @Test
-    // FIXME TSocketException!
-    public void regexpTextFieldTest1() {
+	@Test
+	// FIXME TSocketException!
+	        public void
+	        regexpTextFieldTest1() {
 
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getRegexpQuery("text_1", ".*", null));
+		List<Row> rows = cassandraUtils.execute(queryUtils.getRegexpQuery("text_1", ".*", null));
 
-        List<Row> rows = queryResult.all();
+		
 
-        assertEquals("Expected 4 results!", 4, rows.size());
-    }
+		assertEquals("Expected 5 results!", 5, rows.size());
+	}
 
-    @Test
-    public void regexpTextFieldTest2() {
+	@Test
+	public void regexpTextFieldTest2() {
 
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getRegexpQuery("text_1", "frase.*", null));
+		List<Row> rows = cassandraUtils.execute(queryUtils.getRegexpQuery("text_1", "frase.*", null));
 
-        List<Row> rows = queryResult.all();
+		
 
-        assertEquals("Expected 4 results!", 4, rows.size());
-    }
+		assertEquals("Expected 4 results!", 4, rows.size());
+	}
 
-    @Test
-    public void regexpTextFieldTest3() {
+	@Test
+	public void regexpTextFieldTest3() {
 
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getRegexpQuery("text_1", "frase .*", null));
+		List<Row> rows = cassandraUtils.execute(queryUtils.getRegexpQuery("text_1", "frase .*", null));
 
-        List<Row> rows = queryResult.all();
+		
 
-        assertEquals("Expected 0 results!", 0, rows.size());
-    }
+		assertEquals("Expected 0 results!", 0, rows.size());
+	}
 
-    @Test(expected = InvalidQueryException.class)
-    public void regexpTextFieldTest4() {
+	@Test(expected = InvalidQueryException.class)
+	public void regexpTextFieldTest4() {
 
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getRegexpQuery("text_1", "", null));
+		List<Row> rows = cassandraUtils.execute(queryUtils.getRegexpQuery("text_1", "", null));
 
-        List<Row> rows = queryResult.all();
+		
 
-        assertEquals("Expected 0 results!", 0, rows.size());
-    }
+		assertEquals("Expected 0 results!", 0, rows.size());
+	}
 
-    @Test
-    public void regexpTextFieldTest5() {
+	@Test
+	public void regexpTextFieldTest5() {
 
-        ResultSet queryResult = cassandraUtils
-                .executeQuery(queryUtils
-                        .getRegexpQuery(
-                                "text_1",
-                                "Frase con espacios articulos y las palabras suficientes",
-                                null));
+		List<Row> rows = cassandraUtils.execute(queryUtils.getRegexpQuery("text_1",
+		                                                                         "Frase con espacios articulos y las palabras suficientes",
+		                                                                         null));
 
-        List<Row> rows = queryResult.all();
+		
 
-        assertEquals("Expected 0 results!", 0, rows.size());
-    }
+		assertEquals("Expected 0 results!", 0, rows.size());
+	}
 
-    @Test
-    public void regexpVarcharFieldTest1() {
+	@Test
+	public void regexpVarcharFieldTest1() {
 
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getRegexpQuery("varchar_1", ".*", null));
+		List<Row> rows = cassandraUtils.execute(queryUtils.getRegexpQuery("varchar_1", ".*", null));
 
-        List<Row> rows = queryResult.all();
+		
 
-        assertEquals("Expected 4 results!", 4, rows.size());
-    }
+		assertEquals("Expected 5 results!", 5, rows.size());
+	}
 
-    @Test
-    public void regexpVarcharFieldTest2() {
+	@Test
+	public void regexpVarcharFieldTest2() {
 
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getRegexpQuery("varchar_1", "frase.*", null));
+		List<Row> rows = cassandraUtils.execute(queryUtils.getRegexpQuery("varchar_1", "frase.*", null));
 
-        List<Row> rows = queryResult.all();
+		
 
-        assertEquals("Expected 4 results!", 4, rows.size());
-    }
+		assertEquals("Expected 4 results!", 4, rows.size());
+	}
 
-    @Test
-    public void regexpVarcharFieldTest3() {
+	@Test
+	public void regexpVarcharFieldTest3() {
 
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getRegexpQuery("varchar_1", "frase .*", null));
+		List<Row> rows = cassandraUtils.execute(queryUtils.getRegexpQuery("varchar_1", "frase .*", null));
 
-        List<Row> rows = queryResult.all();
+		
 
-        assertEquals("Expected 1 results!", 1, rows.size());
-    }
+		assertEquals("Expected 1 results!", 1, rows.size());
+	}
 
-    @Test(expected = InvalidQueryException.class)
-    public void regexpVarcharFieldTest4() {
+	@Test(expected = InvalidQueryException.class)
+	public void regexpVarcharFieldTest4() {
 
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getRegexpQuery("varchar_1", "", null));
+		List<Row> rows = cassandraUtils.execute(queryUtils.getRegexpQuery("varchar_1", "", null));
 
-        List<Row> rows = queryResult.all();
+		
 
-        assertEquals("Expected 0 results!", 0, rows.size());
-    }
+		assertEquals("Expected 0 results!", 0, rows.size());
+	}
 
-    @Test
-    public void regexpVarcharFieldTest5() {
+	@Test
+	public void regexpVarcharFieldTest5() {
 
-        ResultSet queryResult = cassandraUtils.executeQuery(queryUtils
-                .getRegexpQuery("varchar_1", "frasesencillasinespacios", null));
+		List<Row> rows = cassandraUtils.execute(queryUtils.getRegexpQuery("varchar_1",
+		                                                                         "frasesencillasinespacios",
+		                                                                         null));
 
-        List<Row> rows = queryResult.all();
+		
 
-        assertEquals("Expected 1 results!", 1, rows.size());
-    }
+		assertEquals("Expected 1 results!", 1, rows.size());
+	}
 }

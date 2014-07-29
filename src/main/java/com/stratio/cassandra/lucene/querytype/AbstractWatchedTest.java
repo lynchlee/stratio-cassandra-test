@@ -1,13 +1,24 @@
+/*
+ * Copyright 2014, Stratio.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.stratio.cassandra.lucene.querytype;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TestRule;
@@ -17,82 +28,49 @@ import org.junit.runner.Description;
 import com.stratio.cassandra.lucene.TestingConstants;
 import com.stratio.cassandra.lucene.util.CassandraUtils;
 import com.stratio.cassandra.lucene.util.QueryUtils;
+import com.stratio.cassandra.lucene.util.QueryUtilsBuilder;
 
 public abstract class AbstractWatchedTest {
 
-    private static final Logger logger = Logger
-            .getLogger(AbstractWatchedTest.class);
+	private static final Logger logger = Logger.getLogger(AbstractWatchedTest.class);
 
-    private static long startingTime;
+	private static long startingTime;
 
-    protected static QueryUtils queryUtils;
+	protected static CassandraUtils cassandraUtils;
+	protected static QueryUtils queryUtils;
 
-    protected static CassandraUtils cassandraUtils;
+	@Rule
+	public TestRule watcher = new TestWatcher() {
 
-    @Rule
-    public TestRule watcher = new TestWatcher() {
+		protected void starting(Description description) {
+			logger.info("***************** Running test [" + description.getMethodName() + "]");
+			startingTime = System.currentTimeMillis();
+		}
 
-        protected void starting(Description description) {
-            logger.info("*************************** Starting test ["
-                    + description.getMethodName()
-                    + "] ****************************");
-            startingTime = System.currentTimeMillis();
-        }
+		protected void finished(Description description) {
+			logger.info("***************** Tested in [" + (System.currentTimeMillis() - startingTime) + " ms]");
+		}
+	};
 
-        protected void finished(Description description) {
-            logger.info("------------------ Duration ["
-                    + (System.currentTimeMillis() - startingTime)
-                    + " ms] --------------------");
-            logger.info("************************************************************************************************************");
-        }
-    };
+	@BeforeClass
+	public static void setUpSuite() throws InterruptedException {
+		Properties context = System.getProperties();
+		queryUtils = ((QueryUtilsBuilder) context.get("queryUtilsBuilder")).build();
+		cassandraUtils = (CassandraUtils) context.get("cassandraUtils");
+		cassandraUtils.execute(queryUtils.createKeyspaceQuery(),
+		                       queryUtils.createTableQuery(),
+		                       queryUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT),
+		                       queryUtils.getInsert(QueryTypeDataHelper.data1),
+		                       queryUtils.getInsert(QueryTypeDataHelper.data2),
+		                       queryUtils.getInsert(QueryTypeDataHelper.data3),
+		                       queryUtils.getInsert(QueryTypeDataHelper.data4),
+		                       queryUtils.getInsert(QueryTypeDataHelper.data5));
+	}
 
-    @BeforeClass
-    public static void setUpTests() throws InterruptedException {
-
-        Properties context = System.getProperties();
-        queryUtils = (QueryUtils) context.get("queryUtils");
-        cassandraUtils = (CassandraUtils) context.get("cassandraUtils");
-
-        // Executing db queries
-        List<String> queriesList = new ArrayList<>();
-
-        String keyspaceCreationQuery = queryUtils
-                .createKeyspaceQuery();
-        String tableCreationQuery = queryUtils.createTableQuery();
-        String indexCreationQuery = queryUtils
-                .createIndex(TestingConstants.INDEX_NAME_CONSTANT);
-
-        queriesList.add(keyspaceCreationQuery);
-        queriesList.add(tableCreationQuery);
-        queriesList.add(indexCreationQuery);
-
-        cassandraUtils.executeQueriesList(queriesList);
-    }
-
-    @AfterClass
-    public static void tearDownTests() {
-
-        cassandraUtils.executeQuery(queryUtils.dropKeyspaceQuery());
-    }
-
-    @Before
-    public void setUpTest() {
-
-        // Executing db queries
-        List<String> queriesList = new ArrayList<>();
-
-        queriesList.add(queryUtils.getInsert(QueryTypeDataHelper.data1));
-        queriesList.add(queryUtils.getInsert(QueryTypeDataHelper.data2));
-        queriesList.add(queryUtils.getInsert(QueryTypeDataHelper.data3));
-        queriesList.add(queryUtils.getInsert(QueryTypeDataHelper.data4));
-
-        cassandraUtils.executeQueriesList(queriesList, true);
-    }
-
-    @After
-    public void tearDownTest() {
-
-        cassandraUtils.executeQuery(queryUtils.truncateTableQuery(), true);
-    }
+	@AfterClass
+	public static void tearDownSuite() {
+		cassandraUtils.execute(queryUtils.dropIndexQuery(TestingConstants.INDEX_NAME_CONSTANT));
+		cassandraUtils.execute(queryUtils.truncateTableQuery());
+		cassandraUtils.execute(queryUtils.dropKeyspaceQuery());
+	}
 }

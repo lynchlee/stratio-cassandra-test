@@ -1,5 +1,6 @@
 package com.stratio.cassandra.lucene.util;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -7,88 +8,73 @@ import org.apache.log4j.Logger;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ConsistencyLevel;
 import com.datastax.driver.core.Metadata;
-import com.datastax.driver.core.ResultSet;
+import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.stratio.cassandra.lucene.TestingConstants;
 
 public class CassandraUtils {
 
-    private static final Logger logger = Logger.getLogger(CassandraUtils.class);
+	private static final Logger logger = Logger.getLogger(CassandraUtils.class);
 
-    private final Cluster cluster;
+	private final Cluster cluster;
 
-    private final String host;
+	private final String host;
 
-    private Metadata metadata;
+	private Metadata metadata;
 
-    private Session session;
+	private Session session;
 
-    private ConsistencyLevel consistencyLevel;
+	private ConsistencyLevel consistencyLevel;
 
-    public CassandraUtils(String host) {
+	public CassandraUtils(String host) {
 
-        String consistencyLevelString = System
-                .getProperty(TestingConstants.CONSISTENCY_LEVEL_CONSTANT_NAME);
+		String consistencyLevelString = System.getProperty(TestingConstants.CONSISTENCY_LEVEL_CONSTANT_NAME);
 
-        if (consistencyLevelString == null)
-            consistencyLevelString = "ONE";
+		if (consistencyLevelString == null)
+			consistencyLevelString = "ONE";
 
-        consistencyLevel = ConsistencyLevel.valueOf(consistencyLevelString);
+		consistencyLevel = ConsistencyLevel.valueOf(consistencyLevelString);
 
-        this.host = host;
-        this.cluster = Cluster.builder().addContactPoint(host).build();
-        this.cluster.getConfiguration().getQueryOptions()
-                .setConsistencyLevel(consistencyLevel);
-        metadata = cluster.getMetadata();
-        logger.debug("Connected to cluster (" + this.host + "): "
-                + metadata.getClusterName() + "\n");
-        session = cluster.connect();
-    }
+		this.host = host;
+		this.cluster = Cluster.builder().addContactPoint(host).build();
+		this.cluster.getConfiguration().getQueryOptions().setConsistencyLevel(consistencyLevel);
+		metadata = cluster.getMetadata();
+		logger.debug("Connected to cluster (" + this.host + "): " + metadata.getClusterName() + "\n");
+		session = cluster.connect();
+	}
 
-    public ResultSet executeQuery(String query) {
+	public List<Row> execute(String query) {
+		waitForIndexRefresh();
+		return session.execute(query).all();
+	}
 
-        return executeQuery(query, false);
-    }
+	public void execute(String... queriesList) {
+		for (String query : queriesList) {
+			session.execute(query);
+		}
+		waitForIndexRefresh();
+	}
 
-    public ResultSet executeQuery(String query, boolean waitForIndexRefresh) {
+	public void execute(Collection<String> queriesList) {
+		for (String query : queriesList) {
+			session.execute(query);
+		}
+		waitForIndexRefresh();
+	}
 
-        ResultSet resultSet = session.execute(query);
+	public void disconnect() {
+		session.close();
+	}
 
-        if (waitForIndexRefresh)
-            waitForIndexRefresh();
+	public void waitForIndexRefresh() {
 
-        return resultSet;
-    }
-
-    public void executeQueriesList(List<String> queriesList) {
-
-        executeQueriesList(queriesList, false);
-    }
-
-    public void executeQueriesList(List<String> queriesList,
-            boolean waitForIndexRefresh) {
-
-        for (String query : queriesList) {
-            session.execute(query);
-        }
-
-        if (waitForIndexRefresh)
-            waitForIndexRefresh();
-    }
-
-    public void disconnect() {
-        session.close();
-    }
-
-    public void waitForIndexRefresh() {
-
-        // Waiting for the custom index to be refreshed
-        logger.debug("Waiting for the index to be refreshed...");
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            logger.error("Interruption catched during a Thread.sleep; index might be unstable");
-        }
-        logger.debug("Index ready to rock!");
-    }
+		// Waiting for the custom index to be refreshed
+		logger.debug("Waiting for the index to be refreshed...");
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			logger.error("Interruption catched during a Thread.sleep; index might be unstable");
+		}
+		logger.debug("Index ready to rock!");
+	}
 }
