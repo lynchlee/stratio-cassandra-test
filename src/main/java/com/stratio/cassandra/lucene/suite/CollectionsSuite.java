@@ -30,14 +30,14 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.stratio.cassandra.lucene.TestingConstants;
 import com.stratio.cassandra.lucene.querytype.CollectionsTest;
 import com.stratio.cassandra.lucene.util.CassandraUtils;
+import com.stratio.cassandra.lucene.util.QueryUtils;
 import com.stratio.cassandra.lucene.util.QueryUtilsBuilder;
 
 @RunWith(Suite.class)
 @SuiteClasses({ CollectionsTest.class })
 public class CollectionsSuite {
 
-	private static QueryUtilsBuilder queryUtilsBuilder;
-
+	private static QueryUtils queryUtils;
 	private static CassandraUtils cassandraUtils;
 
 	@BeforeClass
@@ -72,15 +72,15 @@ public class CollectionsSuite {
 		primaryKey.put("in", in);
 		primaryKey.put("out", out);
 
-		queryUtilsBuilder = new QueryUtilsBuilder(TestingConstants.TABLE_NAME_CONSTANT,
-		                                          columns,
-		                                          primaryKey,
-		                                          TestingConstants.INDEX_COLUMN_CONSTANT);
+		queryUtils = new QueryUtilsBuilder(TestingConstants.TABLE_NAME_CONSTANT,
+		                                   columns,
+		                                   primaryKey,
+		                                   TestingConstants.INDEX_COLUMN_CONSTANT).build();
 
 		cassandraUtils = new CassandraUtils(TestingConstants.CASSANDRA_LOCALHOST_CONSTANT);
 
 		Properties context = new Properties();
-		context.put("queryUtilsBuilder", queryUtilsBuilder);
+		context.put("queryUtils", queryUtils);
 		context.put("cassandraUtils", cassandraUtils);
 
 		// Adding testing needed objects

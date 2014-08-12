@@ -37,6 +37,7 @@ import com.stratio.cassandra.lucene.querytype.RangeTest;
 import com.stratio.cassandra.lucene.querytype.RegExpTest;
 import com.stratio.cassandra.lucene.querytype.WildcardTest;
 import com.stratio.cassandra.lucene.util.CassandraUtils;
+import com.stratio.cassandra.lucene.util.QueryUtils;
 import com.stratio.cassandra.lucene.util.QueryUtilsBuilder;
 
 @RunWith(Suite.class)
@@ -44,8 +45,8 @@ import com.stratio.cassandra.lucene.util.QueryUtilsBuilder;
         RegExpTest.class, RangeTest.class, BooleanTest.class })
 public class SingleTextPrimaryKeySuite {
 
+	private static QueryUtils queryUtils;
 	private static CassandraUtils cassandraUtils;
-	private static QueryUtilsBuilder queryUtilsBuilder;
 
 	@BeforeClass
 	public static void setUpSuite() {
@@ -79,15 +80,15 @@ public class SingleTextPrimaryKeySuite {
 		primaryKey.put("in", in);
 		primaryKey.put("out", out);
 
-		queryUtilsBuilder = new QueryUtilsBuilder(TestingConstants.TABLE_NAME_CONSTANT,
+		queryUtils = new QueryUtilsBuilder(TestingConstants.TABLE_NAME_CONSTANT,
 		                                          columns,
 		                                          primaryKey,
-		                                          TestingConstants.INDEX_COLUMN_CONSTANT);
+		                                          TestingConstants.INDEX_COLUMN_CONSTANT).build();
 
 		cassandraUtils = new CassandraUtils(TestingConstants.CASSANDRA_LOCALHOST_CONSTANT);
 
 		Properties context = new Properties();
-		context.put("queryUtilsBuilder", queryUtilsBuilder);
+		context.put("queryUtils", queryUtils);
 		context.put("cassandraUtils", cassandraUtils);
 
 		// Adding testing needed objects

@@ -41,8 +41,6 @@ public class FuzzyTest extends AbstractWatchedTest {
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("ascii_1", "frase tipo asci", null));
 
-		
-
 		assertEquals("Expected 2 result!", 2, rows.size());
 	}
 
@@ -50,8 +48,6 @@ public class FuzzyTest extends AbstractWatchedTest {
 	public void emptyFuzzyAsciiFieldTest() {
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("ascii_1", "", null));
-
-		
 
 		assertEquals("Expected 0 results!", 0, rows.size());
 	}
@@ -64,8 +60,6 @@ public class FuzzyTest extends AbstractWatchedTest {
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("ascii_1", "frase tipo asci", params));
 
-		
-
 		assertEquals("Expected 1 result!", 1, rows.size());
 	}
 
@@ -76,8 +70,6 @@ public class FuzzyTest extends AbstractWatchedTest {
 		params.put(TestingConstants.MAX_EDITS_PARAM_CONSTANT, "0");
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("ascii_1", "frase tipo asci", params));
-
-		
 
 		assertEquals("Expected 0 results!", 0, rows.size());
 	}
@@ -90,8 +82,6 @@ public class FuzzyTest extends AbstractWatchedTest {
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("ascii_1", "frase typo ascii", params));
 
-		
-
 		assertEquals("Expected 1 result!", 1, rows.size());
 	}
 
@@ -102,8 +92,6 @@ public class FuzzyTest extends AbstractWatchedTest {
 		params.put(TestingConstants.PREFIX_LENGTH_PARAM_CONSTANT, "2");
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("ascii_1", "phrase tipo ascii", params));
-
-		
 
 		assertEquals("Expected 0 results!", 0, rows.size());
 	}
@@ -119,8 +107,6 @@ public class FuzzyTest extends AbstractWatchedTest {
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("ascii_1", "frase tipo ascii", params));
 
-		
-
 		assertEquals("Expected 1 result!", 1, rows.size());
 	}
 
@@ -135,8 +121,6 @@ public class FuzzyTest extends AbstractWatchedTest {
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("ascii_1", "frase tipo ascii", params));
 
-		
-
 		assertEquals("Expected 2 results!", 2, rows.size());
 	}
 
@@ -148,8 +132,6 @@ public class FuzzyTest extends AbstractWatchedTest {
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("ascii_1", "farse itpo ascii", params));
 
-		
-
 		assertEquals("Expected 0 results!", 0, rows.size());
 	}
 
@@ -160,8 +142,6 @@ public class FuzzyTest extends AbstractWatchedTest {
 		params.put(TestingConstants.TRANSPOSITIONS_PARAM_CONSTANT, "true");
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("ascii_1", "farse itpo ascii", params));
-
-		
 
 		assertEquals("Expected 1 result!", 1, rows.size());
 	}
@@ -175,8 +155,6 @@ public class FuzzyTest extends AbstractWatchedTest {
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("ascii_1", "farse itpo ascii", params));
 
-		
-
 		assertEquals("Expected 0 results!", 0, rows.size());
 
 	}
@@ -186,8 +164,6 @@ public class FuzzyTest extends AbstractWatchedTest {
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("inet_1", "127.0.1.1", null));
 
-		
-
 		assertEquals("Expected 4 results!", 4, rows.size());
 	}
 
@@ -195,8 +171,6 @@ public class FuzzyTest extends AbstractWatchedTest {
 	public void emptyFuzzyInetFieldTest() {
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("inet_1", "", null));
-
-		
 
 		assertEquals("Expected 0 results!", 0, rows.size());
 	}
@@ -209,8 +183,6 @@ public class FuzzyTest extends AbstractWatchedTest {
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("inet_1", "127.0.0.1", params));
 
-		
-
 		assertEquals("Expected 2 results!", 2, rows.size());
 	}
 
@@ -221,8 +193,6 @@ public class FuzzyTest extends AbstractWatchedTest {
 		params.put(TestingConstants.MAX_EDITS_PARAM_CONSTANT, "0");
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("inet_1", "127.0.1.1", params));
-
-		
 
 		assertEquals("Expected 1 result!", 1, rows.size());
 	}
@@ -235,8 +205,6 @@ public class FuzzyTest extends AbstractWatchedTest {
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("inet_1", "127.0.1.1", params));
 
-		
-
 		assertEquals("Expected 4 results!", 4, rows.size());
 	}
 
@@ -247,8 +215,6 @@ public class FuzzyTest extends AbstractWatchedTest {
 		params.put(TestingConstants.PREFIX_LENGTH_PARAM_CONSTANT, "2");
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("inet_1", "117.0.1.1", params));
-
-		
 
 		assertEquals("Expected 0 results!", 0, rows.size());
 	}
@@ -261,8 +227,6 @@ public class FuzzyTest extends AbstractWatchedTest {
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("inet_1", "127.0.1.1", params));
 
-		
-
 		assertEquals("Expected 1 result!", 1, rows.size());
 	}
 
@@ -273,8 +237,6 @@ public class FuzzyTest extends AbstractWatchedTest {
 		params.put(TestingConstants.MAX_EXPANSIONS_PARAM_CONSTANT, "10");
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("inet_1", "127.0.1.1", params));
-
-		
 
 		assertEquals("Expected 4 results!", 4, rows.size());
 	}
@@ -287,8 +249,6 @@ public class FuzzyTest extends AbstractWatchedTest {
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("inet_1", "1270..1.1", params));
 
-		
-
 		assertEquals("Expected 3 results!", 3, rows.size());
 	}
 
@@ -299,8 +259,6 @@ public class FuzzyTest extends AbstractWatchedTest {
 		params.put(TestingConstants.TRANSPOSITIONS_PARAM_CONSTANT, "true");
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("inet_1", "1270..1.1", params));
-
-		
 
 		assertEquals("Expected 4 results!", 4, rows.size());
 	}
@@ -314,8 +272,6 @@ public class FuzzyTest extends AbstractWatchedTest {
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("inet_1", "1270..1.1", params));
 
-		
-
 		assertEquals("Expected 1 result!", 1, rows.size());
 	}
 
@@ -323,10 +279,8 @@ public class FuzzyTest extends AbstractWatchedTest {
 	public void fuzzyTextFieldTest() {
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("text_1",
-		                                                                        "Frasesinespaciosconarticulosylaspalabrassuficiente",
-		                                                                        null));
-
-		
+		                                                                 "Frasesinespaciosconarticulosylaspalabrassuficiente",
+		                                                                 null));
 
 		assertEquals("Expected 2 result!", 2, rows.size());
 	}
@@ -335,8 +289,6 @@ public class FuzzyTest extends AbstractWatchedTest {
 	public void emptyFuzzyTextFieldTest() {
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("text_1", "", null));
-
-		
 
 		assertEquals("Expected 0 results!", 0, rows.size());
 	}
@@ -348,10 +300,8 @@ public class FuzzyTest extends AbstractWatchedTest {
 		params.put(TestingConstants.MAX_EDITS_PARAM_CONSTANT, "1");
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("text_1",
-		                                                                        "Frasesinespaciosconarticulosylaspalabrassuficiente",
-		                                                                        params));
-
-		
+		                                                                 "Frasesinespaciosconarticulosylaspalabrassuficiente",
+		                                                                 params));
 
 		assertEquals("Expected 1 result!", 1, rows.size());
 	}
@@ -363,10 +313,8 @@ public class FuzzyTest extends AbstractWatchedTest {
 		params.put(TestingConstants.MAX_EDITS_PARAM_CONSTANT, "0");
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("text_1",
-		                                                                        "Frasesinespaciosconarticulosylaspalabrassuficiente",
-		                                                                        params));
-
-		
+		                                                                 "Frasesinespaciosconarticulosylaspalabrassuficiente",
+		                                                                 params));
 
 		assertEquals("Expected 0 results!", 0, rows.size());
 	}
@@ -378,10 +326,8 @@ public class FuzzyTest extends AbstractWatchedTest {
 		params.put(TestingConstants.PREFIX_LENGTH_PARAM_CONSTANT, "2");
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("text_1",
-		                                                                        "Frasesinespaciosconarticulosylaspalabrassuficiente",
-		                                                                        params));
-
-		
+		                                                                 "Frasesinespaciosconarticulosylaspalabrassuficiente",
+		                                                                 params));
 
 		assertEquals("Expected 1 result!", 1, rows.size());
 	}
@@ -393,10 +339,8 @@ public class FuzzyTest extends AbstractWatchedTest {
 		params.put(TestingConstants.PREFIX_LENGTH_PARAM_CONSTANT, "2");
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("text_1",
-		                                                                        "rFasesinespaciosconarticulosylaspalabrassuficiente",
-		                                                                        params));
-
-		
+		                                                                 "rFasesinespaciosconarticulosylaspalabrassuficiente",
+		                                                                 params));
 
 		assertEquals("Expected 0 results!", 0, rows.size());
 	}
@@ -411,10 +355,8 @@ public class FuzzyTest extends AbstractWatchedTest {
 		params.put(TestingConstants.MAX_EXPANSIONS_PARAM_CONSTANT, "1");
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("text_1",
-		                                                                        "Frasesinespaciosconarticulosylaspalabrassuficiente",
-		                                                                        params));
-
-		
+		                                                                 "Frasesinespaciosconarticulosylaspalabrassuficiente",
+		                                                                 params));
 
 		assertEquals("Expected 1 result!", 1, rows.size());
 	}
@@ -429,10 +371,8 @@ public class FuzzyTest extends AbstractWatchedTest {
 		params.put(TestingConstants.MAX_EXPANSIONS_PARAM_CONSTANT, "10");
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("text_1",
-		                                                                        "Frasesinespaciosconarticulosylaspalabrassuficiente",
-		                                                                        params));
-
-		
+		                                                                 "Frasesinespaciosconarticulosylaspalabrassuficiente",
+		                                                                 params));
 
 		assertEquals("Expected 2 results!", 2, rows.size());
 	}
@@ -444,10 +384,8 @@ public class FuzzyTest extends AbstractWatchedTest {
 		params.put(TestingConstants.TRANSPOSITIONS_PARAM_CONSTANT, "false");
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("text_1",
-		                                                                        "Frasseinespacisoconarticulosylaspalabrassuficientes",
-		                                                                        params));
-
-		
+		                                                                 "Frasseinespacisoconarticulosylaspalabrassuficientes",
+		                                                                 params));
 
 		assertEquals("Expected 0 results!", 0, rows.size());
 	}
@@ -459,10 +397,8 @@ public class FuzzyTest extends AbstractWatchedTest {
 		params.put(TestingConstants.TRANSPOSITIONS_PARAM_CONSTANT, "true");
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("text_1",
-		                                                                        "Frasseinespacisoconarticulosylaspalabrassuficientes",
-		                                                                        params));
-
-		
+		                                                                 "Frasseinespacisoconarticulosylaspalabrassuficientes",
+		                                                                 params));
 
 		assertEquals("Expected 1 result!", 1, rows.size());
 	}
@@ -475,10 +411,8 @@ public class FuzzyTest extends AbstractWatchedTest {
 		params.put(TestingConstants.TRANSPOSITIONS_PARAM_CONSTANT, "true");
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("text_1",
-		                                                                        "Frasseinespacisoconarticulosylaspalabrassuficientes",
-		                                                                        params));
-
-		
+		                                                                 "Frasseinespacisoconarticulosylaspalabrassuficientes",
+		                                                                 params));
 
 		assertEquals("Expected 0 results!", 0, rows.size());
 	}
@@ -487,10 +421,8 @@ public class FuzzyTest extends AbstractWatchedTest {
 	public void fuzzyVarcharFieldTest() {
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("varchar_1",
-		                                                                        "frasesencillasnespaciosperomaslarga",
-		                                                                        null));
-
-		
+		                                                                 "frasesencillasnespaciosperomaslarga",
+		                                                                 null));
 
 		assertEquals("Expected 3 results!", 3, rows.size());
 	}
@@ -499,8 +431,6 @@ public class FuzzyTest extends AbstractWatchedTest {
 	public void emptyFuzzyVarcharFieldTest() {
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("varchar_1", "", null));
-
-		
 
 		assertEquals("Expected 0 results!", 0, rows.size());
 	}
@@ -512,10 +442,8 @@ public class FuzzyTest extends AbstractWatchedTest {
 		params.put(TestingConstants.MAX_EDITS_PARAM_CONSTANT, "1");
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("varchar_1",
-		                                                                        "frasesencillasnespaciosperomaslarga",
-		                                                                        params));
-
-		
+		                                                                 "frasesencillasnespaciosperomaslarga",
+		                                                                 params));
 
 		assertEquals("Expected 2 results!", 2, rows.size());
 	}
@@ -527,10 +455,8 @@ public class FuzzyTest extends AbstractWatchedTest {
 		params.put(TestingConstants.MAX_EDITS_PARAM_CONSTANT, "0");
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("varchar_1",
-		                                                                        "frasesencillasnespaciosperomaslarga",
-		                                                                        params));
-
-		
+		                                                                 "frasesencillasnespaciosperomaslarga",
+		                                                                 params));
 
 		assertEquals("Expected 0 results!", 0, rows.size());
 	}
@@ -542,10 +468,8 @@ public class FuzzyTest extends AbstractWatchedTest {
 		params.put(TestingConstants.PREFIX_LENGTH_PARAM_CONSTANT, "2");
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("varchar_1",
-		                                                                        "frasesencillasnespaciosperomaslarga",
-		                                                                        params));
-
-		
+		                                                                 "frasesencillasnespaciosperomaslarga",
+		                                                                 params));
 
 		assertEquals("Expected 2 result2!", 2, rows.size());
 	}
@@ -557,10 +481,8 @@ public class FuzzyTest extends AbstractWatchedTest {
 		params.put(TestingConstants.PREFIX_LENGTH_PARAM_CONSTANT, "2");
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("varchar_1",
-		                                                                        "rfasesencillasnespaciosperomaslarga",
-		                                                                        params));
-
-		
+		                                                                 "rfasesencillasnespaciosperomaslarga",
+		                                                                 params));
 
 		assertEquals("Expected 0 results!", 0, rows.size());
 	}
@@ -575,10 +497,8 @@ public class FuzzyTest extends AbstractWatchedTest {
 		params.put(TestingConstants.MAX_EXPANSIONS_PARAM_CONSTANT, "1");
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("varchar_1",
-		                                                                        "frasesencillasnespaciosperomaslarga",
-		                                                                        params));
-
-		
+		                                                                 "frasesencillasnespaciosperomaslarga",
+		                                                                 params));
 
 		assertEquals("Expected 2 results!", 2, rows.size());
 	}
@@ -593,10 +513,8 @@ public class FuzzyTest extends AbstractWatchedTest {
 		params.put(TestingConstants.MAX_EXPANSIONS_PARAM_CONSTANT, "10");
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("varchar_1",
-		                                                                        "frasesencillasnespaciosperomaslarga",
-		                                                                        params));
-
-		
+		                                                                 "frasesencillasnespaciosperomaslarga",
+		                                                                 params));
 
 		assertEquals("Expected 3 results!", 3, rows.size());
 	}
@@ -608,10 +526,8 @@ public class FuzzyTest extends AbstractWatchedTest {
 		params.put(TestingConstants.TRANSPOSITIONS_PARAM_CONSTANT, "false");
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("varchar_1",
-		                                                                        "frasesenicllasnespaciosperomaslarga",
-		                                                                        params));
-
-		
+		                                                                 "frasesenicllasnespaciosperomaslarga",
+		                                                                 params));
 
 		assertEquals("Expected 0 results!", 0, rows.size());
 	}
@@ -623,10 +539,8 @@ public class FuzzyTest extends AbstractWatchedTest {
 		params.put(TestingConstants.TRANSPOSITIONS_PARAM_CONSTANT, "true");
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("varchar_1",
-		                                                                        "frasesenicllasnespaciosperomaslarga",
-		                                                                        params));
-
-		
+		                                                                 "frasesenicllasnespaciosperomaslarga",
+		                                                                 params));
 
 		assertEquals("Expected 2 results!", 2, rows.size());
 	}
@@ -639,10 +553,8 @@ public class FuzzyTest extends AbstractWatchedTest {
 		params.put(TestingConstants.TRANSPOSITIONS_PARAM_CONSTANT, "true");
 
 		List<Row> rows = cassandraUtils.execute(queryUtils.getFuzzyQuery("varchar_1",
-		                                                                        "frasesenicllasnespaciosperomaslarga",
-		                                                                        params));
-
-		
+		                                                                 "frasesenicllasnespaciosperomaslarga",
+		                                                                 params));
 
 		assertEquals("Expected 0 results!", 0, rows.size());
 	}

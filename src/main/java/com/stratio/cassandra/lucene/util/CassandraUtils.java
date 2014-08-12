@@ -31,7 +31,7 @@ public class CassandraUtils {
 		String consistencyLevelString = System.getProperty(TestingConstants.CONSISTENCY_LEVEL_CONSTANT_NAME);
 
 		if (consistencyLevelString == null)
-			consistencyLevelString = "ONE";
+			consistencyLevelString = TestingConstants.DEFAULT_CONSISTENCY_LEVEL;
 
 		consistencyLevel = ConsistencyLevel.valueOf(consistencyLevelString);
 
@@ -71,10 +71,11 @@ public class CassandraUtils {
 		// Waiting for the custom index to be refreshed
 		logger.debug("Waiting for the index to be refreshed...");
 		try {
-			Thread.sleep(500);
+			Thread.sleep(TestingConstants.WAIT_TIME);
 		} catch (InterruptedException e) {
 			logger.error("Interruption catched during a Thread.sleep; index might be unstable");
 		}
 		logger.debug("Index ready to rock!");
 	}
+	
 }

@@ -28,7 +28,6 @@ import org.junit.runner.Description;
 import com.stratio.cassandra.lucene.TestingConstants;
 import com.stratio.cassandra.lucene.util.CassandraUtils;
 import com.stratio.cassandra.lucene.util.QueryUtils;
-import com.stratio.cassandra.lucene.util.QueryUtilsBuilder;
 
 public abstract class AbstractWatchedTest {
 
@@ -55,7 +54,7 @@ public abstract class AbstractWatchedTest {
 	@BeforeClass
 	public static void setUpSuite() throws InterruptedException {
 		Properties context = System.getProperties();
-		queryUtils = ((QueryUtilsBuilder) context.get("queryUtilsBuilder")).build();
+		queryUtils = ((QueryUtils) context.get("queryUtils"));
 		cassandraUtils = (CassandraUtils) context.get("cassandraUtils");
 		cassandraUtils.execute(queryUtils.createKeyspaceQuery(),
 		                       queryUtils.createTableQuery(),
