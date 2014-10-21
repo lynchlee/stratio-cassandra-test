@@ -31,25 +31,25 @@ public final class ConversionUtils {
         dict = new LinkedHashMap<>();
 
         // CassandraTypes with Java posibilities
-        String[] Boolean = { "Boolean", "String" };
+        String[] Boolean = {"Boolean", "String"};
         dict.put("boolean", Arrays.asList(Boolean));
-        String[] Date = { "Date", "Number", "String" };
+        String[] Date = {"Date", "Number", "String"};
         dict.put("date", Arrays.asList(Date));
-        String[] Double = { "Number", "String" };
+        String[] Double = {"Number", "String"};
         dict.put("double", Arrays.asList(Double));
-        String[] Float = { "Number", "String" };
+        String[] Float = {"Number", "String"};
         dict.put("float", Arrays.asList(Float));
-        String[] Integer = { "Number", "String" };
+        String[] Integer = {"Number", "String"};
         dict.put("integer", Arrays.asList(Integer));
-        String[] Long = { "Number", "String" };
+        String[] Long = {"Number", "String"};
         dict.put("long", Arrays.asList(Long));
-        String[] Varchar = { "Object" };
+        String[] Varchar = {"Object"};
         dict.put("varchar", Arrays.asList(Varchar));
-        String[] Text = { "Object" };
+        String[] Text = {"Object"};
         dict.put("text", Arrays.asList(Text));
-        String[] UUID = { "UUID", "String" };
+        String[] UUID = {"UUID", "String"};
         dict.put("uuid", Arrays.asList(UUID));
-        String[] Variant = { "Object" };
+        String[] Variant = {"Object"};
         dict.put("variant", Arrays.asList(Variant));
     }
 }

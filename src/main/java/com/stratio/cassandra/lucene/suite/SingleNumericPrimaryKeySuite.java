@@ -15,88 +15,67 @@
  */
 package com.stratio.cassandra.lucene.suite;
 
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
+import com.stratio.cassandra.lucene.TestingConstants;
+import com.stratio.cassandra.lucene.querytype.*;
+import com.stratio.cassandra.lucene.util.CassandraUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.stratio.cassandra.lucene.TestingConstants;
-import com.stratio.cassandra.lucene.querytype.BooleanTest;
-import com.stratio.cassandra.lucene.querytype.FuzzyTest;
-import com.stratio.cassandra.lucene.querytype.MatchTest;
-import com.stratio.cassandra.lucene.querytype.PhraseTest;
-import com.stratio.cassandra.lucene.querytype.PrefixTest;
-import com.stratio.cassandra.lucene.querytype.RangeTest;
-import com.stratio.cassandra.lucene.querytype.RegExpTest;
-import com.stratio.cassandra.lucene.querytype.WildcardTest;
-import com.stratio.cassandra.lucene.util.CassandraUtils;
-import com.stratio.cassandra.lucene.util.QueryUtils;
-import com.stratio.cassandra.lucene.util.QueryUtilsBuilder;
+import java.util.Properties;
 
 @RunWith(Suite.class)
-@SuiteClasses({ FuzzyTest.class, WildcardTest.class, MatchTest.class, PrefixTest.class, PhraseTest.class,
-        RegExpTest.class, RangeTest.class, BooleanTest.class })
+@SuiteClasses({FuzzyTest.class,
+               WildcardTest.class,
+               MatchTest.class,
+               PrefixTest.class,
+               PhraseTest.class,
+               RegExpTest.class,
+               RangeTest.class,
+               BooleanTest.class})
 public class SingleNumericPrimaryKeySuite {
 
-	private static QueryUtils queryUtils;
-	private static CassandraUtils cassandraUtils;
+    private static CassandraUtils cassandraUtils;
 
-	@BeforeClass
-	public static void setUpSuite() {
+    @BeforeClass
+    public static void before() {
 
-		// Initializing suite data
-		Map<String, String> columns = new LinkedHashMap<String, String>();
-		columns.put("ascii_1", "ascii");
-		columns.put("bigint_1", "bigint");
-		columns.put("blob_1", "blob");
-		columns.put("boolean_1", "boolean");
-		columns.put("decimal_1", "decimal");
-		columns.put("date_1", "timestamp");
-		columns.put("double_1", "double");
-		columns.put("float_1", "float");
-		columns.put("integer_1", "int");
-		columns.put("inet_1", "inet");
-		columns.put("text_1", "text");
-		columns.put("varchar_1", "varchar");
-		columns.put("uuid_1", "uuid");
-		columns.put("timeuuid_1", "timeuuid");
-		columns.put("list_1", "list<text>");
-		columns.put("set_1", "set<text>");
-		columns.put("map_1", "map<text,text>");
-		columns.put("lucene", "text");
+        cassandraUtils =
+                CassandraUtils.builder()
+                              .withTable(TestingConstants.TABLE_NAME_CONSTANT)
+                              .withIndexColumn(TestingConstants.INDEX_COLUMN_CONSTANT)
+                              .withPartitionKey("integer_1")
+                              .withClusteringKey()
+                              .withColumn("ascii_1", "ascii")
+                              .withColumn("bigint_1", "bigint")
+                              .withColumn("blob_1", "blob")
+                              .withColumn("boolean_1", "boolean")
+                              .withColumn("decimal_1", "decimal")
+                              .withColumn("date_1", "timestamp")
+                              .withColumn("double_1", "double")
+                              .withColumn("float_1", "float")
+                              .withColumn("integer_1", "int")
+                              .withColumn("inet_1", "inet")
+                              .withColumn("text_1", "text")
+                              .withColumn("varchar_1", "varchar")
+                              .withColumn("uuid_1", "uuid")
+                              .withColumn("timeuuid_1", "timeuuid")
+                              .withColumn("list_1", "list<text>")
+                              .withColumn("set_1", "set<text>")
+                              .withColumn("map_1", "map<text,text>")
+                              .withColumn("lucene", "text")
+                              .build();
 
-		Map<String, List<String>> primaryKey = new LinkedHashMap<String, List<String>>();
-		String[] inarray = { "integer_1" };
-		String[] outarray = {};
-		List<String> in = Arrays.asList(inarray);
-		List<String> out = Arrays.asList(outarray);
-		primaryKey.put("in", in);
-		primaryKey.put("out", out);
+        // Add to context ready for suite's tests usage
+        Properties context = new Properties();
+        context.put("cassandraUtils", cassandraUtils);
+        System.setProperties(context);
+    }
 
-		queryUtils = new QueryUtilsBuilder(TestingConstants.TABLE_NAME_CONSTANT,
-		                                          columns,
-		                                          primaryKey,
-		                                          TestingConstants.INDEX_COLUMN_CONSTANT).build();
-
-		cassandraUtils = new CassandraUtils(TestingConstants.CASSANDRA_LOCALHOST_CONSTANT);
-
-		Properties context = new Properties();
-		context.put("queryUtils", queryUtils);
-		context.put("cassandraUtils", cassandraUtils);
-
-		// Adding testing needed objects
-		System.setProperties(context);
-	};
-
-	@AfterClass
-	public static void tearDownSuite() {
-		cassandraUtils.disconnect();
-	};
+    @AfterClass
+    public static void after() {
+        cassandraUtils.disconnect();
+    }
 }

@@ -15,160 +15,118 @@
  */
 package com.stratio.cassandra.lucene.story;
 
-/**
- * Created by Jcalderin on 24/03/14.
- */
-
-import static org.junit.Assert.assertEquals;
-
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
+import com.stratio.cassandra.lucene.TestingConstants;
+import com.stratio.cassandra.lucene.util.CassandraUtils;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import com.datastax.driver.core.Row;
-import com.stratio.cassandra.lucene.TestingConstants;
-import com.stratio.cassandra.lucene.util.CassandraUtils;
-import com.stratio.cassandra.lucene.util.QueryUtils;
-import com.stratio.cassandra.lucene.util.QueryUtilsBuilder;
+import static com.stratio.cassandra.index.query.builder.SearchBuilders.wildcard;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
 public class SimpleKeyIndexHandlingTest {
 
-	private static final Logger logger = Logger.getLogger(SimpleKeyIndexHandlingTest.class);
+    private CassandraUtils cassandraUtils;
 
-	private static QueryUtils queryUtils;
+    @Before
+    public void before() {
 
-	private static CassandraUtils cassandraUtils;
+        cassandraUtils = CassandraUtils.builder()
+                                       .withTable(TestingConstants.TABLE_NAME_CONSTANT)
+                                       .withIndexColumn(TestingConstants.INDEX_COLUMN_CONSTANT)
+                                       .withPartitionKey("integer_1")
+                                       .withColumn("ascii_1", "ascii")
+                                       .withColumn("bigint_1", "bigint")
+                                       .withColumn("blob_1", "blob")
+                                       .withColumn("boolean_1", "boolean")
+                                       .withColumn("decimal_1", "decimal")
+                                       .withColumn("date_1", "timestamp")
+                                       .withColumn("double_1", "double")
+                                       .withColumn("float_1", "float")
+                                       .withColumn("integer_1", "int")
+                                       .withColumn("inet_1", "inet")
+                                       .withColumn("text_1", "text")
+                                       .withColumn("varchar_1", "varchar")
+                                       .withColumn("uuid_1", "uuid")
+                                       .withColumn("timeuuid_1", "timeuuid")
+                                       .withColumn("list_1", "list<text>")
+                                       .withColumn("set_1", "set<text>")
+                                       .withColumn("map_1", "map<text,text>")
+                                       .withColumn("lucene", "text")
+                                       .build()
+                                       .createKeyspace()
+                                       .createTable();
+    }
 
-	@BeforeClass
-	public static void setUpSuite() {
+    @After
+    public void after() {
+        cassandraUtils.dropTable().dropKeyspace().disconnect();
+    }
 
-		// Initializing suite data
-		Map<String, String> columns = new LinkedHashMap<String, String>();
-		columns.put("ascii_1", "ascii");
-		columns.put("bigint_1", "bigint");
-		columns.put("blob_1", "blob");
-		columns.put("boolean_1", "boolean");
-		columns.put("decimal_1", "decimal");
-		columns.put("date_1", "timestamp");
-		columns.put("double_1", "double");
-		columns.put("float_1", "float");
-		columns.put("integer_1", "int");
-		columns.put("inet_1", "inet");
-		columns.put("text_1", "text");
-		columns.put("varchar_1", "varchar");
-		columns.put("uuid_1", "uuid");
-		columns.put("timeuuid_1", "timeuuid");
-		columns.put("list_1", "list<text>");
-		columns.put("set_1", "set<text>");
-		columns.put("map_1", "map<text,text>");
-		columns.put("lucene", "text");
+    @Test
+    @Ignore("Waiting for Cassandra to fix the keyspace recreation bug")
+    public void createIndexAfterInsertionsTest() {
 
-		Map<String, List<String>> primaryKey = new LinkedHashMap<String, List<String>>();
-		String[] inarray = { "integer_1" };
-		String[] outarray = {};
-		List<String> in = Arrays.asList(inarray);
-		List<String> out = Arrays.asList(outarray);
-		primaryKey.put("in", in);
-		primaryKey.put("out", out);
+        cassandraUtils.insert(StoryDataHelper.data1)
+                      .insert(StoryDataHelper.data2)
+                      .insert(StoryDataHelper.data3)
+                      .insert(StoryDataHelper.data4)
+                      .insert(StoryDataHelper.data5)
+                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .waitForIndexRefresh();
 
-		queryUtils = new QueryUtilsBuilder(TestingConstants.TABLE_NAME_CONSTANT,
-		                                   columns,
-		                                   primaryKey,
-		                                   TestingConstants.INDEX_COLUMN_CONSTANT).build();
+        // Checking data
+        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
 
-		cassandraUtils = new CassandraUtils(TestingConstants.CASSANDRA_LOCALHOST_CONSTANT);
-	};
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-	@AfterClass
-	public static void tearDownSuite() {
+    @Test
+    public void createIndexDuringInsertionsTest() {
 
-		cassandraUtils.disconnect();
-	};
+        cassandraUtils.insert(StoryDataHelper.data1)
+                      .insert(StoryDataHelper.data2)
+                      .insert(StoryDataHelper.data3)
+                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .insert(StoryDataHelper.data4)
+                      .insert(StoryDataHelper.data5)
+                      .waitForIndexRefresh();
 
-	@Before
-	public void setUp() throws InterruptedException {
-		cassandraUtils.execute(queryUtils.createKeyspaceQuery(), queryUtils.createTableQuery());
-	}
+        // Checking data
+        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
 
-	@After
-	public void tearDown() {
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-		// Dropping keyspace
-		logger.debug("Dropping keyspace");
-		cassandraUtils.execute(queryUtils.dropKeyspaceQuery());
-	}
+    @Test
+    public void recreateIndexAfterInsertionsTest() {
 
-	@Test
-	@Ignore("Waiting for Cassandra to fix the keyspace recreation bug")
-	public void createIndexAfterInsertionsTest() {
+        cassandraUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .insert(StoryDataHelper.data1)
+                      .insert(StoryDataHelper.data2)
+                      .insert(StoryDataHelper.data3)
+                      .insert(StoryDataHelper.data4)
+                      .insert(StoryDataHelper.data5)
+                      .waitForIndexRefresh();
 
-		cassandraUtils.execute(queryUtils.getInsert(StoryDataHelper.data1),
-		                       queryUtils.getInsert(StoryDataHelper.data2),
-		                       queryUtils.getInsert(StoryDataHelper.data3),
-		                       queryUtils.getInsert(StoryDataHelper.data4),
-		                       queryUtils.getInsert(StoryDataHelper.data5),
-		                       queryUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT));
+        // Checking data
+        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
 
-		// Checking data
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
+        assertEquals("Expected 5 results!", 5, n);
 
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
+        // Dropping index
+        cassandraUtils.dropIndex(TestingConstants.INDEX_NAME_CONSTANT);
 
-	@Test
-	@Ignore("Waiting for Cassandra to fix the keyspace recreation bug")
-	public void createIndexDuringInsertionsTest() {
+        // Recreating index
+        cassandraUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT).waitForIndexRefresh();
 
-		cassandraUtils.execute(queryUtils.getInsert(StoryDataHelper.data1),
-		                       queryUtils.getInsert(StoryDataHelper.data2),
-		                       queryUtils.getInsert(StoryDataHelper.data3),
-		                       queryUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT),
-		                       queryUtils.getInsert(StoryDataHelper.data4),
-		                       queryUtils.getInsert(StoryDataHelper.data5));
+        // Checking data
+        n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
 
-		// Checking data
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
-
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
-
-	@Test
-	@Ignore("Waiting for Cassandra to fix the keyspace recreation bug")
-	public void recreateIndexAfterInsertionsTest() {
-
-		cassandraUtils.execute(queryUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT),
-		                       queryUtils.getInsert(StoryDataHelper.data1),
-		                       queryUtils.getInsert(StoryDataHelper.data2),
-		                       queryUtils.getInsert(StoryDataHelper.data3),
-		                       queryUtils.getInsert(StoryDataHelper.data4),
-		                       queryUtils.getInsert(StoryDataHelper.data5));
-
-		// Checking data
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
-
-		assertEquals("Expected 5 results!", 5, rows.size());
-
-		// Dropping index
-		cassandraUtils.execute(queryUtils.dropIndexQuery(TestingConstants.INDEX_NAME_CONSTANT));
-
-		// Recreating index
-		cassandraUtils.execute(queryUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT));
-
-		// Checking data
-		rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
-
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
+        assertEquals("Expected 5 results!", 5, n);
+    }
 }

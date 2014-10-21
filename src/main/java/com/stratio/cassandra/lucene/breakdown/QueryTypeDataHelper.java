@@ -41,8 +41,7 @@ public final class QueryTypeDataHelper {
         data1.put("float_1", "1.0");
         data1.put("integer_1", "-1");
         data1.put("inet_1", "'127.0.0.1'");
-        data1.put("text_1",
-                "'Frase con espacios articulos y las palabras suficientes'");
+        data1.put("text_1", "'Frase con espacios articulos y las palabras suficientes'");
         data1.put("varchar_1", "'frase sencilla con espacios'");
         data1.put("uuid_1", "60297440-b4fa-11e3-8b5a-0002a5d5c51b");
         data1.put("timeuuid_1", "a4a70900-24e1-11df-8924-001ff3591711");
@@ -62,8 +61,7 @@ public final class QueryTypeDataHelper {
         data2.put("float_1", "2.0");
         data2.put("integer_1", "-2");
         data2.put("inet_1", "'127.0.01.01'");
-        data2.put("text_1",
-                "'Frasesinespaciosconarticulosylaspalabrassuficientes'");
+        data2.put("text_1", "'Frasesinespaciosconarticulosylaspalabrassuficientes'");
         data2.put("varchar_1", "'frasesencillasinespacios'");
         data2.put("uuid_1", "60297440-b4fa-11e3-8b5a-0002a5d5c51c");
         data2.put("timeuuid_1", "a4a70900-24e1-11df-8924-001ff3591712");
@@ -83,8 +81,7 @@ public final class QueryTypeDataHelper {
         data3.put("float_1", "3.0");
         data3.put("integer_1", "-3");
         data3.put("inet_1", "'127.1.1.1'");
-        data3.put("text_1",
-                "'Frasesinespaciosconarticulosylaspalabrassuficientesperomaslarga'");
+        data3.put("text_1", "'Frasesinespaciosconarticulosylaspalabrassuficientesperomaslarga'");
         data3.put("varchar_1", "'frasesencillasinespaciosperomaslarga'");
         data3.put("uuid_1", "60297440-b4fa-11e3-8b5a-0002a5d5c51d");
         data3.put("timeuuid_1", "a4a70900-24e1-11df-8924-001ff3591713");
@@ -104,8 +101,7 @@ public final class QueryTypeDataHelper {
         data4.put("float_1", "3.0");
         data4.put("integer_1", "-4");
         data4.put("inet_1", "'127.1.1.1'");
-        data4.put("text_1",
-                "'Frasesinespaciosconarticulosylaspalabrassuficientesperomaslargaaaaa  '");
+        data4.put("text_1", "'Frasesinespaciosconarticulosylaspalabrassuficientesperomaslargaaaaa  '");
         data4.put("varchar_1", "'frasesencillasinespaciosperomaslarga'");
         data4.put("uuid_1", "60297440-b4fa-11e3-8b5a-0002a5d5c51d");
         data4.put("timeuuid_1", "a4a70900-24e1-11df-8924-001ff3591713");

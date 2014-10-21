@@ -15,8 +15,8 @@
  */
 package com.stratio.cassandra.lucene.querytype;
 
-import java.util.Properties;
-
+import com.stratio.cassandra.lucene.TestingConstants;
+import com.stratio.cassandra.lucene.util.CassandraUtils;
 import org.apache.log4j.Logger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -25,51 +25,46 @@ import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
-import com.stratio.cassandra.lucene.TestingConstants;
-import com.stratio.cassandra.lucene.util.CassandraUtils;
-import com.stratio.cassandra.lucene.util.QueryUtils;
+import java.util.Properties;
 
 public abstract class AbstractWatchedTest {
 
-	private static final Logger logger = Logger.getLogger(AbstractWatchedTest.class);
+    private static final Logger logger = Logger.getLogger(AbstractWatchedTest.class);
 
-	private static long startingTime;
+    private static long startingTime;
 
-	protected static CassandraUtils cassandraUtils;
-	protected static QueryUtils queryUtils;
+    protected static CassandraUtils cassandraUtils;
 
-	@Rule
-	public TestRule watcher = new TestWatcher() {
+    @Rule
+    public TestRule watcher = new TestWatcher() {
 
-		protected void starting(Description description) {
-			logger.info("***************** Running test [" + description.getMethodName() + "]");
-			startingTime = System.currentTimeMillis();
-		}
+        protected void starting(Description description) {
+            logger.info("***************** Running test [" + description.getMethodName() + "]");
+            startingTime = System.currentTimeMillis();
+        }
 
-		protected void finished(Description description) {
-			logger.info("***************** Tested in [" + (System.currentTimeMillis() - startingTime) + " ms]");
-		}
-	};
+        protected void finished(Description description) {
+            logger.info("***************** Tested in [" + (System.currentTimeMillis() - startingTime) + " ms]");
+        }
+    };
 
-	@BeforeClass
-	public static void setUpSuite() throws InterruptedException {
-		Properties context = System.getProperties();
-		queryUtils = ((QueryUtils) context.get("queryUtils"));
-		cassandraUtils = (CassandraUtils) context.get("cassandraUtils");
-		cassandraUtils.execute(queryUtils.createKeyspaceQuery(),
-		                       queryUtils.createTableQuery(),
-		                       queryUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT),
-		                       queryUtils.getInsert(QueryTypeDataHelper.data1),
-		                       queryUtils.getInsert(QueryTypeDataHelper.data2),
-		                       queryUtils.getInsert(QueryTypeDataHelper.data3),
-		                       queryUtils.getInsert(QueryTypeDataHelper.data4),
-		                       queryUtils.getInsert(QueryTypeDataHelper.data5));
-	}
+    @BeforeClass
+    public static void setUpSuite() throws InterruptedException {
+        Properties context = System.getProperties();
+        cassandraUtils = (CassandraUtils) context.get("cassandraUtils");
+        cassandraUtils.createKeyspace()
+                      .createTable()
+                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .insert(QueryTypeDataHelper.data1)
+                      .insert(QueryTypeDataHelper.data2)
+                      .insert(QueryTypeDataHelper.data3)
+                      .insert(QueryTypeDataHelper.data4)
+                      .insert(QueryTypeDataHelper.data5)
+                      .waitForIndexRefresh();
+    }
 
-	@AfterClass
-	public static void tearDownSuite() {
-		cassandraUtils.execute(queryUtils.dropIndexQuery(TestingConstants.INDEX_NAME_CONSTANT));
-		cassandraUtils.execute(queryUtils.truncateTableQuery());
-		cassandraUtils.execute(queryUtils.dropKeyspaceQuery());
-	}
+    @AfterClass
+    public static void tearDownSuite() {
+        cassandraUtils.dropIndex(TestingConstants.INDEX_NAME_CONSTANT).truncateTable().dropTable().dropKeyspace();
+    }
 }

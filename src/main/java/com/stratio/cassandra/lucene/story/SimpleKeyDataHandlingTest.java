@@ -15,266 +15,193 @@
  */
 package com.stratio.cassandra.lucene.story;
 
-/**
- * Created by Jcalderin on 24/03/14.
- */
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
 import com.datastax.driver.core.Row;
 import com.stratio.cassandra.lucene.TestingConstants;
 import com.stratio.cassandra.lucene.util.CassandraUtils;
 import com.stratio.cassandra.lucene.util.IndexHandlingUtils;
-import com.stratio.cassandra.lucene.util.QueryUtils;
-import com.stratio.cassandra.lucene.util.QueryUtilsBuilder;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import java.util.List;
+
+import static com.stratio.cassandra.index.query.builder.SearchBuilders.wildcard;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 @RunWith(JUnit4.class)
 public class SimpleKeyDataHandlingTest {
 
-	private static final Logger logger = Logger.getLogger(SimpleKeyDataHandlingTest.class);
-
-	private static QueryUtils queryUtils;
+    private CassandraUtils cassandraUtils;
 
-	private static CassandraUtils cassandraUtils;
+    @Before
+    public void before() {
 
-	@BeforeClass
-	public static void setUpSuite() {
+        cassandraUtils = CassandraUtils.builder()
+                                       .withTable(TestingConstants.TABLE_NAME_CONSTANT)
+                                       .withIndexColumn(TestingConstants.INDEX_COLUMN_CONSTANT)
+                                       .withPartitionKey("integer_1")
+                                       .withColumn("ascii_1", "ascii")
+                                       .withColumn("bigint_1", "bigint")
+                                       .withColumn("blob_1", "blob")
+                                       .withColumn("boolean_1", "boolean")
+                                       .withColumn("decimal_1", "decimal")
+                                       .withColumn("date_1", "timestamp")
+                                       .withColumn("double_1", "double")
+                                       .withColumn("float_1", "float")
+                                       .withColumn("integer_1", "int")
+                                       .withColumn("inet_1", "inet")
+                                       .withColumn("text_1", "text")
+                                       .withColumn("varchar_1", "varchar")
+                                       .withColumn("uuid_1", "uuid")
+                                       .withColumn("timeuuid_1", "timeuuid")
+                                       .withColumn("list_1", "list<text>")
+                                       .withColumn("set_1", "set<text>")
+                                       .withColumn("map_1", "map<text,text>")
+                                       .withColumn("lucene", "text")
+                                       .build()
+                                       .createKeyspace()
+                                       .createTable()
+                                       .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                                       .insert(StoryDataHelper.data1)
+                                       .insert(StoryDataHelper.data2)
+                                       .insert(StoryDataHelper.data3)
+                                       .waitForIndexRefresh();
+    }
 
-		// Initializing suite data
-		Map<String, String> columns = new LinkedHashMap<String, String>();
-		columns.put("ascii_1", "ascii");
-		columns.put("bigint_1", "bigint");
-		columns.put("blob_1", "blob");
-		columns.put("boolean_1", "boolean");
-		columns.put("decimal_1", "decimal");
-		columns.put("date_1", "timestamp");
-		columns.put("double_1", "double");
-		columns.put("float_1", "float");
-		columns.put("integer_1", "int");
-		columns.put("inet_1", "inet");
-		columns.put("text_1", "text");
-		columns.put("varchar_1", "varchar");
-		columns.put("uuid_1", "uuid");
-		columns.put("timeuuid_1", "timeuuid");
-		columns.put("list_1", "list<text>");
-		columns.put("set_1", "set<text>");
-		columns.put("map_1", "map<text,text>");
-		columns.put("lucene", "text");
+    @After
+    public void after() {
+        cassandraUtils.dropTable().dropKeyspace().disconnect();
+    }
 
-		Map<String, List<String>> primaryKey = new LinkedHashMap<String, List<String>>();
-		String[] inarray = { "integer_1" };
-		String[] outarray = {};
-		List<String> in = Arrays.asList(inarray);
-		List<String> out = Arrays.asList(outarray);
-		primaryKey.put("in", in);
-		primaryKey.put("out", out);
+    @Test
+    public void singleInsertion() {
 
-		queryUtils = new QueryUtilsBuilder(TestingConstants.TABLE_NAME_CONSTANT,
-		                                   columns,
-		                                   primaryKey,
-		                                   TestingConstants.INDEX_COLUMN_CONSTANT).build();
+        // Data4 insertion
+        cassandraUtils.insert(StoryDataHelper.data4).waitForIndexRefresh();
 
-		cassandraUtils = new CassandraUtils(TestingConstants.CASSANDRA_LOCALHOST_CONSTANT);
-	};
+        List<Row> rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
-	@AfterClass
-	public static void tearDownSuite() {
+        assertEquals("Expected 4 results!", 4, rows.size());
 
-		cassandraUtils.disconnect();
-	};
+        // Data5 insertion
+        cassandraUtils.insert(StoryDataHelper.data5).waitForIndexRefresh();
 
-	@Before
-	public void setUp() throws InterruptedException {
+        rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
-		// Executing db queries
-		cassandraUtils.execute(queryUtils.createKeyspaceQuery(),
-		                       queryUtils.createTableQuery(),
-		                       queryUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT),
-		                       queryUtils.getInsert(StoryDataHelper.data1),
-		                       queryUtils.getInsert(StoryDataHelper.data2),
-		                       queryUtils.getInsert(StoryDataHelper.data3));
-	}
+        assertEquals("Expected 5 results!", 5, rows.size());
 
-	@After
-	public void tearDown() {
-		// Dropping keyspace
-		logger.debug("Dropping keyspace");
-		cassandraUtils.execute(queryUtils.dropKeyspaceQuery());
-	}
+        // Data4 removal
+        cassandraUtils.deleteByCondition("integer_1 = 4").waitForIndexRefresh();
 
-	@Test
-	public void singleInsertion() {
+        rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
-		// Data4 insertion
-		cassandraUtils.execute(queryUtils.getInsert(StoryDataHelper.data4));
+        assertEquals("Expected 4 results!", 4, rows.size());
+        assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 4));
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
+        // Data5 removal
+        cassandraUtils.deleteByCondition("integer_1 = 5").waitForIndexRefresh();
 
-		
+        rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
-		assertEquals("Expected 4 results!", 4, rows.size());
+        assertEquals("Expected 3 results!", 3, rows.size());
+        assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 5));
 
-		// Data5 insertion
-		cassandraUtils.execute(queryUtils.getInsert(StoryDataHelper.data5));
+        // Data2 removal
+        cassandraUtils.deleteByCondition("integer_1 = 2").waitForIndexRefresh();
 
-		rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
+        rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
-		
+        assertEquals("Expected 2 results!", 2, rows.size());
+        assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 2));
 
-		assertEquals("Expected 5 results!", 5, rows.size());
+        // Data3 removal
+        cassandraUtils.deleteByCondition("integer_1 = 3").waitForIndexRefresh();
 
-		// Data4 removal
-		cassandraUtils.execute(queryUtils.constructDeleteQueryByCondition("integer_1 = 4"));
+        rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
-		rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
+        assertEquals("Expected 1 result!", 1, rows.size());
+        assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 3));
 
-		
+        // Data1 removal
+        cassandraUtils.deleteByCondition("integer_1 = 1").waitForIndexRefresh();
 
-		assertEquals("Expected 4 results!", 4, rows.size());
-		assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 4));
+        rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
-		// Data5 removal
-		cassandraUtils.execute(queryUtils.constructDeleteQueryByCondition("integer_1 = 5"));
+        assertEquals("Expected 0 results!", 0, rows.size());
+        assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 1));
+    }
 
-		rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
+    @Test
+    public void multipleInsertion() {
 
-		
+        // Data4 and data5 insertion
+        cassandraUtils.insert(StoryDataHelper.data4).insert(StoryDataHelper.data5).waitForIndexRefresh();
 
-		assertEquals("Expected 3 results!", 3, rows.size());
-		assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 5));
+        List<Row> rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
-		// Data2 removal
-		cassandraUtils.execute(queryUtils.constructDeleteQueryByCondition("integer_1 = 2"));
+        assertEquals("Expected 5 results!", 5, rows.size());
 
-		rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
+        // Data4 removal
+        cassandraUtils.deleteByCondition("integer_1 = 4").waitForIndexRefresh();
 
-		
+        rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
-		assertEquals("Expected 2 results!", 2, rows.size());
-		assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 2));
+        assertEquals("Expected 4 results!", 4, rows.size());
+        assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 4));
 
-		// Data3 removal
-		cassandraUtils.execute(queryUtils.constructDeleteQueryByCondition("integer_1 = 3"));
+        // Data5 removal
+        cassandraUtils.deleteByCondition("integer_1 = 5").waitForIndexRefresh();
 
-		rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
+        rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
-		
+        assertEquals("Expected 3 results!", 3, rows.size());
+        assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 5));
 
-		assertEquals("Expected 1 result!", 1, rows.size());
-		assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 3));
+        // Data2 removal
+        cassandraUtils.deleteByCondition("integer_1 = 2").waitForIndexRefresh();
 
-		// Data1 removal
-		cassandraUtils.execute(queryUtils.constructDeleteQueryByCondition("integer_1 = 1"));
+        rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
-		rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
+        assertEquals("Expected 2 results!", 2, rows.size());
+        assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 2));
 
-		
+        // Data3 removal
+        cassandraUtils.deleteByCondition("integer_1 = 3").waitForIndexRefresh();
 
-		assertEquals("Expected 0 results!", 0, rows.size());
-		assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 1));
-	}
+        rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
-	@Test
-	public void multipleInsertion() {
+        assertEquals("Expected 1 result!", 1, rows.size());
+        assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 3));
 
-		// Data4 and data5 insertion
-		cassandraUtils.execute(queryUtils.getInsert(StoryDataHelper.data4),
-		                       queryUtils.getInsert(StoryDataHelper.data5));
+        // Data1 removal
+        cassandraUtils.deleteByCondition("integer_1 = 1").waitForIndexRefresh();
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
+        rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
-		
+        assertEquals("Expected 0 results!", 0, rows.size());
+        assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 1));
+    }
 
-		assertEquals("Expected 5 results!", 5, rows.size());
+    @Test
+    public void multipleDeletion() {
 
-		// Data4 removal
-		cassandraUtils.execute(queryUtils.constructDeleteQueryByCondition("integer_1 = 4"));
+        // Data2 & data3 removal
+        cassandraUtils.deleteByCondition("integer_1 = 2").deleteByCondition("integer_1 = 3").waitForIndexRefresh();
 
-		rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
+        List<Row> rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
-		
+        assertEquals("Expected 1 result!", 1, rows.size());
+        assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 3));
 
-		assertEquals("Expected 4 results!", 4, rows.size());
-		assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 4));
+        // Data1 removal
+        cassandraUtils.deleteByCondition("integer_1 = 1").waitForIndexRefresh();
 
-		// Data5 removal
-		cassandraUtils.execute(queryUtils.constructDeleteQueryByCondition("integer_1 = 5"));
+        rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
-		rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
-
-		
-
-		assertEquals("Expected 3 results!", 3, rows.size());
-		assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 5));
-
-		// Data2 removal
-		cassandraUtils.execute(queryUtils.constructDeleteQueryByCondition("integer_1 = 2"));
-
-		rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
-
-		
-
-		assertEquals("Expected 2 results!", 2, rows.size());
-		assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 2));
-
-		// Data3 removal
-		cassandraUtils.execute(queryUtils.constructDeleteQueryByCondition("integer_1 = 3"));
-
-		rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
-
-		
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-		assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 3));
-
-		// Data1 removal
-		cassandraUtils.execute(queryUtils.constructDeleteQueryByCondition("integer_1 = 1"));
-
-		rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-		assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 1));
-	}
-
-	@Test
-	public void multipleDeletion() {
-
-		// Data2 & data3 removal
-		cassandraUtils.execute(queryUtils.constructDeleteQueryByCondition("integer_1 = 2"),
-		                       queryUtils.constructDeleteQueryByCondition("integer_1 = 3"));
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
-
-		
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-		assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 3));
-
-		// Data1 removal
-		cassandraUtils.execute(queryUtils.constructDeleteQueryByCondition("integer_1 = 1"));
-
-		rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-		assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 1));
-	}
+        assertEquals("Expected 0 results!", 0, rows.size());
+        assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 1));
+    }
 }

@@ -19,147 +19,125 @@ package com.stratio.cassandra.lucene.indexes;
  * Created by Jcalderin on 24/03/14.
  */
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.stratio.cassandra.lucene.TestingConstants;
+import com.stratio.cassandra.lucene.util.CassandraUtils;
+import com.stratio.cassandra.lucene.util.CassandraUtilsBuilder;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import com.datastax.driver.core.Row;
-import com.stratio.cassandra.lucene.TestingConstants;
-import com.stratio.cassandra.lucene.util.CassandraUtils;
-import com.stratio.cassandra.lucene.util.QueryUtils;
-import com.stratio.cassandra.lucene.util.QueryUtilsBuilder;
+import static com.stratio.cassandra.index.query.builder.SearchBuilders.wildcard;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
 public class SimpleKeyIndexHandlingTest {
 
-	private static CassandraUtils cassandraUtils;
-	private static QueryUtilsBuilder queryUtilsBuilder;
+    private static CassandraUtilsBuilder cassandraUtilsBuilder;
 
-	private QueryUtils queryUtils;
+    private CassandraUtils cassandraUtils;
 
-	@BeforeClass
-	public static void setUpSuite() {
+    @BeforeClass
+    public static void setUpSuite() {
 
-		// Initializing suite data
-		Map<String, String> columns = new LinkedHashMap<String, String>();
-		columns.put("ascii_1", "ascii");
-		columns.put("bigint_1", "bigint");
-		columns.put("blob_1", "blob");
-		columns.put("boolean_1", "boolean");
-		columns.put("decimal_1", "decimal");
-		columns.put("date_1", "timestamp");
-		columns.put("double_1", "double");
-		columns.put("float_1", "float");
-		columns.put("integer_1", "int");
-		columns.put("inet_1", "inet");
-		columns.put("text_1", "text");
-		columns.put("varchar_1", "varchar");
-		columns.put("uuid_1", "uuid");
-		columns.put("timeuuid_1", "timeuuid");
-		columns.put("list_1", "list<text>");
-		columns.put("set_1", "set<text>");
-		columns.put("map_1", "map<text,text>");
-		columns.put("lucene", "text");
+        cassandraUtilsBuilder = CassandraUtils.builder()
+                                              .withHost(TestingConstants.CASSANDRA_LOCALHOST_CONSTANT)
+                                              .withTable(TestingConstants.TABLE_NAME_CONSTANT)
+                                              .withIndexColumn(TestingConstants.INDEX_COLUMN_CONSTANT)
+                                              .withPartitionKey("integer_1")
+                                              .withClusteringKey()
+                                              .withColumn("ascii_1", "ascii")
+                                              .withColumn("bigint_1", "bigint")
+                                              .withColumn("blob_1", "blob")
+                                              .withColumn("boolean_1", "boolean")
+                                              .withColumn("decimal_1", "decimal")
+                                              .withColumn("date_1", "timestamp")
+                                              .withColumn("double_1", "double")
+                                              .withColumn("float_1", "float")
+                                              .withColumn("integer_1", "int")
+                                              .withColumn("inet_1", "inet")
+                                              .withColumn("text_1", "text")
+                                              .withColumn("varchar_1", "varchar")
+                                              .withColumn("uuid_1", "uuid")
+                                              .withColumn("timeuuid_1", "timeuuid")
+                                              .withColumn("list_1", "list<text>")
+                                              .withColumn("set_1", "set<text>")
+                                              .withColumn("map_1", "map<text,text>")
+                                              .withColumn("lucene", "text");
+    }
 
-		Map<String, List<String>> primaryKey = new LinkedHashMap<String, List<String>>();
-		String[] inarray = { "integer_1" };
-		String[] outarray = {};
-		List<String> in = Arrays.asList(inarray);
-		List<String> out = Arrays.asList(outarray);
-		primaryKey.put("in", in);
-		primaryKey.put("out", out);
+    @Before
+    public void setUpTest() {
+        cassandraUtils = cassandraUtilsBuilder.build();
+        cassandraUtils.createKeyspace().createTable();
+    }
 
-		queryUtilsBuilder = new QueryUtilsBuilder(TestingConstants.TABLE_NAME_CONSTANT,
-		                                          columns,
-		                                          primaryKey,
-		                                          TestingConstants.INDEX_COLUMN_CONSTANT);
+    @After
+    public void tearDown() {
+        cassandraUtils.dropTable().dropKeyspace().disconnect();
+    }
 
-		cassandraUtils = new CassandraUtils(TestingConstants.CASSANDRA_LOCALHOST_CONSTANT);
-	}
+    @Test
+    public void createIndexAfterInsertionsTest() {
 
-	@Before
-	public void setUpTest() {
-		queryUtils = queryUtilsBuilder.build();
-		cassandraUtils.execute(queryUtils.createKeyspaceQuery(), queryUtils.createTableQuery());
-	};
+        cassandraUtils.insert(IndexesDataHelper.data1)
+                      .insert(IndexesDataHelper.data2)
+                      .insert(IndexesDataHelper.data3)
+                      .insert(IndexesDataHelper.data4)
+                      .insert(IndexesDataHelper.data5)
+                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .waitForIndexRefresh();
 
-	@After
-	public void tearDown() {
-		cassandraUtils.execute(queryUtils.dropTableQuery(), queryUtils.dropKeyspaceQuery());
-	}
+        // Checking data
+        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
 
-	@AfterClass
-	public static void tearDownSuite() {
-		cassandraUtils.disconnect();
-	}
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-	@Test
-	public void createIndexAfterInsertionsTest() {
+    @Test
+    public void createIndexDuringInsertionsTest() {
 
-		cassandraUtils.execute(queryUtils.getInsert(IndexesDataHelper.data1),
-		                       queryUtils.getInsert(IndexesDataHelper.data2),
-		                       queryUtils.getInsert(IndexesDataHelper.data3),
-		                       queryUtils.getInsert(IndexesDataHelper.data4),
-		                       queryUtils.getInsert(IndexesDataHelper.data5),
-		                       queryUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT));
+        cassandraUtils.insert(IndexesDataHelper.data1)
+                      .insert(IndexesDataHelper.data2)
+                      .insert(IndexesDataHelper.data3)
+                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .insert(IndexesDataHelper.data4)
+                      .insert(IndexesDataHelper.data5)
+                      .waitForIndexRefresh();
 
-		// Checking data
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
+        // Checking data
+        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
 
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-	@Test
-	public void createIndexDuringInsertionsTest() {
+    @Test
+    public void recreateIndexAfterInsertionsTest() {
 
-		cassandraUtils.execute(queryUtils.getInsert(IndexesDataHelper.data1),
-		                       queryUtils.getInsert(IndexesDataHelper.data2),
-		                       queryUtils.getInsert(IndexesDataHelper.data3),
-		                       queryUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT),
-		                       queryUtils.getInsert(IndexesDataHelper.data4),
-		                       queryUtils.getInsert(IndexesDataHelper.data5));
+        cassandraUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .insert(IndexesDataHelper.data1)
+                      .insert(IndexesDataHelper.data2)
+                      .insert(IndexesDataHelper.data3)
+                      .insert(IndexesDataHelper.data4)
+                      .insert(IndexesDataHelper.data5)
+                      .waitForIndexRefresh();
 
-		// Checking data
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
+        // Checking data
+        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
 
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
+        assertEquals("Expected 5 results!", 5, n);
 
-	@Test
-	public void recreateIndexAfterInsertionsTest() {
+        // Dropping index
+        cassandraUtils.dropIndex(TestingConstants.INDEX_NAME_CONSTANT);
 
-		cassandraUtils.execute(queryUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT),
-		                       queryUtils.getInsert(IndexesDataHelper.data1),
-		                       queryUtils.getInsert(IndexesDataHelper.data2),
-		                       queryUtils.getInsert(IndexesDataHelper.data3),
-		                       queryUtils.getInsert(IndexesDataHelper.data4),
-		                       queryUtils.getInsert(IndexesDataHelper.data5));
+        // Recreating index
+        cassandraUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT).waitForIndexRefresh();
 
-		// Checking data
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
+        // Checking data
+        n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
 
-		assertEquals("Expected 5 results!", 5, rows.size());
-
-		// Dropping index
-		cassandraUtils.execute(queryUtils.dropIndexQuery(TestingConstants.INDEX_NAME_CONSTANT));
-
-		// Recreating index
-		cassandraUtils.execute(queryUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT));
-
-		// Checking data
-		rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
-
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
+        assertEquals("Expected 5 results!", 5, n);
+    }
 }

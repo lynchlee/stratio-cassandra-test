@@ -15,233 +15,168 @@
  */
 package com.stratio.cassandra.lucene.story;
 
-/**
- * Created by Jcalderin on 24/03/14.
- */
-
-import static org.junit.Assert.assertEquals;
-
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
+import com.stratio.cassandra.lucene.TestingConstants;
+import com.stratio.cassandra.lucene.util.CassandraUtils;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import com.datastax.driver.core.Row;
-import com.stratio.cassandra.lucene.TestingConstants;
-import com.stratio.cassandra.lucene.util.CassandraUtils;
-import com.stratio.cassandra.lucene.util.QueryUtils;
-import com.stratio.cassandra.lucene.util.QueryUtilsBuilder;
+import static com.stratio.cassandra.index.query.builder.SearchBuilders.wildcard;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
 public class ComplexKeyDataHandlingTest {
 
-	private static final Logger logger = Logger.getLogger(ComplexKeyDataHandlingTest.class);
+    private CassandraUtils cassandraUtils;
 
-	private static QueryUtils queryUtils;
+    @Before
+    public void before() {
 
-	private static CassandraUtils cassandraUtils;
+        cassandraUtils = CassandraUtils.builder()
+                                       .withHost(TestingConstants.CASSANDRA_LOCALHOST_CONSTANT)
+                                       .withTable(TestingConstants.TABLE_NAME_CONSTANT)
+                                       .withIndexColumn(TestingConstants.INDEX_COLUMN_CONSTANT)
+                                       .withPartitionKey("integer_1", "ascii_1")
+                                       .withClusteringKey("double_1")
+                                       .withColumn("ascii_1", "ascii")
+                                       .withColumn("bigint_1", "bigint")
+                                       .withColumn("blob_1", "blob")
+                                       .withColumn("boolean_1", "boolean")
+                                       .withColumn("decimal_1", "decimal")
+                                       .withColumn("date_1", "timestamp")
+                                       .withColumn("double_1", "double")
+                                       .withColumn("float_1", "float")
+                                       .withColumn("integer_1", "int")
+                                       .withColumn("inet_1", "inet")
+                                       .withColumn("text_1", "text")
+                                       .withColumn("varchar_1", "varchar")
+                                       .withColumn("uuid_1", "uuid")
+                                       .withColumn("timeuuid_1", "timeuuid")
+                                       .withColumn("list_1", "list<text>")
+                                       .withColumn("set_1", "set<text>")
+                                       .withColumn("map_1", "map<text,text>")
+                                       .withColumn("lucene", "text")
+                                       .build()
+                                       .createKeyspace()
+                                       .createTable()
+                                       .insert(StoryDataHelper.data1)
+                                       .insert(StoryDataHelper.data2)
+                                       .insert(StoryDataHelper.data3)
+                                       .insert(StoryDataHelper.data6)
+                                       .insert(StoryDataHelper.data7)
+                                       .insert(StoryDataHelper.data8)
+                                       .insert(StoryDataHelper.data9)
+                                       .insert(StoryDataHelper.data10)
+                                       .insert(StoryDataHelper.data11)
+                                       .insert(StoryDataHelper.data12)
+                                       .insert(StoryDataHelper.data13)
+                                       .insert(StoryDataHelper.data14)
+                                       .insert(StoryDataHelper.data15)
+                                       .insert(StoryDataHelper.data16)
+                                       .insert(StoryDataHelper.data17)
+                                       .insert(StoryDataHelper.data18)
+                                       .insert(StoryDataHelper.data19)
+                                       .insert(StoryDataHelper.data20)
+                                       .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                                       .waitForIndexRefresh();
+    }
 
-	@BeforeClass
-	public static void setUpSuite() {
+    @After
+    public void after() {
+        cassandraUtils.dropTable().dropKeyspace().disconnect();
+    }
 
-		// Initializing suite data
-		Map<String, String> columns = new LinkedHashMap<String, String>();
-		columns.put("ascii_1", "ascii");
-		columns.put("bigint_1", "bigint");
-		columns.put("blob_1", "blob");
-		columns.put("boolean_1", "boolean");
-		columns.put("decimal_1", "decimal");
-		columns.put("date_1", "timestamp");
-		columns.put("double_1", "double");
-		columns.put("float_1", "float");
-		columns.put("integer_1", "int");
-		columns.put("inet_1", "inet");
-		columns.put("text_1", "text");
-		columns.put("varchar_1", "varchar");
-		columns.put("uuid_1", "uuid");
-		columns.put("timeuuid_1", "timeuuid");
-		columns.put("list_1", "list<text>");
-		columns.put("set_1", "set<text>");
-		columns.put("map_1", "map<text,text>");
-		columns.put("lucene", "text");
+    @Test
+    public void singleInsertion() {
 
-		Map<String, List<String>> primaryKey = new LinkedHashMap<String, List<String>>();
-		String[] inarray = { "integer_1", "ascii_1" };
-		String[] outarray = { "double_1" };
-		List<String> in = Arrays.asList(inarray);
-		List<String> out = Arrays.asList(outarray);
-		primaryKey.put("in", in);
-		primaryKey.put("out", out);
+        // Data4 insertion
+        cassandraUtils.insert(StoryDataHelper.data4).waitForIndexRefresh();
+        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        assertEquals("Expected 19 results!", 19, n);
 
-		queryUtils = new QueryUtilsBuilder(TestingConstants.TABLE_NAME_CONSTANT,
-		                                   columns,
-		                                   primaryKey,
-		                                   TestingConstants.INDEX_COLUMN_CONSTANT).build();
+        // Data5 insertion
+        cassandraUtils.insert(StoryDataHelper.data5).waitForIndexRefresh();
+        n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        assertEquals("Expected 20 results!", 20, n);
 
-		cassandraUtils = new CassandraUtils(TestingConstants.CASSANDRA_LOCALHOST_CONSTANT);
-	};
+        // Data4 removal
+        cassandraUtils.deleteByCondition("integer_1 = 4 and ascii_1 = 'ascii' and double_1 = 1").waitForIndexRefresh();
+        n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        assertEquals("Expected 19 results!", 19, n);
 
-	@AfterClass
-	public static void tearDownSuite() {
+        // Data5 removal
+        cassandraUtils.deleteByCondition("integer_1 = 5 and ascii_1 = 'ascii' and double_1 = 1").waitForIndexRefresh();
+        n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        assertEquals("Expected 18 results!", 18, n);
 
-		cassandraUtils.disconnect();
-	};
+        // Data2 removal
+        cassandraUtils.deleteByCondition("integer_1 = 2 and ascii_1 = 'ascii' and double_1 = 1").waitForIndexRefresh();
+        n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        assertEquals("Expected 17 results!", 17, n);
 
-	@Before
-	public void setUp() throws InterruptedException {
-		cassandraUtils.execute(queryUtils.createKeyspaceQuery(),
-		                       queryUtils.createTableQuery(),
-		                       queryUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT),
-		                       queryUtils.getInsert(StoryDataHelper.data1),
-		                       queryUtils.getInsert(StoryDataHelper.data2),
-		                       queryUtils.getInsert(StoryDataHelper.data3),
-		                       queryUtils.getInsert(StoryDataHelper.data6),
-		                       queryUtils.getInsert(StoryDataHelper.data7),
-		                       queryUtils.getInsert(StoryDataHelper.data8),
-		                       queryUtils.getInsert(StoryDataHelper.data9),
-		                       queryUtils.getInsert(StoryDataHelper.data10),
-		                       queryUtils.getInsert(StoryDataHelper.data11),
-		                       queryUtils.getInsert(StoryDataHelper.data12),
-		                       queryUtils.getInsert(StoryDataHelper.data13),
-		                       queryUtils.getInsert(StoryDataHelper.data14),
-		                       queryUtils.getInsert(StoryDataHelper.data15),
-		                       queryUtils.getInsert(StoryDataHelper.data16),
-		                       queryUtils.getInsert(StoryDataHelper.data17),
-		                       queryUtils.getInsert(StoryDataHelper.data18),
-		                       queryUtils.getInsert(StoryDataHelper.data19),
-		                       queryUtils.getInsert(StoryDataHelper.data20));
-	}
+        // Data3 removal
+        cassandraUtils.deleteByCondition("integer_1 = 3 and ascii_1 = 'ascii' and double_1 = 1").waitForIndexRefresh();
+        n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        assertEquals("Expected 16 results!", 16, n);
 
-	@After
-	public void tearDown() {
-		// Dropping keyspace
-		logger.debug("Dropping keyspace");
-		cassandraUtils.execute(queryUtils.dropKeyspaceQuery());
-	}
+        // Data1 removal
+        cassandraUtils.deleteByCondition("integer_1 = 1 and ascii_1 = 'ascii' and double_1 = 1").waitForIndexRefresh();
+        n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        assertEquals("Expected 15 results!", 15, n);
+    }
 
-	@Test
-	public void singleInsertion() {
+    @Test
+    public void multipleInsertion() {
 
-		// Data4 insertion
-		cassandraUtils.execute(queryUtils.getInsert(StoryDataHelper.data4));
+        cassandraUtils.insert(StoryDataHelper.data4).insert(StoryDataHelper.data5).waitForIndexRefresh();
+        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        assertEquals("Expected 20 results!", 20, n);
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
+        // Data4 removal
+        cassandraUtils.deleteByCondition("integer_1 = 4 and ascii_1 = 'ascii' and double_1 = 1").waitForIndexRefresh();
+        n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        assertEquals("Expected 19 results!", 19, n);
 
-		assertEquals("Expected 19 results!", 19, rows.size());
+        // Data5 removal
+        cassandraUtils.deleteByCondition("integer_1 = 5 and ascii_1 = 'ascii' and double_1 = 1").waitForIndexRefresh();
+        n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        assertEquals("Expected 18 results!", 18, n);
 
-		// Data5 insertion
-		cassandraUtils.execute(queryUtils.getInsert(StoryDataHelper.data5));
+        // Data2 removal
+        cassandraUtils.deleteByCondition("integer_1 = 2 and ascii_1 = 'ascii' and double_1 = 1").waitForIndexRefresh();
+        n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        assertEquals("Expected 17 results!", 17, n);
 
-		rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
+        // Data3 removal
+        cassandraUtils.deleteByCondition("integer_1 = 3 and ascii_1 = 'ascii' and double_1 = 1").waitForIndexRefresh();
+        n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        assertEquals("Expected 16 results!", 16, n);
 
-		assertEquals("Expected 20 results!", 20, rows.size());
+        // Data1 removal
+        cassandraUtils.deleteByCondition("integer_1 = 1 and ascii_1 = 'ascii' and double_1 = 1").waitForIndexRefresh();
+        n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        assertEquals("Expected 15 results!", 15, n);
+    }
 
-		// Data4 removal
-		cassandraUtils.execute(queryUtils.constructDeleteQueryByCondition("integer_1 = 4 and ascii_1 = 'ascii' and double_1 = 1"));
+    @Test
+    public void multipleDeletion() {
 
-		rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
+        // Data2 & data3 removal
+        cassandraUtils.deleteByCondition("integer_1 = 2 and ascii_1 = 'ascii' and double_1 = 1")
+                      .deleteByCondition("integer_1 = 3 and ascii_1 = 'ascii' and double_1 = 1")
+                      .waitForIndexRefresh();
 
-		assertEquals("Expected 19 results!", 19, rows.size());
+        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
 
-		// Data5 removal
-		cassandraUtils.execute(queryUtils.constructDeleteQueryByCondition("integer_1 = 5 and ascii_1 = 'ascii' and double_1 = 1"));
+        assertEquals("Expected 16 results!", 16, n);
 
-		rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
+        // Data1 removal
+        cassandraUtils.deleteByCondition("integer_1 = 1 and ascii_1 = 'ascii' and double_1 = 1").waitForIndexRefresh();
 
-		assertEquals("Expected 18 results!", 18, rows.size());
+        n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
 
-		// Data2 removal
-		cassandraUtils.execute(queryUtils.constructDeleteQueryByCondition("integer_1 = 2 and ascii_1 = 'ascii' and double_1 = 1"));
-
-		rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
-
-		assertEquals("Expected 17 results!", 17, rows.size());
-
-		// Data3 removal
-		cassandraUtils.execute(queryUtils.constructDeleteQueryByCondition("integer_1 = 3 and ascii_1 = 'ascii' and double_1 = 1"));
-
-		rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
-
-		assertEquals("Expected 16 results!", 16, rows.size());
-
-		// Data1 removal
-		cassandraUtils.execute(queryUtils.constructDeleteQueryByCondition("integer_1 = 1 and ascii_1 = 'ascii' and double_1 = 1"));
-
-		rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
-
-		assertEquals("Expected 15 results!", 15, rows.size());
-	}
-
-	@Test
-	public void multipleInsertion() {
-
-		cassandraUtils.execute(queryUtils.getInsert(StoryDataHelper.data4), queryUtils.getInsert(StoryDataHelper.data5));
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
-
-		assertEquals("Expected 20 results!", 20, rows.size());
-
-		// Data4 removal
-		cassandraUtils.execute(queryUtils.constructDeleteQueryByCondition("integer_1 = 4 and ascii_1 = 'ascii' and double_1 = 1"));
-
-		rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
-
-		assertEquals("Expected 19 results!", 19, rows.size());
-
-		// Data5 removal
-		cassandraUtils.execute(queryUtils.constructDeleteQueryByCondition("integer_1 = 5 and ascii_1 = 'ascii' and double_1 = 1"));
-
-		rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
-
-		assertEquals("Expected 18 results!", 18, rows.size());
-
-		// Data2 removal
-		cassandraUtils.execute(queryUtils.constructDeleteQueryByCondition("integer_1 = 2 and ascii_1 = 'ascii' and double_1 = 1"));
-
-		rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
-
-		assertEquals("Expected 17 results!", 17, rows.size());
-
-		// Data3 removal
-		cassandraUtils.execute(queryUtils.constructDeleteQueryByCondition("integer_1 = 3 and ascii_1 = 'ascii' and double_1 = 1"));
-
-		rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
-
-		assertEquals("Expected 16 results!", 16, rows.size());
-
-		// Data1 removal
-		cassandraUtils.execute(queryUtils.constructDeleteQueryByCondition("integer_1 = 1 and ascii_1 = 'ascii' and double_1 = 1"));
-
-		rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
-
-		assertEquals("Expected 15 results!", 15, rows.size());
-	}
-
-	@Test
-	public void multipleDeletion() {
-
-		// Data2 & data3 removal
-		cassandraUtils.execute(queryUtils.constructDeleteQueryByCondition("integer_1 = 2 and ascii_1 = 'ascii' and double_1 = 1"),
-		                       queryUtils.constructDeleteQueryByCondition("integer_1 = 3 and ascii_1 = 'ascii' and double_1 = 1"));
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
-
-		assertEquals("Expected 16 results!", 16, rows.size());
-
-		// Data1 removal
-		cassandraUtils.execute(queryUtils.constructDeleteQueryByCondition("integer_1 = 1 and ascii_1 = 'ascii' and double_1 = 1"));
-
-		rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
-
-		assertEquals("Expected 15 results!", 15, rows.size());
-	}
+        assertEquals("Expected 15 results!", 15, n);
+    }
 }

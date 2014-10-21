@@ -15,803 +15,918 @@
  */
 package com.stratio.cassandra.lucene.querytype;
 
-/**
- * Created by Jcalderin on 24/03/14.
- */
-
-import static org.junit.Assert.assertEquals;
-
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import com.datastax.driver.core.Row;
-import com.stratio.cassandra.lucene.TestingConstants;
+import static com.stratio.cassandra.index.query.builder.SearchBuilders.range;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
 public class RangeTest extends AbstractWatchedTest {
 
-	@Test
-	public void rangeAsciiFieldTest1() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("ascii_1", null));
-
-		
-
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
-
-	@Test
-	public void rangeAsciiFieldTest2() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "a");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "g");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("ascii_1", params));
-
-		
-
-		assertEquals("Expected 4 results!", 4, rows.size());
-	}
-
-	@Test
-	public void rangeAsciiFieldTest3() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "a");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "b");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("ascii_1", params));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void rangeAsciiFieldTest4() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "a");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "f");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("ascii_1", params));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void rangeAsciiFieldTest5() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "a");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "f");
-		params.put(TestingConstants.INCLUDE_LOWER_PARAM_CONSTANT, "true");
-		params.put(TestingConstants.INCLUDE_UPPER_PARAM_CONSTANT, "true");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("ascii_1", params));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void rangeIntegerTest1() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "-5");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "5");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("integer_1", params));
-
-		
-
-		assertEquals("Expected 4 results!", 4, rows.size());
-	}
-
-	@Test
-	public void rangeIntegerTest2() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "-4");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "4");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("integer_1", params));
-
-		
-
-		assertEquals("Expected 3 results!", 3, rows.size());
-	}
-
-	@Test
-	public void rangeIntegerTest3() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "-4");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "-1");
-		params.put(TestingConstants.INCLUDE_LOWER_PARAM_CONSTANT, "true");
-		params.put(TestingConstants.INCLUDE_UPPER_PARAM_CONSTANT, "true");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("integer_1", params));
-
-		
-
-		assertEquals("Expected 4 results!", 4, rows.size());
-	}
-
-	@Test
-	public void rangeIntegerTest4() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("integer_1", null));
-
-		
-
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
-
-	@Test
-	public void rangeBigintTest1() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("bigint_1", null));
-
-		
-
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
-
-	@Test
-	public void rangeBigintTest2() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "999999999999999");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "1000000000000001");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("bigint_1", params));
-
-		
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
-
-	@Test
-	public void rangeBigintTest3() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "1000000000000000");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "2000000000000000");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("bigint_1", params));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void rangeBigintTest4() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "1000000000000000");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "2000000000000000");
-		params.put(TestingConstants.INCLUDE_LOWER_PARAM_CONSTANT, "true");
-		params.put(TestingConstants.INCLUDE_UPPER_PARAM_CONSTANT, "true");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("bigint_1", params));
-
-		
-
-		assertEquals("Expected 2 results!", 2, rows.size());
-	}
-
-	@Test
-	public void rangeBigintTest5() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "1");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "3");
-		params.put(TestingConstants.INCLUDE_LOWER_PARAM_CONSTANT, "true");
-		params.put(TestingConstants.INCLUDE_UPPER_PARAM_CONSTANT, "true");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("bigint_1", params));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void rangeBlobTest1() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("blob_1", null));
-
-		
-
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
-
-	@Test
-	public void rangeBlobTest2() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "0x3E0A15");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "0x3E0A17");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("blob_1", params));
-
-		
-
-		assertEquals("Expected 4 results!", 4, rows.size());
-	}
-
-	@Test
-	public void rangeBlobTest3() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "0x3E0A16");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "0x3E0A17");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("blob_1", params));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void rangeBlobTest4() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "0x3E0A16");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "0x3E0A17");
-		params.put(TestingConstants.INCLUDE_LOWER_PARAM_CONSTANT, "true");
-		params.put(TestingConstants.INCLUDE_UPPER_PARAM_CONSTANT, "true");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("blob_1", params));
-
-		
-
-		assertEquals("Expected 4 results!", 4, rows.size());
-	}
-
-	@Test
-	public void rangeBlobTest5() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "0x3E0A17");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "0x3E0A18");
-		params.put(TestingConstants.INCLUDE_LOWER_PARAM_CONSTANT, "true");
-		params.put(TestingConstants.INCLUDE_UPPER_PARAM_CONSTANT, "true");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("blob_1", params));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void rangeBooleanTest1() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("boolean_1", null));
-
-		
-
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
-
-	@Test
-	public void rangeDecimalTest1() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("decimal_1", null));
-
-		
-
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
-
-	@Test
-	public void rangeDecimalTest2() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "1999999999.9");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "2000000000.1");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("decimal_1", params));
-
-		
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
-
-	@Test
-	public void rangeDecimalTest3() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "2000000000.0");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "3000000000.0");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("decimal_1", params));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void rangeDecimalTest4() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "2000000000.0");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "3000000000.0");
-		params.put(TestingConstants.INCLUDE_LOWER_PARAM_CONSTANT, "true");
-		params.put(TestingConstants.INCLUDE_UPPER_PARAM_CONSTANT, "true");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("decimal_1", params));
-
-		
-
-		assertEquals("Expected 4 results!", 4, rows.size());
-	}
-
-	@Test
-	public void rangeDecimalTest5() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "2000000000.000001");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "2000000000.181235");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("decimal_1", params));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void rangeDoubleTest1() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("double_1", null));
-
-		
-
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
-
-	@Test
-	public void rangeDoubleTest2() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "1.9");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "2.1");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("double_1", params));
-
-		
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
-
-	@Test
-	public void rangeDoubleTest3() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "2.0");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "3.0");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("double_1", params));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void rangeDoubleTest4() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "2.0");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "3.0");
-		params.put(TestingConstants.INCLUDE_LOWER_PARAM_CONSTANT, "true");
-		params.put(TestingConstants.INCLUDE_UPPER_PARAM_CONSTANT, "true");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("double_1", params));
-
-		
-
-		assertEquals("Expected 4 results!", 4, rows.size());
-	}
-
-	@Test
-	public void rangeDoubleTest5() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "7.0");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "10.0");
-		params.put(TestingConstants.INCLUDE_LOWER_PARAM_CONSTANT, "true");
-		params.put(TestingConstants.INCLUDE_UPPER_PARAM_CONSTANT, "true");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("double_1", params));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void rangeFloatTest1() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("float_1", null));
-
-		
-
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
-
-	@Test
-	public void rangeFloatTest2() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "1.9");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "2.1");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("float_1", params));
-
-		
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
-
-	@Test
-	public void rangeFloatTest3() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "1.0");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "2.0");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("float_1", params));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void rangeFloatTest4() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "1.0");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "2.0");
-		params.put(TestingConstants.INCLUDE_LOWER_PARAM_CONSTANT, "true");
-		params.put(TestingConstants.INCLUDE_UPPER_PARAM_CONSTANT, "true");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("float_1", params));
-
-		
-
-		assertEquals("Expected 2 results!", 2, rows.size());
-	}
-
-	@Test
-	public void rangeFloatTest5() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "7.0");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "9.0");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("float_1", params));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void rangeUuidTest1() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("uuid_1", null));
-
-		
-
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
-
-	@Test
-	public void rangeUuidTest2() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "1");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "9");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("uuid_1", params));
-
-		
-
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
-
-	@Test
-	public void rangeUuidTest3() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "60297440-b4fa-11e3-8b5a-0002a5d5c51c");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "60297440-b4fa-11e3-8b5a-0002a5d5c51d");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("uuid_1", params));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void rangeUuidTest4() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "60297440-b4fa-11e3-8b5a-0002a5d5c51c");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "60297440-b4fa-11e3-8b5a-0002a5d5c51d");
-		params.put(TestingConstants.INCLUDE_LOWER_PARAM_CONSTANT, "true");
-		params.put(TestingConstants.INCLUDE_UPPER_PARAM_CONSTANT, "true");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("uuid_1", params));
-
-		
-
-		assertEquals("Expected 4 results!", 4, rows.size());
-	}
-
-	@Test
-	public void rangeTimeuuidTest1() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("timeuuid_1", null));
-
-		
-
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
-
-	@Test
-	public void rangeTimeuuidTest2() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "a");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "z");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("timeuuid_1", params));
-
-		
-
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
-
-	@Test
-	public void rangeTimeuuidTest3() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "a4a70900-24e1-11df-8924-001ff3591712");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "a4a70900-24e1-11df-8924-001ff3591713");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("timeuuid_1", params));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void rangeTimeuuidTest4() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "a4a70900-24e1-11df-8924-001ff3591712");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "a4a70900-24e1-11df-8924-001ff3591713");
-		params.put(TestingConstants.INCLUDE_LOWER_PARAM_CONSTANT, "true");
-		params.put(TestingConstants.INCLUDE_UPPER_PARAM_CONSTANT, "true");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("timeuuid_1", params));
-
-		
-
-		assertEquals("Expected 4 results!", 4, rows.size());
-	}
-
-	@Test
-	public void rangeInetFieldTest1() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("inet_1", null));
-
-		
-
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
-
-	@Test
-	public void rangeInetFieldTest2() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "127.0.0.0");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "127.1.0.0");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("inet_1", params));
-
-		
-
-		assertEquals("Expected 2 results!", 2, rows.size());
-	}
-
-	@Test
-	public void rangeInetFieldTest3() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "127.0.0.0");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "127.1.0.0");
-		params.put(TestingConstants.INCLUDE_LOWER_PARAM_CONSTANT, "true");
-		params.put(TestingConstants.INCLUDE_UPPER_PARAM_CONSTANT, "true");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("inet_1", params));
-
-		
-
-		assertEquals("Expected 2 results!", 2, rows.size());
-	}
-
-	@Test
-	public void rangeInetFieldTest4() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "192.168.0.0");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "192.168.0.1");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("inet_1", params));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void rangeTextFieldTest1() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("text_1", null));
-
-		
-
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
-
-	@Test
-	public void rangeTextFieldTest2() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "Frase");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "G");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("text_1", params));
-
-		
-
-		assertEquals("Expected 3 results!", 3, rows.size());
-	}
-
-	@Test
-	public void rangeTextFieldTest3() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT,
-		           "Frasesinespaciosconarticulosylaspalabrassuficientesperomaslarga");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "G");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("text_1", params));
-
-		
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
-
-	@Test
-	public void rangeTextFieldTest4() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT,
-		           "Frasesinespaciosconarticulosylaspalabrassuficientesperomaslarga");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "G");
-		params.put(TestingConstants.INCLUDE_LOWER_PARAM_CONSTANT, "true");
-		params.put(TestingConstants.INCLUDE_UPPER_PARAM_CONSTANT, "true");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("text_1", params));
-
-		
-
-		assertEquals("Expected 2 results!", 2, rows.size());
-	}
-
-	@Test
-	public void rangeTextFieldTest5() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "G");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "H");
-		params.put(TestingConstants.INCLUDE_LOWER_PARAM_CONSTANT, "true");
-		params.put(TestingConstants.INCLUDE_UPPER_PARAM_CONSTANT, "true");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("text_1", params));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void rangeVarcharFieldTest1() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("varchar_1", null));
-
-		
-
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
-
-	@Test
-	public void rangeVarcharFieldTest2() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "frase");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "g");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("varchar_1", params));
-
-		
-
-		assertEquals("Expected 4 results!", 4, rows.size());
-	}
-
-	@Test
-	public void rangeVarcharFieldTest3() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "frasesencillasinespaciosperomaslarga");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "g");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("varchar_1", params));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void rangeVarcharFieldTest4() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "frasesencillasinespaciosperomaslarga");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "g");
-		params.put(TestingConstants.INCLUDE_LOWER_PARAM_CONSTANT, "true");
-		params.put(TestingConstants.INCLUDE_UPPER_PARAM_CONSTANT, "true");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("varchar_1", params));
-
-		
-
-		assertEquals("Expected 2 results!", 2, rows.size());
-	}
-
-	@Test
-	public void rangeVarcharFieldTest5() {
-
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put(TestingConstants.LOWER_PARAM_CONSTANT, "g");
-		params.put(TestingConstants.UPPER_PARAM_CONSTANT, "h");
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getRangeQuery("varchar_1", params));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
+    @Test
+    public void rangeQueryAsciiFieldTest1() {
+        int count = cassandraUtils.query(range("ascii_1")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeQueryAsciiFieldTest2() {
+        int count = cassandraUtils.query(range("ascii_1").lower("a").upper("g")).count();
+        assertEquals("Expected 4 results!", 4, count);
+    }
+
+    @Test
+    public void rangeQueryAsciiFieldTest3() {
+        int count = cassandraUtils.query(range("ascii_1").lower("a").upper("b")).count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeQueryAsciiFieldTest4() {
+        int count = cassandraUtils.query(range("ascii_1").lower("a").upper("f")).count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeQueryAsciiFieldTest5() {
+        int count = cassandraUtils.query(range("ascii_1").lower("a").upper("f").includeLower(true).includeUpper(true))
+                                  .count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeQueryIntegerTest1() {
+        int count = cassandraUtils.query(range("integer_1").lower("-5").upper("5")).count();
+        assertEquals("Expected 4 results!", 4, count);
+    }
+
+    @Test
+    public void rangeQueryIntegerTest2() {
+        int count = cassandraUtils.query(range("integer_1").lower("-4").upper("4")).count();
+        assertEquals("Expected 3 results!", 3, count);
+    }
+
+    @Test
+    public void rangeQueryIntegerTest3() {
+        int count = cassandraUtils.query(range("integer_1").lower("-4")
+                                                           .upper("-1")
+                                                           .includeLower(true)
+                                                           .includeUpper(true)).count();
+        assertEquals("Expected 4 results!", 4, count);
+    }
+
+    @Test
+    public void rangeQueryIntegerTest4() {
+        int count = cassandraUtils.query(range("integer_1")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeQueryBigintTest1() {
+        int count = cassandraUtils.query(range("bigint_1")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeQueryBigintTest2() {
+        int count = cassandraUtils.query(range("bigint_1").lower("999999999999999").upper("1000000000000001")).count();
+        assertEquals("Expected 1 result!", 1, count);
+    }
+
+    @Test
+    public void rangeQueryBigintTest3() {
+        int count = cassandraUtils.query(range("bigint_1").lower("1000000000000000").upper("2000000000000000")).count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeQueryBigintTest4() {
+        int count = cassandraUtils.query(range("bigint_1").lower("1000000000000000")
+                                                          .upper("2000000000000000")
+                                                          .includeLower(true)
+                                                          .includeUpper(true)).count();
+        assertEquals("Expected 2 results!", 2, count);
+    }
+
+    @Test
+    public void rangeQueryBigintTest5() {
+        int count = cassandraUtils.query(range("bigint_1").lower("1").upper("3").includeLower(true).includeUpper(true))
+                                  .count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeQueryBlobTest1() {
+        int count = cassandraUtils.query(range("blob_1")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeQueryBlobTest2() {
+        int count = cassandraUtils.query(range("blob_1").lower("0x3E0A15").upper("0x3E0A17")).count();
+        assertEquals("Expected 4 results!", 4, count);
+    }
+
+    @Test
+    public void rangeQueryBlobTest3() {
+        int count = cassandraUtils.query(range("blob_1").lower("0x3E0A16").upper("0x3E0A17")).count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeQueryBlobTest4() {
+        int count = cassandraUtils.query(range("blob_1").lower("0x3E0A16")
+                                                        .upper("0x3E0A17")
+                                                        .includeLower(true)
+                                                        .includeUpper(true)).count();
+        assertEquals("Expected 4 results!", 4, count);
+    }
+
+    @Test
+    public void rangeQueryBlobTest5() {
+        int count = cassandraUtils.query(range("blob_1").lower("0x3E0A17")
+                                                        .upper("0x3E0A18")
+                                                        .includeLower(true)
+                                                        .includeUpper(true)).count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeQueryBooleanTest1() {
+        int count = cassandraUtils.query(range("boolean_1")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeQueryDecimalTest1() {
+        int count = cassandraUtils.query(range("decimal_1")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeQueryDecimalTest2() {
+        int count = cassandraUtils.query(range("decimal_1").lower("1999999999.9").upper("2000000000.1")).count();
+        assertEquals("Expected 1 result!", 1, count);
+    }
+
+    @Test
+    public void rangeQueryDecimalTest3() {
+        int count = cassandraUtils.query(range("decimal_1").lower("2000000000.0").upper("3000000000.0")).count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeQueryDecimalTest4() {
+        int count = cassandraUtils.query(range("decimal_1").lower("2000000000.0")
+                                                           .upper("3000000000.0")
+                                                           .includeLower(true)
+                                                           .includeUpper(true)).count();
+        assertEquals("Expected 4 results!", 4, count);
+    }
+
+    @Test
+    public void rangeQueryDecimalTest5() {
+        int count = cassandraUtils.query(range("decimal_1").lower("2000000000.000001").upper("2000000000.181235"))
+                                  .count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeQueryDoubleTest1() {
+        int count = cassandraUtils.query(range("double_1")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeQueryDoubleTest2() {
+        int count = cassandraUtils.query(range("double_1").lower("1.9").upper("2.1")).count();
+        assertEquals("Expected 1 result!", 1, count);
+    }
+
+    @Test
+    public void rangeQueryDoubleTest3() {
+        int count = cassandraUtils.query(range("double_1").lower("2.0").upper("3.0")).count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeQueryDoubleTest4() {
+        int count = cassandraUtils.query(range("double_1").lower("2.0")
+                                                          .upper("3.0")
+                                                          .includeLower(true)
+                                                          .includeUpper(true)).count();
+        assertEquals("Expected 4 results!", 4, count);
+    }
+
+    @Test
+    public void rangeQueryDoubleTest5() {
+        int count = cassandraUtils.query(range("double_1").lower("7.0")
+                                                          .upper("10.0")
+                                                          .includeLower(true)
+                                                          .includeUpper(true)).count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeQueryFloatTest1() {
+        int count = cassandraUtils.query(range("float_1")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeQueryFloatTest2() {
+        int count = cassandraUtils.query(range("float_1").lower("1.9").upper("2.1")).count();
+        assertEquals("Expected 1 result!", 1, count);
+    }
+
+    @Test
+    public void rangeQueryFloatTest3() {
+        int count = cassandraUtils.query(range("float_1").lower("1.0").upper("2.0")).count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeQueryFloatTest4() {
+        int count = cassandraUtils.query(range("float_1").lower("1.0")
+                                                         .upper("2.0")
+                                                         .includeLower(true)
+                                                         .includeUpper(true)).count();
+        assertEquals("Expected 2 results!", 2, count);
+    }
+
+    @Test
+    public void rangeQueryFloatTest5() {
+        int count = cassandraUtils.query(range("float_1").lower("7.0").upper("9.0")).count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeQueryUuidTest1() {
+        int count = cassandraUtils.query(range("uuid_1")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeQueryUuidTest2() {
+        int count = cassandraUtils.query(range("uuid_1").lower("1").upper("9")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeQueryUuidTest3() {
+        int count = cassandraUtils.query(range("uuid_1").lower("60297440-b4fa-11e3-8b5a-0002a5d5c51c")
+                                                        .upper("60297440-b4fa-11e3-8b5a-0002a5d5c51d")).count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeQueryUuidTest4() {
+        int count = cassandraUtils.query(range("uuid_1").lower("60297440-b4fa-11e3-8b5a-0002a5d5c51c")
+                                                        .upper("60297440-b4fa-11e3-8b5a-0002a5d5c51d")
+                                                        .includeLower(true)
+                                                        .includeUpper(true)).count();
+        assertEquals("Expected 4 results!", 4, count);
+    }
+
+    @Test
+    public void rangeQueryTimeuuidTest1() {
+        int count = cassandraUtils.query(range("timeuuid_1")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeQueryTimeuuidTest2() {
+        int count = cassandraUtils.query(range("timeuuid_1").lower("a").upper("z")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeQueryTimeuuidTest3() {
+        int count = cassandraUtils.query(range("timeuuid_1").lower("a4a70900-24e1-11df-8924-001ff3591712")
+                                                            .upper("a4a70900-24e1-11df-8924-001ff3591713")).count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeQueryTimeuuidTest4() {
+        int count = cassandraUtils.query(range("timeuuid_1").lower("a4a70900-24e1-11df-8924-001ff3591712")
+                                                            .upper("a4a70900-24e1-11df-8924-001ff3591713")
+                                                            .includeLower(true)
+                                                            .includeUpper(true)).count();
+        assertEquals("Expected 4 results!", 4, count);
+    }
+
+    @Test
+    public void rangeQueryInetFieldTest1() {
+        int count = cassandraUtils.query(range("inet_1")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeQueryInetFieldTest2() {
+        int count = cassandraUtils.query(range("inet_1").lower("127.0.0.0").upper("127.1.0.0")).count();
+        assertEquals("Expected 2 results!", 2, count);
+    }
+
+    @Test
+    public void rangeQueryInetFieldTest3() {
+        int count = cassandraUtils.query(range("inet_1").lower("127.0.0.0")
+                                                        .upper("127.1.0.0")
+                                                        .includeLower(true)
+                                                        .includeUpper(true)).count();
+        assertEquals("Expected 2 results!", 2, count);
+    }
+
+    @Test
+    public void rangeQueryInetFieldTest4() {
+        int count = cassandraUtils.query(range("inet_1").lower("192.168.0.0").upper("192.168.0.1")).count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeQueryTextFieldTest1() {
+
+        int count = cassandraUtils.query(range("text_1")).count();
+
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeQueryTextFieldTest2() {
+        int count = cassandraUtils.query(range("text_1").lower("Frase").upper("G")).count();
+        assertEquals("Expected 3 results!", 3, count);
+    }
+
+    @Test
+    public void rangeQueryTextFieldTest3() {
+        int count = cassandraUtils.query(range("text_1").lower(
+                "Frasesinespaciosconarticulosylaspalabrassuficientesperomaslarga").upper("G")).count();
+        assertEquals("Expected 1 result!", 1, count);
+    }
+
+    @Test
+    public void rangeQueryTextFieldTest4() {
+        int count = cassandraUtils.query(range("text_1").lower(
+                "Frasesinespaciosconarticulosylaspalabrassuficientesperomaslarga")
+                                                        .upper("G")
+                                                        .includeLower(true)
+                                                        .includeUpper(true)).count();
+        assertEquals("Expected 2 results!", 2, count);
+    }
+
+    @Test
+    public void rangeQueryTextFieldTest5() {
+        int count = cassandraUtils.query(range("text_1").lower("G").upper("H").includeLower(true).includeUpper(true))
+                                  .count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeQueryVarcharFieldTest1() {
+        int count = cassandraUtils.query(range("varchar_1")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeQueryVarcharFieldTest2() {
+        int count = cassandraUtils.query(range("varchar_1").lower("frase").upper("g")).count();
+        assertEquals("Expected 4 results!", 4, count);
+    }
+
+    @Test
+    public void rangeQueryVarcharFieldTest3() {
+        int count = cassandraUtils.query(range("varchar_1").lower("frasesencillasinespaciosperomaslarga").upper("g"))
+                                  .count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeQueryVarcharFieldTest4() {
+        int count = cassandraUtils.query(range("varchar_1").lower("frasesencillasinespaciosperomaslarga")
+                                                           .upper("gH")
+                                                           .includeLower(true)
+                                                           .includeUpper(true)).count();
+        assertEquals("Expected 2 results!", 2, count);
+    }
+
+    @Test
+    public void rangeQueryVarcharFieldTest5() {
+        int count = cassandraUtils.query(range("varchar_1").lower("g").upper("h")).count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeQueryListFieldTest1() {
+        int n = cassandraUtils.query(range("list_1").lower("a").upper("z")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
+
+    @Test
+    public void rangeQueryListFieldTest2() {
+        int n = cassandraUtils.query(range("list_1").lower("a1").upper("z9")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
+
+    @Test
+    public void rangeQueryListFieldTest3() {
+        int n = cassandraUtils.query(range("list_1").lower("a2").upper("l1")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void rangeQuerySetFieldTest1() {
+        int n = cassandraUtils.query(range("set_1").lower("a").upper("z")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
+
+    @Test
+    public void rangeQuerySetFieldTest2() {
+        int n = cassandraUtils.query(range("set_1").lower("a1").upper("z9")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
+
+    @Test
+    public void rangeQuerySetFieldTest3() {
+        int n = cassandraUtils.query(range("set_1").lower("a1").upper("z1")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
+
+    @Test
+    public void rangeQueryMapFieldTest1() {
+        int n = cassandraUtils.query(range("map_1.k1").lower("a").upper("z")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
+
+    @Test
+    public void rangeQueryMapFieldTest2() {
+        int n = cassandraUtils.query(range("map_1.k1").lower("a1").upper("z9")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
+
+    @Test
+    public void rangeQueryMapFieldTest3() {
+        int n = cassandraUtils.query(range("map_1.k1").lower("a1").upper("k9")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void rangeQueryMapFieldTest4() {
+        int n = cassandraUtils.query(range("map_1.k1").lower("a1").upper("k1")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void rangeFilterAsciiFieldTest1() {
+        int count = cassandraUtils.filter(range("ascii_1")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeFilterAsciiFieldTest2() {
+        int count = cassandraUtils.filter(range("ascii_1").lower("a").upper("g")).count();
+        assertEquals("Expected 4 results!", 4, count);
+    }
+
+    @Test
+    public void rangeFilterAsciiFieldTest3() {
+        int count = cassandraUtils.filter(range("ascii_1").lower("a").upper("b")).count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeFilterAsciiFieldTest4() {
+        int count = cassandraUtils.filter(range("ascii_1").lower("a").upper("f")).count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeFilterAsciiFieldTest5() {
+        int count = cassandraUtils.filter(range("ascii_1").lower("a").upper("f").includeLower(true).includeUpper(true))
+                                  .count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeFilterIntegerTest1() {
+        int count = cassandraUtils.filter(range("integer_1").lower("-5").upper("5")).count();
+        assertEquals("Expected 4 results!", 4, count);
+    }
+
+    @Test
+    public void rangeFilterIntegerTest2() {
+        int count = cassandraUtils.filter(range("integer_1").lower("-4").upper("4")).count();
+        assertEquals("Expected 3 results!", 3, count);
+    }
+
+    @Test
+    public void rangeFilterIntegerTest3() {
+        int count = cassandraUtils.filter(range("integer_1").lower("-4")
+                                                            .upper("-1")
+                                                            .includeLower(true)
+                                                            .includeUpper(true)).count();
+        assertEquals("Expected 4 results!", 4, count);
+    }
+
+    @Test
+    public void rangeFilterIntegerTest4() {
+        int count = cassandraUtils.filter(range("integer_1")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeFilterBigintTest1() {
+        int count = cassandraUtils.filter(range("bigint_1")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeFilterBigintTest2() {
+        int count = cassandraUtils.filter(range("bigint_1").lower("999999999999999").upper("1000000000000001")).count();
+        assertEquals("Expected 1 result!", 1, count);
+    }
+
+    @Test
+    public void rangeFilterBigintTest3() {
+        int count = cassandraUtils.filter(range("bigint_1").lower("1000000000000000").upper("2000000000000000"))
+                                  .count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeFilterBigintTest4() {
+        int count = cassandraUtils.filter(range("bigint_1").lower("1000000000000000")
+                                                           .upper("2000000000000000")
+                                                           .includeLower(true)
+                                                           .includeUpper(true)).count();
+        assertEquals("Expected 2 results!", 2, count);
+    }
+
+    @Test
+    public void rangeFilterBigintTest5() {
+        int count = cassandraUtils.filter(range("bigint_1").lower("1").upper("3").includeLower(true).includeUpper(true))
+                                  .count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeFilterBlobTest1() {
+        int count = cassandraUtils.filter(range("blob_1")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeFilterBlobTest2() {
+        int count = cassandraUtils.filter(range("blob_1").lower("0x3E0A15").upper("0x3E0A17")).count();
+        assertEquals("Expected 4 results!", 4, count);
+    }
+
+    @Test
+    public void rangeFilterBlobTest3() {
+        int count = cassandraUtils.filter(range("blob_1").lower("0x3E0A16").upper("0x3E0A17")).count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeFilterBlobTest4() {
+        int count = cassandraUtils.filter(range("blob_1").lower("0x3E0A16")
+                                                         .upper("0x3E0A17")
+                                                         .includeLower(true)
+                                                         .includeUpper(true)).count();
+        assertEquals("Expected 4 results!", 4, count);
+    }
+
+    @Test
+    public void rangeFilterBlobTest5() {
+        int count = cassandraUtils.filter(range("blob_1").lower("0x3E0A17")
+                                                         .upper("0x3E0A18")
+                                                         .includeLower(true)
+                                                         .includeUpper(true)).count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeFilterBooleanTest1() {
+        int count = cassandraUtils.filter(range("boolean_1")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeFilterDecimalTest1() {
+        int count = cassandraUtils.filter(range("decimal_1")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeFilterDecimalTest2() {
+        int count = cassandraUtils.filter(range("decimal_1").lower("1999999999.9").upper("2000000000.1")).count();
+        assertEquals("Expected 1 result!", 1, count);
+    }
+
+    @Test
+    public void rangeFilterDecimalTest3() {
+        int count = cassandraUtils.filter(range("decimal_1").lower("2000000000.0").upper("3000000000.0")).count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeFilterDecimalTest4() {
+        int count = cassandraUtils.filter(range("decimal_1").lower("2000000000.0")
+                                                            .upper("3000000000.0")
+                                                            .includeLower(true)
+                                                            .includeUpper(true)).count();
+        assertEquals("Expected 4 results!", 4, count);
+    }
+
+    @Test
+    public void rangeFilterDecimalTest5() {
+        int count = cassandraUtils.filter(range("decimal_1").lower("2000000000.000001").upper("2000000000.181235"))
+                                  .count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeFilterDoubleTest1() {
+        int count = cassandraUtils.filter(range("double_1")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeFilterDoubleTest2() {
+        int count = cassandraUtils.filter(range("double_1").lower("1.9").upper("2.1")).count();
+        assertEquals("Expected 1 result!", 1, count);
+    }
+
+    @Test
+    public void rangeFilterDoubleTest3() {
+        int count = cassandraUtils.filter(range("double_1").lower("2.0").upper("3.0")).count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeFilterDoubleTest4() {
+        int count = cassandraUtils.filter(range("double_1").lower("2.0")
+                                                           .upper("3.0")
+                                                           .includeLower(true)
+                                                           .includeUpper(true)).count();
+        assertEquals("Expected 4 results!", 4, count);
+    }
+
+    @Test
+    public void rangeFilterDoubleTest5() {
+        int count = cassandraUtils.filter(range("double_1").lower("7.0")
+                                                           .upper("10.0")
+                                                           .includeLower(true)
+                                                           .includeUpper(true)).count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeFilterFloatTest1() {
+        int count = cassandraUtils.filter(range("float_1")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeFilterFloatTest2() {
+        int count = cassandraUtils.filter(range("float_1").lower("1.9").upper("2.1")).count();
+        assertEquals("Expected 1 result!", 1, count);
+    }
+
+    @Test
+    public void rangeFilterFloatTest3() {
+        int count = cassandraUtils.filter(range("float_1").lower("1.0").upper("2.0")).count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeFilterFloatTest4() {
+        int count = cassandraUtils.filter(range("float_1").lower("1.0")
+                                                          .upper("2.0")
+                                                          .includeLower(true)
+                                                          .includeUpper(true)).count();
+        assertEquals("Expected 2 results!", 2, count);
+    }
+
+    @Test
+    public void rangeFilterFloatTest5() {
+        int count = cassandraUtils.filter(range("float_1").lower("7.0").upper("9.0")).count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeFilterUuidTest1() {
+        int count = cassandraUtils.filter(range("uuid_1")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeFilterUuidTest2() {
+        int count = cassandraUtils.filter(range("uuid_1").lower("1").upper("9")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeFilterUuidTest3() {
+        int count = cassandraUtils.filter(range("uuid_1").lower("60297440-b4fa-11e3-8b5a-0002a5d5c51c")
+                                                         .upper("60297440-b4fa-11e3-8b5a-0002a5d5c51d")).count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeFilterUuidTest4() {
+        int count = cassandraUtils.filter(range("uuid_1").lower("60297440-b4fa-11e3-8b5a-0002a5d5c51c")
+                                                         .upper("60297440-b4fa-11e3-8b5a-0002a5d5c51d")
+                                                         .includeLower(true)
+                                                         .includeUpper(true)).count();
+        assertEquals("Expected 4 results!", 4, count);
+    }
+
+    @Test
+    public void rangeFilterTimeuuidTest1() {
+        int count = cassandraUtils.filter(range("timeuuid_1")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeFilterTimeuuidTest2() {
+        int count = cassandraUtils.filter(range("timeuuid_1").lower("a").upper("z")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeFilterTimeuuidTest3() {
+        int count = cassandraUtils.filter(range("timeuuid_1").lower("a4a70900-24e1-11df-8924-001ff3591712")
+                                                             .upper("a4a70900-24e1-11df-8924-001ff3591713")).count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeFilterTimeuuidTest4() {
+        int count = cassandraUtils.filter(range("timeuuid_1").lower("a4a70900-24e1-11df-8924-001ff3591712")
+                                                             .upper("a4a70900-24e1-11df-8924-001ff3591713")
+                                                             .includeLower(true)
+                                                             .includeUpper(true)).count();
+        assertEquals("Expected 4 results!", 4, count);
+    }
+
+    @Test
+    public void rangeFilterInetFieldTest1() {
+        int count = cassandraUtils.filter(range("inet_1")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeFilterInetFieldTest2() {
+        int count = cassandraUtils.filter(range("inet_1").lower("127.0.0.0").upper("127.1.0.0")).count();
+        assertEquals("Expected 2 results!", 2, count);
+    }
+
+    @Test
+    public void rangeFilterInetFieldTest3() {
+        int count = cassandraUtils.filter(range("inet_1").lower("127.0.0.0")
+                                                         .upper("127.1.0.0")
+                                                         .includeLower(true)
+                                                         .includeUpper(true)).count();
+        assertEquals("Expected 2 results!", 2, count);
+    }
+
+    @Test
+    public void rangeFilterInetFieldTest4() {
+        int count = cassandraUtils.filter(range("inet_1").lower("192.168.0.0").upper("192.168.0.1")).count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeFilterTextFieldTest1() {
+
+        int count = cassandraUtils.filter(range("text_1")).count();
+
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeFilterTextFieldTest2() {
+        int count = cassandraUtils.filter(range("text_1").lower("Frase").upper("G")).count();
+        assertEquals("Expected 3 results!", 3, count);
+    }
+
+    @Test
+    public void rangeFilterTextFieldTest3() {
+        int count = cassandraUtils.filter(range("text_1").lower(
+                "Frasesinespaciosconarticulosylaspalabrassuficientesperomaslarga").upper("G")).count();
+        assertEquals("Expected 1 result!", 1, count);
+    }
+
+    @Test
+    public void rangeFilterTextFieldTest4() {
+        int count = cassandraUtils.filter(range("text_1").lower(
+                "Frasesinespaciosconarticulosylaspalabrassuficientesperomaslarga")
+                                                         .upper("G")
+                                                         .includeLower(true)
+                                                         .includeUpper(true)).count();
+        assertEquals("Expected 2 results!", 2, count);
+    }
+
+    @Test
+    public void rangeFilterTextFieldTest5() {
+        int count = cassandraUtils.filter(range("text_1").lower("G").upper("H").includeLower(true).includeUpper(true))
+                                  .count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeFilterVarcharFieldTest1() {
+        int count = cassandraUtils.filter(range("varchar_1")).count();
+        assertEquals("Expected 5 results!", 5, count);
+    }
+
+    @Test
+    public void rangeFilterVarcharFieldTest2() {
+        int count = cassandraUtils.filter(range("varchar_1").lower("frase").upper("g")).count();
+        assertEquals("Expected 4 results!", 4, count);
+    }
+
+    @Test
+    public void rangeFilterVarcharFieldTest3() {
+        int count = cassandraUtils.filter(range("varchar_1").lower("frasesencillasinespaciosperomaslarga").upper("g"))
+                                  .count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeFilterVarcharFieldTest4() {
+        int count = cassandraUtils.filter(range("varchar_1").lower("frasesencillasinespaciosperomaslarga")
+                                                            .upper("gH")
+                                                            .includeLower(true)
+                                                            .includeUpper(true)).count();
+        assertEquals("Expected 2 results!", 2, count);
+    }
+
+    @Test
+    public void rangeFilterVarcharFieldTest5() {
+        int count = cassandraUtils.filter(range("varchar_1").lower("g").upper("h")).count();
+        assertEquals("Expected 0 results!", 0, count);
+    }
+
+    @Test
+    public void rangeFilterListFieldTest1() {
+        int n = cassandraUtils.filter(range("list_1").lower("a").upper("z")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
+
+    @Test
+    public void rangeFilterListFieldTest2() {
+        int n = cassandraUtils.filter(range("list_1").lower("a1").upper("z9")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
+
+    @Test
+    public void rangeFilterListFieldTest3() {
+        int n = cassandraUtils.filter(range("list_1").lower("a2").upper("l1")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void rangeFilterSetFieldTest1() {
+        int n = cassandraUtils.filter(range("set_1").lower("a").upper("z")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
+
+    @Test
+    public void rangeFilterSetFieldTest2() {
+        int n = cassandraUtils.filter(range("set_1").lower("a1").upper("z9")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
+
+    @Test
+    public void rangeFilterSetFieldTest3() {
+        int n = cassandraUtils.filter(range("set_1").lower("a1").upper("z1")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
+
+    @Test
+    public void rangeFilterMapFieldTest1() {
+        int n = cassandraUtils.filter(range("map_1.k1").lower("a").upper("z")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
+
+    @Test
+    public void rangeFilterMapFieldTest2() {
+        int n = cassandraUtils.filter(range("map_1.k1").lower("a1").upper("z9")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
+
+    @Test
+    public void rangeFilterMapFieldTest3() {
+        int n = cassandraUtils.filter(range("map_1.k1").lower("a1").upper("k9")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void rangeFilterMapFieldTest4() {
+        int n = cassandraUtils.filter(range("map_1.k1").lower("a1").upper("k1")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 }

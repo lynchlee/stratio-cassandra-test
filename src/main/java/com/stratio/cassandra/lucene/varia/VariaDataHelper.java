@@ -15,55 +15,36 @@
  */
 package com.stratio.cassandra.lucene.varia;
 
+import com.stratio.cassandra.lucene.util.CassandraUtils;
+
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import com.stratio.cassandra.lucene.util.QueryUtils;
 
 public final class VariaDataHelper {
 
     private static final Map<String, String> masterData;
 
     protected static final Map<String, String> data1;
-
     protected static final Map<String, String> data2;
-
     protected static final Map<String, String> data3;
-
     protected static final Map<String, String> data4;
-
     protected static final Map<String, String> data5;
-
     protected static final Map<String, String> data6;
-
     protected static final Map<String, String> data7;
-
     protected static final Map<String, String> data8;
-
     protected static final Map<String, String> data9;
-
     protected static final Map<String, String> data10;
-
     protected static final Map<String, String> data11;
-
     protected static final Map<String, String> data12;
-
     protected static final Map<String, String> data13;
-
     protected static final Map<String, String> data14;
-
     protected static final Map<String, String> data15;
-
     protected static final Map<String, String> data16;
-
     protected static final Map<String, String> data17;
-
     protected static final Map<String, String> data18;
-
     protected static final Map<String, String> data19;
-
     protected static final Map<String, String> data20;
 
     static {
@@ -486,15 +467,13 @@ public final class VariaDataHelper {
         data20.put("map_1", "{'k2':'v2','k3':'v3'}");
     }
 
-    protected static List<String> generateCustomInsertions(
-            int insertionsNumber, QueryUtils queryUtils) {
-
-        return generateCustomInsertionsWithModule(insertionsNumber, 1,
-                queryUtils);
+    protected static void generateCustomInsertions(int insertionsNumber, CassandraUtils cassandraUtils) {
+        generateCustomInsertionsWithModule(insertionsNumber, 1, cassandraUtils);
     }
 
-    protected static List<String> generateCustomInsertionsWithModule(
-            int insertionsNumber, int module, QueryUtils queryUtils) {
+    protected static void generateCustomInsertionsWithModule(int insertionsNumber,
+                                                             int module,
+                                                             CassandraUtils cassandraUtils) {
 
         List<String> queriesList = new LinkedList<>();
 
@@ -505,9 +484,7 @@ public final class VariaDataHelper {
             dataAux.put("integer_1", String.valueOf(i));
             dataAux.put("double_1", String.valueOf((i % module) + 1));
 
-            queriesList.add(queryUtils.getInsert(dataAux));
+            cassandraUtils.insert(dataAux);
         }
-
-        return queriesList;
     }
 }

@@ -19,153 +19,104 @@ package com.stratio.cassandra.lucene.varia;
  * Created by Jcalderin on 24/03/14.
  */
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.stratio.cassandra.lucene.TestingConstants;
+import com.stratio.cassandra.lucene.util.CassandraUtils;
 import org.apache.log4j.Logger;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import com.datastax.driver.core.Row;
-import com.stratio.cassandra.lucene.TestingConstants;
-import com.stratio.cassandra.lucene.util.CassandraUtils;
-import com.stratio.cassandra.lucene.util.QueryUtils;
-import com.stratio.cassandra.lucene.util.QueryUtilsBuilder;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
 public class TokenCriteriaWithComplexKeyTest {
 
-	private static final Logger logger = Logger.getLogger(TokenCriteriaWithComplexKeyTest.class);
+    private static CassandraUtils cassandraUtils;
 
-	private static QueryUtils queryUtils;
+    @BeforeClass
+    public static void before() {
 
-	private static CassandraUtils cassandraUtils;
+        cassandraUtils = CassandraUtils.builder()
+                                       .withTable(TestingConstants.TABLE_NAME_CONSTANT)
+                                       .withIndexColumn(TestingConstants.INDEX_COLUMN_CONSTANT)
+                                       .withPartitionKey("integer_1", "ascii_1")
+                                       .withClusteringKey("double_1")
+                                       .withColumn("ascii_1", "ascii")
+                                       .withColumn("bigint_1", "bigint")
+                                       .withColumn("blob_1", "blob")
+                                       .withColumn("boolean_1", "boolean")
+                                       .withColumn("decimal_1", "decimal")
+                                       .withColumn("date_1", "timestamp")
+                                       .withColumn("double_1", "double")
+                                       .withColumn("float_1", "float")
+                                       .withColumn("integer_1", "int")
+                                       .withColumn("inet_1", "inet")
+                                       .withColumn("text_1", "text")
+                                       .withColumn("varchar_1", "varchar")
+                                       .withColumn("uuid_1", "uuid")
+                                       .withColumn("timeuuid_1", "timeuuid")
+                                       .withColumn("list_1", "list<text>")
+                                       .withColumn("set_1", "set<text>")
+                                       .withColumn("map_1", "map<text,text>")
+                                       .withColumn("lucene", "text")
+                                       .build()
+                                       .createKeyspace()
+                                       .createTable()
+                                       .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                                       .insert(VariaDataHelper.data1)
+                                       .insert(VariaDataHelper.data2)
+                                       .insert(VariaDataHelper.data3)
+                                       .insert(VariaDataHelper.data4)
+                                       .insert(VariaDataHelper.data5)
+                                       .insert(VariaDataHelper.data6)
+                                       .insert(VariaDataHelper.data7)
+                                       .insert(VariaDataHelper.data8)
+                                       .insert(VariaDataHelper.data9)
+                                       .insert(VariaDataHelper.data10)
+                                       .insert(VariaDataHelper.data11)
+                                       .insert(VariaDataHelper.data12)
+                                       .insert(VariaDataHelper.data13)
+                                       .insert(VariaDataHelper.data14)
+                                       .insert(VariaDataHelper.data15)
+                                       .insert(VariaDataHelper.data16)
+                                       .insert(VariaDataHelper.data17)
+                                       .insert(VariaDataHelper.data18)
+                                       .insert(VariaDataHelper.data19)
+                                       .insert(VariaDataHelper.data20)
+                                       .waitForIndexRefresh();
+    }
 
-	@BeforeClass
-	public static void setUpSuite() {
+    @AfterClass
+    public static void after() {
+        cassandraUtils.dropIndex(TestingConstants.INDEX_NAME_CONSTANT).dropTable().dropKeyspace();
+    }
 
-		// Initializing suite data
-		Map<String, String> columns = new LinkedHashMap<String, String>();
-		columns.put("ascii_1", "ascii");
-		columns.put("bigint_1", "bigint");
-		columns.put("blob_1", "blob");
-		columns.put("boolean_1", "boolean");
-		columns.put("decimal_1", "decimal");
-		columns.put("date_1", "timestamp");
-		columns.put("double_1", "double");
-		columns.put("float_1", "float");
-		columns.put("integer_1", "int");
-		columns.put("inet_1", "inet");
-		columns.put("text_1", "text");
-		columns.put("varchar_1", "varchar");
-		columns.put("uuid_1", "uuid");
-		columns.put("timeuuid_1", "timeuuid");
-		columns.put("list_1", "list<text>");
-		columns.put("set_1", "set<text>");
-		columns.put("map_1", "map<text,text>");
-		columns.put("lucene", "text");
+    @Test
+    public void tokenSearchTest1() {
+        int n = cassandraUtils.searchAll()
+                              .and("AND TOKEN(integer_1, ascii_1) > TOKEN(1, 'ascii')")
+                              .count();
+        assertEquals("Expected 8 results!", 8, n);
+    }
 
-		Map<String, List<String>> primaryKey = new LinkedHashMap<String, List<String>>();
-		String[] inarray = { "integer_1", "ascii_1" };
-		String[] outarray = { "double_1" };
-		List<String> in = Arrays.asList(inarray);
-		List<String> out = Arrays.asList(outarray);
-		primaryKey.put("in", in);
-		primaryKey.put("out", out);
+    @Test
+    public void tokenSearchTest2() {
+        int n = cassandraUtils.searchAll()
+                              .and("AND TOKEN(integer_1, ascii_1) > TOKEN(1, 'ascii')")
+                              .andEq("double_1", 2)
+                              .count();
+        assertEquals("Expected 4 results!", 4, n);
+    }
 
-		queryUtils = new QueryUtilsBuilder(TestingConstants.TABLE_NAME_CONSTANT,
-		                                   columns,
-		                                   primaryKey,
-		                                   TestingConstants.INDEX_COLUMN_CONSTANT).build();
-
-		cassandraUtils = new CassandraUtils(TestingConstants.CASSANDRA_LOCALHOST_CONSTANT);
-
-		cassandraUtils.execute(queryUtils.createKeyspaceQuery(),
-		                       queryUtils.createTableQuery(),
-		                       queryUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT),
-		                       queryUtils.getInsert(VariaDataHelper.data1),
-		                       queryUtils.getInsert(VariaDataHelper.data2),
-		                       queryUtils.getInsert(VariaDataHelper.data3),
-		                       queryUtils.getInsert(VariaDataHelper.data4),
-		                       queryUtils.getInsert(VariaDataHelper.data5),
-		                       queryUtils.getInsert(VariaDataHelper.data6),
-		                       queryUtils.getInsert(VariaDataHelper.data7),
-		                       queryUtils.getInsert(VariaDataHelper.data8),
-		                       queryUtils.getInsert(VariaDataHelper.data9),
-		                       queryUtils.getInsert(VariaDataHelper.data10),
-		                       queryUtils.getInsert(VariaDataHelper.data11),
-		                       queryUtils.getInsert(VariaDataHelper.data12),
-		                       queryUtils.getInsert(VariaDataHelper.data13),
-		                       queryUtils.getInsert(VariaDataHelper.data14),
-		                       queryUtils.getInsert(VariaDataHelper.data15),
-		                       queryUtils.getInsert(VariaDataHelper.data16),
-		                       queryUtils.getInsert(VariaDataHelper.data17),
-		                       queryUtils.getInsert(VariaDataHelper.data18),
-		                       queryUtils.getInsert(VariaDataHelper.data19),
-		                       queryUtils.getInsert(VariaDataHelper.data20));
-	};
-
-	@AfterClass
-	public static void tearDownSuite() {
-
-		logger.debug("Dropping keyspace");
-		cassandraUtils.execute(queryUtils.dropKeyspaceQuery());
-
-		cassandraUtils.disconnect();
-	};
-
-	@Test
-	public void tokenSearchTest1() {
-
-		// Building up query
-		String query = queryUtils.getWildcardQuery("ascii_1", "*", null);
-		query = query.substring(0, query.length() - 1);
-		query += " and TOKEN(integer_1, ascii_1) > TOKEN(1, 'ascii');";
-
-		logger.debug("token search query [" + query + "]");
-
-		// Checking data
-		List<Row> rows = cassandraUtils.execute(query);
-
-		assertEquals("Expected 8 results!", 8, rows.size());
-	}
-
-	@Test
-	public void tokenSearchTest2() {
-
-		// Building up query
-		String query = queryUtils.getWildcardQuery("ascii_1", "*", null);
-		query = query.substring(0, query.length() - 1);
-		query += " and TOKEN(integer_1, ascii_1) > TOKEN(1, 'ascii') and double_1 = 2;";
-
-		logger.debug("token search query [" + query + "]");
-
-		// Checking data
-		List<Row> rows = cassandraUtils.execute(query);
-
-		assertEquals("Expected 4 results!", 4, rows.size());
-	}
-
-	@Test
-	public void tokenSearchTest3() {
-
-		// Building up query
-		String query = queryUtils.getWildcardQuery("ascii_1", "*", null);
-		query = query.substring(0, query.length() - 1);
-		query += " and TOKEN(integer_1, ascii_1) > TOKEN(1, 'ascii') and TOKEN(integer_1, ascii_1) < TOKEN(3, 'ascii');";
-
-		logger.debug("token search query [" + query + "]");
-
-		// Checking data
-		List<Row> rows = cassandraUtils.execute(query);
-
-		assertEquals("Expected 6 results!", 6, rows.size());
-	}
+    @Test
+    public void tokenSearchTest3() {
+        int n = cassandraUtils.searchAll()
+                              .and("AND TOKEN(integer_1, ascii_1) > TOKEN(1, 'ascii')")
+                              .and("AND TOKEN(integer_1, ascii_1) < TOKEN(3, 'ascii')")
+                              .count();
+        assertEquals("Expected 6 results!", 6, n);
+    }
 }

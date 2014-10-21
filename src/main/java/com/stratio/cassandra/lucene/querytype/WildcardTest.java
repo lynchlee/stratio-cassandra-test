@@ -15,183 +15,273 @@
  */
 package com.stratio.cassandra.lucene.querytype;
 
-/**
- * Created by Jcalderin on 24/03/14.
- */
-
-import static org.junit.Assert.assertEquals;
-
-import java.util.List;
-
+import com.datastax.driver.core.exceptions.DriverInternalError;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.exceptions.InvalidQueryException;
+import static com.stratio.cassandra.index.query.builder.SearchBuilders.wildcard;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
 public class WildcardTest extends AbstractWatchedTest {
 
-	@Test
-	public void wildcardAsciiFieldTest1() {
+    @Test
+    public void wildcardQueryAsciiFieldTest1() {
+        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
+    @Test
+    public void wildcardQueryAsciiFieldTest2() {
+        int n = cassandraUtils.query(wildcard("ascii_1", "frase*")).count();
+        assertEquals("Expected 4 results!", 4, n);
+    }
 
-		
+    @Test
+    public void wildcardQueryAsciiFieldTest3() {
+        int n = cassandraUtils.query(wildcard("ascii_1", "frase *")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
 
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
+    @Test(expected = DriverInternalError.class)
+    public void wildcardQueryAsciiFieldTest4() {
+        int n = cassandraUtils.query(wildcard("ascii_1", "")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 
-	@Test
-	public void wildcardAsciiFieldTest2() {
+    @Test
+    public void wildcardQueryInetFieldTest1() {
+        int n = cassandraUtils.query(wildcard("inet_1", "*")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "frase*", null));
+    @Test
+    public void wildcardQueryInetFieldTest2() {
+        int n = cassandraUtils.query(wildcard("inet_1", "127*")).count();
+        assertEquals("Expected 4 results!", 4, n);
+    }
 
-		
+    @Test
+    public void wildcardQueryInetFieldTest3() {
+        int n = cassandraUtils.query(wildcard("inet_1", "127.1.*")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
 
-		assertEquals("Expected 4 results!", 4, rows.size());
-	}
+    @Test(expected = DriverInternalError.class)
+    public void wildcardQueryInetFieldTest4() {
+        cassandraUtils.query(wildcard("inet_1", "")).count();
+    }
 
-	@Test
-	public void wildcardAsciiFieldTest3() {
+    @Test
+    public void wildcardQueryTextFieldTest1() {
+        int n = cassandraUtils.query(wildcard("text_1", "*")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "frase *", null));
+    @Test
+    public void wildcardQueryTextFieldTest2() {
+        int n = cassandraUtils.query(wildcard("text_1", "Frase*")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 
-		
+    @Test
+    public void wildcardQueryTextFieldTest3() {
+        int n = cassandraUtils.query(wildcard("text_1", "Frasesin*")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
+    @Test(expected = DriverInternalError.class)
+    public void wildcardQueryTextFieldTest4() {
+        cassandraUtils.query(wildcard("text_1", "")).count();
+    }
 
-	@Test(expected = InvalidQueryException.class)
-	public void wildcardAsciiFieldTest4() {
+    @Test
+    public void wildcardQueryVarcharFieldTest1() {
+        int n = cassandraUtils.query(wildcard("varchar_1", "*")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "", null));
+    @Test
+    public void wildcardQueryVarcharFieldTest2() {
+        int n = cassandraUtils.query(wildcard("varchar_1", "frase*")).count();
+        assertEquals("Expected 4 results!", 4, n);
+    }
 
-		
+    @Test
+    public void wildcardQueryVarcharFieldTest3() {
+        int n = cassandraUtils.query(wildcard("varchar_1", "frase sencilla*")).count();
+        assertEquals("Expected 1 results!", 1, n);
+    }
 
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
+    @Test(expected = DriverInternalError.class)
+    public void wildcardQueryVarcharFieldTest4() {
+        cassandraUtils.query(wildcard("varchar_1", "")).count();
+    }
 
-	@Test
-	public void wildcardInetFieldTest1() {
+    @Test
+    public void wildcardFilterAsciiFieldTest1() {
+        int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("inet_1", "*", null));
+    @Test
+    public void wildcardFilterAsciiFieldTest2() {
+        int n = cassandraUtils.filter(wildcard("ascii_1", "frase*")).count();
+        assertEquals("Expected 4 results!", 4, n);
+    }
 
-		
+    @Test
+    public void wildcardFilterAsciiFieldTest3() {
+        int n = cassandraUtils.filter(wildcard("ascii_1", "frase *")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
 
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
+    @Test(expected = DriverInternalError.class)
+    public void wildcardFilterAsciiFieldTest4() {
+        int n = cassandraUtils.filter(wildcard("ascii_1", "")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 
-	@Test
-	public void wildcardInetFieldTest2() {
+    @Test
+    public void wildcardFilterInetFieldTest1() {
+        int n = cassandraUtils.filter(wildcard("inet_1", "*")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("inet_1", "127*", null));
+    @Test
+    public void wildcardFilterInetFieldTest2() {
+        int n = cassandraUtils.filter(wildcard("inet_1", "127*")).count();
+        assertEquals("Expected 4 results!", 4, n);
+    }
 
-		
+    @Test
+    public void wildcardFilterInetFieldTest3() {
+        int n = cassandraUtils.filter(wildcard("inet_1", "127.1.*")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
 
-		assertEquals("Expected 4 results!", 4, rows.size());
-	}
+    @Test(expected = DriverInternalError.class)
+    public void wildcardFilterInetFieldTest4() {
+        cassandraUtils.filter(wildcard("inet_1", "")).count();
+    }
 
-	@Test
-	public void wildcardInetFieldTest3() {
+    @Test
+    public void wildcardFilterTextFieldTest1() {
+        int n = cassandraUtils.filter(wildcard("text_1", "*")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("inet_1", "127.1.*", null));
+    @Test
+    public void wildcardFilterTextFieldTest2() {
+        int n = cassandraUtils.filter(wildcard("text_1", "Frase*")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 
-		
+    @Test
+    public void wildcardFilterTextFieldTest3() {
+        int n = cassandraUtils.filter(wildcard("text_1", "Frasesin*")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 
-		assertEquals("Expected 2 results!", 2, rows.size());
-	}
+    @Test(expected = DriverInternalError.class)
+    public void wildcardFilterTextFieldTest4() {
+        cassandraUtils.filter(wildcard("text_1", "")).count();
+    }
 
-	@Test(expected = InvalidQueryException.class)
-	public void wildcardInetFieldTest4() {
+    @Test
+    public void wildcardFilterVarcharFieldTest1() {
+        int n = cassandraUtils.filter(wildcard("varchar_1", "*")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("inet_1", "", null));
+    @Test
+    public void wildcardFilterVarcharFieldTest2() {
+        int n = cassandraUtils.filter(wildcard("varchar_1", "frase*")).count();
+        assertEquals("Expected 4 results!", 4, n);
+    }
 
-		
+    @Test
+    public void wildcardFilterVarcharFieldTest3() {
+        int n = cassandraUtils.filter(wildcard("varchar_1", "frase sencilla*")).count();
+        assertEquals("Expected 1 results!", 1, n);
+    }
 
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
+    @Test(expected = DriverInternalError.class)
+    public void wildcardFilterVarcharFieldTest4() {
+        cassandraUtils.filter(wildcard("varchar_1", "")).count();
+    }
 
-	@Test
-	public void wildcardTextFieldTest1() {
+    @Test
+    public void wildcardFilteredQueryTextFieldTest1() {
+        int n = cassandraUtils.query(wildcard("varchar_1", "frase*")).filter(wildcard("text_1", "*")).count();
+        assertEquals("Expected 5 results!", 4, n);
+    }
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("text_1", "*", null));
+    @Test
+    public void wildcardFilteredQueryTextFieldTest2() {
+        int n = cassandraUtils.query(wildcard("text_1", "*")).filter(wildcard("varchar_1", "frase*")).count();
+        assertEquals("Expected 5 results!", 4, n);
+    }
 
-		
+    @Test(expected = DriverInternalError.class)
+    public void wildcardQueryListFieldTest1() {
+        int n = cassandraUtils.query(wildcard("list_1", "")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
+    @Test
+    public void wildcardQueryListFieldTest2() {
+        int n = cassandraUtils.query(wildcard("list_1", "l*")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-	@Test
-	public void wildcardTextFieldTest2() {
+    @Test
+    public void wildcardQueryListFieldTest3() {
+        int n = cassandraUtils.query(wildcard("list_1", "s*")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("text_1", "Frase*", null));
+    @Test(expected = DriverInternalError.class)
+    public void wildcardQuerySetFieldTest1() {
+        int n = cassandraUtils.query(wildcard("set_1", "")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 
-		
+    @Test
+    public void wildcardQuerySetFieldTest2() {
+        int n = cassandraUtils.query(wildcard("set_1", "l*")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
+    @Test
+    public void wildcardQuerySetFieldTest3() {
+        int n = cassandraUtils.query(wildcard("set_1", "s*")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-	@Test
-	// FIXME Returns 0 and I'm expecting 3...
-	        public void
-	        wildcardTextFieldTest3() {
+    @Test(expected = DriverInternalError.class)
+    public void wildcardQueryMapFieldTest1() {
+        int n = cassandraUtils.query(wildcard("map_1.k1", "")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("text_1", "Frasesin*", null));
+    @Test
+    public void wildcardQueryMapFieldTest2() {
+        int n = cassandraUtils.query(wildcard("map_1.k1", "l*")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 
-		
+    @Test
+    public void wildcardQueryMapFieldTest3() {
+        int n = cassandraUtils.query(wildcard("map_1.k1", "k*")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
+    @Test
+    public void wildcardQueryMapFieldTest4() {
+        int n = cassandraUtils.query(wildcard("map_1.k1", "v*")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
 
-	@Test(expected = InvalidQueryException.class)
-	public void wildcardTextFieldTest4() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("text_1", "", null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void wildcardVarcharFieldTest1() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("varchar_1", "*", null));
-
-		
-
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
-
-	@Test
-	public void wildcardVarcharFieldTest2() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("varchar_1", "frase*", null));
-
-		
-
-		assertEquals("Expected 4 results!", 4, rows.size());
-	}
-
-	@Test
-	public void wildcardVarcharFieldTest3() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("varchar_1", "frase sencilla*", null));
-
-		
-
-		assertEquals("Expected 1 results!", 1, rows.size());
-	}
-
-	@Test(expected = InvalidQueryException.class)
-	public void wildcardVarcharFieldTest4() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("varchar_1", "", null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
 }

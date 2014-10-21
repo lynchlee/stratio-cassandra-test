@@ -15,259 +15,228 @@
  */
 package com.stratio.cassandra.lucene.indexes;
 
-/**
- * Created by Jcalderin on 24/03/14.
- */
-
-import static org.junit.Assert.assertEquals;
-
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.stratio.cassandra.lucene.TestingConstants;
+import com.stratio.cassandra.lucene.util.CassandraUtils;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import com.datastax.driver.core.Row;
-import com.stratio.cassandra.lucene.TestingConstants;
-import com.stratio.cassandra.lucene.util.CassandraUtils;
-import com.stratio.cassandra.lucene.util.QueryUtils;
-import com.stratio.cassandra.lucene.util.QueryUtilsBuilder;
+import static com.stratio.cassandra.index.query.builder.SearchBuilders.wildcard;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
 public class ComplexKeyIndexHandlingTest {
 
-	private static CassandraUtils cassandraUtils;
-	private static QueryUtilsBuilder queryUtilsBuilder;
+    private CassandraUtils cassandraUtils;
 
-	private QueryUtils queryUtils;
+    @Before
+    public void before() {
 
-	@BeforeClass
-	public static void setUpSuite() {
+        cassandraUtils = CassandraUtils.builder()
+                                       .withHost(TestingConstants.CASSANDRA_LOCALHOST_CONSTANT)
+                                       .withTable(TestingConstants.TABLE_NAME_CONSTANT)
+                                       .withIndexColumn(TestingConstants.INDEX_COLUMN_CONSTANT)
+                                       .withPartitionKey("integer_1", "ascii_1")
+                                       .withClusteringKey("double_1")
+                                       .withColumn("ascii_1", "ascii")
+                                       .withColumn("bigint_1", "bigint")
+                                       .withColumn("blob_1", "blob")
+                                       .withColumn("boolean_1", "boolean")
+                                       .withColumn("decimal_1", "decimal")
+                                       .withColumn("date_1", "timestamp")
+                                       .withColumn("double_1", "double")
+                                       .withColumn("float_1", "float")
+                                       .withColumn("integer_1", "int")
+                                       .withColumn("inet_1", "inet")
+                                       .withColumn("text_1", "text")
+                                       .withColumn("varchar_1", "varchar")
+                                       .withColumn("uuid_1", "uuid")
+                                       .withColumn("timeuuid_1", "timeuuid")
+                                       .withColumn("list_1", "list<text>")
+                                       .withColumn("set_1", "set<text>")
+                                       .withColumn("map_1", "map<text,text>")
+                                       .withColumn("lucene", "text")
+                                       .build()
+                                       .createKeyspace()
+                                       .createTable();
+    }
 
-		// Initializing suite data
-		Map<String, String> columns = new LinkedHashMap<String, String>();
-		columns.put("ascii_1", "ascii");
-		columns.put("bigint_1", "bigint");
-		columns.put("blob_1", "blob");
-		columns.put("boolean_1", "boolean");
-		columns.put("decimal_1", "decimal");
-		columns.put("date_1", "timestamp");
-		columns.put("double_1", "double");
-		columns.put("float_1", "float");
-		columns.put("integer_1", "int");
-		columns.put("inet_1", "inet");
-		columns.put("text_1", "text");
-		columns.put("varchar_1", "varchar");
-		columns.put("uuid_1", "uuid");
-		columns.put("timeuuid_1", "timeuuid");
-		columns.put("list_1", "list<text>");
-		columns.put("set_1", "set<text>");
-		columns.put("map_1", "map<text,text>");
-		columns.put("lucene", "text");
+    @After
+    public void after() {
+        cassandraUtils.dropTable().dropKeyspace().disconnect();
+    }
 
-		Map<String, List<String>> primaryKey = new LinkedHashMap<String, List<String>>();
-		String[] inarray = { "integer_1", "ascii_1" };
-		String[] outarray = { "double_1" };
-		List<String> in = Arrays.asList(inarray);
-		List<String> out = Arrays.asList(outarray);
-		primaryKey.put("in", in);
-		primaryKey.put("out", out);
+    @Test
+    public void createIndexAfterInsertionsTest() {
 
-		queryUtilsBuilder = new QueryUtilsBuilder(TestingConstants.TABLE_NAME_CONSTANT,
-		                                          columns,
-		                                          primaryKey,
-		                                          TestingConstants.INDEX_COLUMN_CONSTANT);
+        cassandraUtils.insert(IndexesDataHelper.data1)
+                      .insert(IndexesDataHelper.data2)
+                      .insert(IndexesDataHelper.data3)
+                      .insert(IndexesDataHelper.data4)
+                      .insert(IndexesDataHelper.data5)
+                      .insert(IndexesDataHelper.data6)
+                      .insert(IndexesDataHelper.data7)
+                      .insert(IndexesDataHelper.data8)
+                      .insert(IndexesDataHelper.data9)
+                      .insert(IndexesDataHelper.data10)
+                      .insert(IndexesDataHelper.data11)
+                      .insert(IndexesDataHelper.data12)
+                      .insert(IndexesDataHelper.data13)
+                      .insert(IndexesDataHelper.data14)
+                      .insert(IndexesDataHelper.data15)
+                      .insert(IndexesDataHelper.data16)
+                      .insert(IndexesDataHelper.data17)
+                      .insert(IndexesDataHelper.data18)
+                      .insert(IndexesDataHelper.data19)
+                      .insert(IndexesDataHelper.data20)
+                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .waitForIndexRefresh();
 
-		cassandraUtils = new CassandraUtils(TestingConstants.CASSANDRA_LOCALHOST_CONSTANT);
-	}
+        // Checking data
+        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
 
-	@Before
-	public void setUpTest() {
-		queryUtils = queryUtilsBuilder.build();
-		cassandraUtils.execute(queryUtils.createKeyspaceQuery(), queryUtils.createTableQuery());
-	};
+        assertEquals("Expected 20 results!", 20, n);
+    }
 
-	@After
-	public void tearDown() {
-		cassandraUtils.execute(queryUtils.dropTableQuery(), queryUtils.dropKeyspaceQuery());
-	}
+    @Test
+    public void createIndexDuringInsertionsTest1() {
 
-	@AfterClass
-	public static void tearDownSuite() {
-		cassandraUtils.disconnect();
-	}
+        cassandraUtils.insert(IndexesDataHelper.data1)
+                      .insert(IndexesDataHelper.data2)
+                      .insert(IndexesDataHelper.data3)
+                      .insert(IndexesDataHelper.data4)
+                      .insert(IndexesDataHelper.data5)
+                      .insert(IndexesDataHelper.data6)
+                      .insert(IndexesDataHelper.data7)
+                      .insert(IndexesDataHelper.data8)
+                      .insert(IndexesDataHelper.data9)
+                      .insert(IndexesDataHelper.data10)
+                      .insert(IndexesDataHelper.data11)
+                      .insert(IndexesDataHelper.data12)
+                      .insert(IndexesDataHelper.data13)
+                      .insert(IndexesDataHelper.data14)
+                      .insert(IndexesDataHelper.data15)
+                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .insert(IndexesDataHelper.data16)
+                      .insert(IndexesDataHelper.data17)
+                      .insert(IndexesDataHelper.data18)
+                      .insert(IndexesDataHelper.data19)
+                      .insert(IndexesDataHelper.data20)
+                      .waitForIndexRefresh();
 
-	@Test
-	public void createIndexAfterInsertionsTest() {
+        // Checking data
+        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
 
-		cassandraUtils.execute(queryUtils.getInsert(IndexesDataHelper.data1),
-		                       queryUtils.getInsert(IndexesDataHelper.data2),
-		                       queryUtils.getInsert(IndexesDataHelper.data3),
-		                       queryUtils.getInsert(IndexesDataHelper.data4),
-		                       queryUtils.getInsert(IndexesDataHelper.data5),
-		                       queryUtils.getInsert(IndexesDataHelper.data6),
-		                       queryUtils.getInsert(IndexesDataHelper.data7),
-		                       queryUtils.getInsert(IndexesDataHelper.data8),
-		                       queryUtils.getInsert(IndexesDataHelper.data9),
-		                       queryUtils.getInsert(IndexesDataHelper.data10),
-		                       queryUtils.getInsert(IndexesDataHelper.data11),
-		                       queryUtils.getInsert(IndexesDataHelper.data12),
-		                       queryUtils.getInsert(IndexesDataHelper.data13),
-		                       queryUtils.getInsert(IndexesDataHelper.data14),
-		                       queryUtils.getInsert(IndexesDataHelper.data15),
-		                       queryUtils.getInsert(IndexesDataHelper.data16),
-		                       queryUtils.getInsert(IndexesDataHelper.data17),
-		                       queryUtils.getInsert(IndexesDataHelper.data18),
-		                       queryUtils.getInsert(IndexesDataHelper.data19),
-		                       queryUtils.getInsert(IndexesDataHelper.data20),
-		                       queryUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT));
+        assertEquals("Expected 20 results!", 20, n);
+    }
 
-		// Checking data
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
+    @Test
+    public void createIndexDuringInsertionsTest2() {
 
-		assertEquals("Expected 20 results!", 20, rows.size());
-	}
+        cassandraUtils.insert(IndexesDataHelper.data1)
+                      .insert(IndexesDataHelper.data2)
+                      .insert(IndexesDataHelper.data3)
+                      .insert(IndexesDataHelper.data4)
+                      .insert(IndexesDataHelper.data6)
+                      .insert(IndexesDataHelper.data7)
+                      .insert(IndexesDataHelper.data8)
+                      .insert(IndexesDataHelper.data9)
+                      .insert(IndexesDataHelper.data11)
+                      .insert(IndexesDataHelper.data12)
+                      .insert(IndexesDataHelper.data13)
+                      .insert(IndexesDataHelper.data14)
+                      .insert(IndexesDataHelper.data16)
+                      .insert(IndexesDataHelper.data17)
+                      .insert(IndexesDataHelper.data18)
+                      .insert(IndexesDataHelper.data19)
+                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .insert(IndexesDataHelper.data5)
+                      .insert(IndexesDataHelper.data10)
+                      .insert(IndexesDataHelper.data15)
+                      .insert(IndexesDataHelper.data20)
+                      .waitForIndexRefresh();
 
-	@Test
-	public void createIndexDuringInsertionsTest1() {
+        // Checking data
+        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
 
-		cassandraUtils.execute(queryUtils.getInsert(IndexesDataHelper.data1),
-		                       queryUtils.getInsert(IndexesDataHelper.data2),
-		                       queryUtils.getInsert(IndexesDataHelper.data3),
-		                       queryUtils.getInsert(IndexesDataHelper.data4),
-		                       queryUtils.getInsert(IndexesDataHelper.data5),
-		                       queryUtils.getInsert(IndexesDataHelper.data6),
-		                       queryUtils.getInsert(IndexesDataHelper.data7),
-		                       queryUtils.getInsert(IndexesDataHelper.data8),
-		                       queryUtils.getInsert(IndexesDataHelper.data9),
-		                       queryUtils.getInsert(IndexesDataHelper.data10),
-		                       queryUtils.getInsert(IndexesDataHelper.data11),
-		                       queryUtils.getInsert(IndexesDataHelper.data12),
-		                       queryUtils.getInsert(IndexesDataHelper.data13),
-		                       queryUtils.getInsert(IndexesDataHelper.data14),
-		                       queryUtils.getInsert(IndexesDataHelper.data15),
-		                       queryUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT),
-		                       queryUtils.getInsert(IndexesDataHelper.data16),
-		                       queryUtils.getInsert(IndexesDataHelper.data17),
-		                       queryUtils.getInsert(IndexesDataHelper.data18),
-		                       queryUtils.getInsert(IndexesDataHelper.data19),
-		                       queryUtils.getInsert(IndexesDataHelper.data20));
+        assertEquals("Expected 20 results!", 20, n);
+    }
 
-		// Checking data
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
+    @Test
+    public void createIndexDuringInsertionsTest3() {
 
-		assertEquals("Expected 20 results!", 20, rows.size());
-	}
+        cassandraUtils.insert(IndexesDataHelper.data2)
+                      .insert(IndexesDataHelper.data3)
+                      .insert(IndexesDataHelper.data4)
+                      .insert(IndexesDataHelper.data5)
+                      .insert(IndexesDataHelper.data6)
+                      .insert(IndexesDataHelper.data8)
+                      .insert(IndexesDataHelper.data9)
+                      .insert(IndexesDataHelper.data10)
+                      .insert(IndexesDataHelper.data11)
+                      .insert(IndexesDataHelper.data12)
+                      .insert(IndexesDataHelper.data14)
+                      .insert(IndexesDataHelper.data15)
+                      .insert(IndexesDataHelper.data16)
+                      .insert(IndexesDataHelper.data17)
+                      .insert(IndexesDataHelper.data18)
+                      .insert(IndexesDataHelper.data20)
+                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .insert(IndexesDataHelper.data1)
+                      .insert(IndexesDataHelper.data7)
+                      .insert(IndexesDataHelper.data13)
+                      .insert(IndexesDataHelper.data19)
+                      .waitForIndexRefresh();
 
-	@Test
-	public void createIndexDuringInsertionsTest2() {
+        // Checking data
+        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
 
-		cassandraUtils.execute(queryUtils.getInsert(IndexesDataHelper.data1),
-		                       queryUtils.getInsert(IndexesDataHelper.data2),
-		                       queryUtils.getInsert(IndexesDataHelper.data3),
-		                       queryUtils.getInsert(IndexesDataHelper.data4),
-		                       queryUtils.getInsert(IndexesDataHelper.data6),
-		                       queryUtils.getInsert(IndexesDataHelper.data7),
-		                       queryUtils.getInsert(IndexesDataHelper.data8),
-		                       queryUtils.getInsert(IndexesDataHelper.data9),
-		                       queryUtils.getInsert(IndexesDataHelper.data11),
-		                       queryUtils.getInsert(IndexesDataHelper.data12),
-		                       queryUtils.getInsert(IndexesDataHelper.data13),
-		                       queryUtils.getInsert(IndexesDataHelper.data14),
-		                       queryUtils.getInsert(IndexesDataHelper.data16),
-		                       queryUtils.getInsert(IndexesDataHelper.data17),
-		                       queryUtils.getInsert(IndexesDataHelper.data18),
-		                       queryUtils.getInsert(IndexesDataHelper.data19),
-		                       queryUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT),
-		                       queryUtils.getInsert(IndexesDataHelper.data5),
-		                       queryUtils.getInsert(IndexesDataHelper.data10),
-		                       queryUtils.getInsert(IndexesDataHelper.data15),
-		                       queryUtils.getInsert(IndexesDataHelper.data20));
+        assertEquals("Expected 20 results!", 20, n);
+    }
 
-		// Checking data
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
+    @Test
+    public void recreateIndexAfterInsertionsTest() {
 
-		assertEquals("Expected 20 results!", 20, rows.size());
-	}
+        // Creating index
+        cassandraUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .insert(IndexesDataHelper.data1)
+                      .insert(IndexesDataHelper.data2)
+                      .insert(IndexesDataHelper.data3)
+                      .insert(IndexesDataHelper.data4)
+                      .insert(IndexesDataHelper.data5)
+                      .insert(IndexesDataHelper.data6)
+                      .insert(IndexesDataHelper.data7)
+                      .insert(IndexesDataHelper.data8)
+                      .insert(IndexesDataHelper.data9)
+                      .insert(IndexesDataHelper.data10)
+                      .insert(IndexesDataHelper.data11)
+                      .insert(IndexesDataHelper.data12)
+                      .insert(IndexesDataHelper.data13)
+                      .insert(IndexesDataHelper.data14)
+                      .insert(IndexesDataHelper.data15)
+                      .insert(IndexesDataHelper.data16)
+                      .insert(IndexesDataHelper.data17)
+                      .insert(IndexesDataHelper.data18)
+                      .insert(IndexesDataHelper.data19)
+                      .insert(IndexesDataHelper.data20)
+                      .waitForIndexRefresh();
 
-	@Test
-	public void createIndexDuringInsertionsTest3() {
+        // Checking data
+        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
 
-		cassandraUtils.execute(queryUtils.getInsert(IndexesDataHelper.data2),
-		                       queryUtils.getInsert(IndexesDataHelper.data3),
-		                       queryUtils.getInsert(IndexesDataHelper.data4),
-		                       queryUtils.getInsert(IndexesDataHelper.data5),
-		                       queryUtils.getInsert(IndexesDataHelper.data6),
-		                       queryUtils.getInsert(IndexesDataHelper.data8),
-		                       queryUtils.getInsert(IndexesDataHelper.data9),
-		                       queryUtils.getInsert(IndexesDataHelper.data10),
-		                       queryUtils.getInsert(IndexesDataHelper.data11),
-		                       queryUtils.getInsert(IndexesDataHelper.data12),
-		                       queryUtils.getInsert(IndexesDataHelper.data14),
-		                       queryUtils.getInsert(IndexesDataHelper.data15),
-		                       queryUtils.getInsert(IndexesDataHelper.data16),
-		                       queryUtils.getInsert(IndexesDataHelper.data17),
-		                       queryUtils.getInsert(IndexesDataHelper.data18),
-		                       queryUtils.getInsert(IndexesDataHelper.data20),
-		                       queryUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT),
-		                       queryUtils.getInsert(IndexesDataHelper.data1),
-		                       queryUtils.getInsert(IndexesDataHelper.data7),
-		                       queryUtils.getInsert(IndexesDataHelper.data13),
-		                       queryUtils.getInsert(IndexesDataHelper.data19));
+        assertEquals("Expected 20 results!", 20, n);
 
-		// Checking data
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
+        // Dropping index
+        cassandraUtils.dropIndex(TestingConstants.INDEX_NAME_CONSTANT);
 
-		assertEquals("Expected 20 results!", 20, rows.size());
-	}
+        // Recreating index
+        cassandraUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT).waitForIndexRefresh();
 
-	@Test
-	public void recreateIndexAfterInsertionsTest() {
+        // Checking data
+        n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
 
-		// Creating index
-		cassandraUtils.execute(queryUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT),
-		                       queryUtils.getInsert(IndexesDataHelper.data1),
-		                       queryUtils.getInsert(IndexesDataHelper.data2),
-		                       queryUtils.getInsert(IndexesDataHelper.data3),
-		                       queryUtils.getInsert(IndexesDataHelper.data4),
-		                       queryUtils.getInsert(IndexesDataHelper.data5),
-		                       queryUtils.getInsert(IndexesDataHelper.data6),
-		                       queryUtils.getInsert(IndexesDataHelper.data7),
-		                       queryUtils.getInsert(IndexesDataHelper.data8),
-		                       queryUtils.getInsert(IndexesDataHelper.data9),
-		                       queryUtils.getInsert(IndexesDataHelper.data10),
-		                       queryUtils.getInsert(IndexesDataHelper.data11),
-		                       queryUtils.getInsert(IndexesDataHelper.data12),
-		                       queryUtils.getInsert(IndexesDataHelper.data13),
-		                       queryUtils.getInsert(IndexesDataHelper.data14),
-		                       queryUtils.getInsert(IndexesDataHelper.data15),
-		                       queryUtils.getInsert(IndexesDataHelper.data16),
-		                       queryUtils.getInsert(IndexesDataHelper.data17),
-		                       queryUtils.getInsert(IndexesDataHelper.data18),
-		                       queryUtils.getInsert(IndexesDataHelper.data19),
-		                       queryUtils.getInsert(IndexesDataHelper.data20));
-
-		// Checking data
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
-
-		assertEquals("Expected 20 results!", 20, rows.size());
-
-		// Dropping index
-		cassandraUtils.execute(queryUtils.dropIndexQuery(TestingConstants.INDEX_NAME_CONSTANT));
-
-		// Recreating index
-		cassandraUtils.execute(queryUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT));
-
-		// Checking data
-		rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
-
-		assertEquals("Expected 20 results!", 20, rows.size());
-	}
+        assertEquals("Expected 20 results!", 20, n);
+    }
 }

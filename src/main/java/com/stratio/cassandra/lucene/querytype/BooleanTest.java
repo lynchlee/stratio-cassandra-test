@@ -19,171 +19,123 @@ package com.stratio.cassandra.lucene.querytype;
  * Created by Jcalderin on 24/03/14.
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
+import com.datastax.driver.core.Row;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import com.datastax.driver.core.Row;
+import java.util.List;
+
+import static com.stratio.cassandra.index.query.builder.SearchBuilders.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4.class)
 public class BooleanTest extends AbstractWatchedTest {
 
-	@Test
-	public void booleanMustTest() {
+    @Test
+    public void booleanQueryMustTest() {
+        int n = cassandraUtils.query(bool().must(wildcard("ascii_1", "frase*")).must(wildcard("inet_1", "127.0.*")))
+                              .count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
 
-		Map<String, String> query1 = new LinkedHashMap<>();
-		query1.put("type", "wildcard");
-		query1.put("value", "frase*");
-		query1.put("field", "ascii_1");
-		Map<String, String> query2 = new LinkedHashMap<>();
-		query2.put("type", "wildcard");
-		query2.put("value", "127.0.*");
-		query2.put("field", "inet_1");
+    @Test
+    public void booleanQueryShouldTest() {
+        int n = cassandraUtils.query(bool().should(wildcard("ascii_1", "frase*")).should(wildcard("inet_1", "127.0.*")))
+                              .count();
+        assertEquals("Expected 4 results!", 4, n);
+    }
 
-		List<Map<String, String>> subqueries = new LinkedList<>();
-		subqueries.add(query1);
-		subqueries.add(query2);
+    @Test
+    public void booleanQueryMustAndNotTest() {
+        int n = cassandraUtils.query(bool().must(wildcard("ascii_1", "frase*"))
+                                           .must(wildcard("inet_1", "127.0.*"))
+                                           .not(match("inet_1", "127.0.0.1"))).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getBooleanQuery(BooleanSubqueryType.MUST, subqueries, null));
+    @Test
+    public void booleanQueryShouldAndNotTest() {
+        int n = cassandraUtils.query(bool().should(wildcard("ascii_1", "frase*"), wildcard("inet_1", "127.0.*"))
+                                           .not(match("inet_1", "127.0.0.1"))).count();
+        assertEquals("Expected 3 results!", 3, n);
+    }
 
-		assertEquals("Expected 2 results!", 2, rows.size());
-	}
+    @Test
+    public void booleanQueryMustWithBoostTest() {
 
-	@Test
-	public void booleanShouldTest() {
+        List<Row> firstRows = cassandraUtils.query(bool().must(fuzzy("inet_1", "127.1.1.1").boost(0.9))
+                                                         .must(fuzzy("inet_1", "127.1.0.1").boost(0.1))
+                                                         .not(match("integer_1", 1), match("integer_1", -4))).get();
+        assertEquals("Expected 3 results!", 3, firstRows.size());
 
-		Map<String, String> query1 = new LinkedHashMap<>();
-		query1.put("type", "wildcard");
-		query1.put("value", "frase*");
-		query1.put("field", "ascii_1");
-		Map<String, String> query2 = new LinkedHashMap<>();
-		query2.put("type", "wildcard");
-		query2.put("value", "127.0.*");
-		query2.put("field", "inet_1");
+        List<Row> secondRows = cassandraUtils.query(bool().must(fuzzy("inet_1", "127.1.1.1").boost(0.0))
+                                                          .must(fuzzy("inet_1", "127.1.0.1").boost(0.9))
+                                                          .not(match("integer_1", 1), match("integer_1", -4))).get();
+        assertEquals("Expected 3 results!", 3, secondRows.size());
 
-		List<Map<String, String>> subqueries = new LinkedList<>();
-		subqueries.add(query1);
-		subqueries.add(query2);
+        assertEquals("Expected same number of results ", firstRows.size(), secondRows.size());
+        boolean equals = true;
+        for (int i = 0; i < firstRows.size(); i++) {
+            Integer firstResult = firstRows.get(i).getInt("integer_1");
+            Integer secondResult = secondRows.get(i).getInt("integer_1");
+            equals &= firstResult.equals(secondResult);
+        }
+        assertFalse("Expected different sorting!", equals);
+    }
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getBooleanQuery(BooleanSubqueryType.SHOULD, subqueries, null));
+    @Test
+    public void booleanFilterMustTest() {
+        int n = cassandraUtils.filter(bool().must(wildcard("ascii_1", "frase*")).must(wildcard("inet_1", "127.0.*")))
+                              .count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
 
-		assertEquals("Expected 6 results!", 6, rows.size());
-	}
+    @Test
+    public void booleanFilterShouldTest() {
+        int n = cassandraUtils.filter(bool().should(wildcard("ascii_1", "frase*"))
+                                            .should(wildcard("inet_1", "127.0.*"))).count();
+        assertEquals("Expected 4 results!", 4, n);
+    }
 
-	@Test
-	public void booleanMustAndNotTest() {
+    @Test
+    public void booleanFilterMustAndNotTest() {
+        int n = cassandraUtils.filter(bool().must(wildcard("ascii_1", "frase*"))
+                                            .must(wildcard("inet_1", "127.0.*"))
+                                            .not(match("inet_1", "127.0.0.1"))).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
 
-		Map<String, String> query1 = new LinkedHashMap<>();
-		query1.put("type", "wildcard");
-		query1.put("value", "frase*");
-		query1.put("field", "ascii_1");
-		Map<String, String> query2 = new LinkedHashMap<>();
-		query2.put("type", "wildcard");
-		query2.put("value", "127.0.*");
-		query2.put("field", "inet_1");
+    @Test
+    public void booleanFilterShouldAndNotTest() {
+        int n = cassandraUtils.filter(bool().should(wildcard("ascii_1", "frase*"), wildcard("inet_1", "127.0.*"))
+                                            .not(match("inet_1", "127.0.0.1"))).count();
+        assertEquals("Expected 3 results!", 3, n);
+    }
 
-		List<Map<String, String>> subqueries = new LinkedList<>();
-		subqueries.add(query1);
-		subqueries.add(query2);
+    @Test
+    public void booleanFilterMustWithBoostTest() {
 
-		Map<String, String> query3 = new LinkedHashMap<>();
-		query3.put("type", "match");
-		query3.put("value", "127.0.0.1");
-		query3.put("field", "inet_1");
+        List<Row> firstRows = cassandraUtils.filter(bool().must(fuzzy("inet_1", "127.1.1.1").boost(0.9))
+                                                          .must(fuzzy("inet_1", "127.1.0.1").boost(0.1))
+                                                          .not(match("integer_1", 1), match("integer_1", -4))).get();
+        assertEquals("Expected 3 results!", 3, firstRows.size());
 
-		List<Map<String, String>> notQueries = new LinkedList<>();
-		notQueries.add(query3);
+        List<Row> secondRows = cassandraUtils.filter(bool().must(fuzzy("inet_1", "127.1.1.1").boost(0.0))
+                                                           .must(fuzzy("inet_1", "127.1.0.1").boost(0.9))
+                                                           .not(match("integer_1", 1), match("integer_1", -4))).get();
+        assertEquals("Expected 3 results!", 3, secondRows.size());
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getBooleanQuery(BooleanSubqueryType.MUST,
-		                                                                   subqueries,
-		                                                                   notQueries));
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
-
-	@Test
-	public void booleanShouldAndNotTest() {
-
-		Map<String, String> query1 = new LinkedHashMap<>();
-		query1.put("type", "wildcard");
-		query1.put("value", "frase*");
-		query1.put("field", "ascii_1");
-		Map<String, String> query2 = new LinkedHashMap<>();
-		query2.put("type", "wildcard");
-		query2.put("value", "127.0.*");
-		query2.put("field", "inet_1");
-
-		List<Map<String, String>> subqueries = new LinkedList<>();
-		subqueries.add(query1);
-		subqueries.add(query2);
-
-		Map<String, String> query3 = new LinkedHashMap<>();
-		query3.put("type", "match");
-		query3.put("value", "127.0.0.1");
-		query3.put("field", "inet_1");
-
-		List<Map<String, String>> notQueries = new LinkedList<>();
-		notQueries.add(query3);
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getBooleanQuery(BooleanSubqueryType.SHOULD,
-		                                                                   subqueries,
-		                                                                   notQueries));
-
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
-
-	@Test
-	public void booleanMustWithBoostTest() {
-
-		cassandraUtils.execute(queryUtils.getInsert(QueryTypeDataHelper.data5),
-		                       queryUtils.getInsert(QueryTypeDataHelper.data6),
-		                       queryUtils.getInsert(QueryTypeDataHelper.data7));
-
-		Map<String, String> query1 = new LinkedHashMap<>();
-		query1.put("type", "match");
-		query1.put("value", "frase");
-		query1.put("field", "text_1");
-		query1.put("boost", "0.9");
-		Map<String, String> query2 = new LinkedHashMap<>();
-		query2.put("type", "fuzzy");
-		query2.put("value", "127.1.0.1");
-		query2.put("field", "inet_1");
-		query2.put("boost", "0.0");
-
-		List<Map<String, String>> subqueries = new LinkedList<>();
-		subqueries.add(query1);
-		subqueries.add(query2);
-
-		List<Row> firstRows = cassandraUtils.execute(queryUtils.getBooleanQuery(BooleanSubqueryType.MUST,
-		                                                                        subqueries,
-		                                                                        null));
-
-		assertEquals("Expected 3 results!", 3, firstRows.size());
-
-		// Modifying boost values
-		query1.put("boost", "0.0");
-		query2.put("boost", "0.9");
-
-		List<Row> secondRows = cassandraUtils.execute(queryUtils.getBooleanQuery(BooleanSubqueryType.MUST,
-		                                                                         subqueries,
-		                                                                         null));
-
-		assertEquals("Expected 3 results!", 3, secondRows.size());
-
-		Row firstSetFirstRow = firstRows.get(0);
-		Row secondSetFirstRow = secondRows.get(0);
-
-		assertNotEquals("Expected different values!",
-		                firstSetFirstRow.getInt("integer_1"),
-		                secondSetFirstRow.getInt("integer_1"));
-	}
+        assertEquals("Expected same number of results ", firstRows.size(), secondRows.size());
+        boolean equals = true;
+        for (int i = 0; i < firstRows.size(); i++) {
+            Integer firstResult = firstRows.get(i).getInt("integer_1");
+            Integer secondResult = secondRows.get(i).getInt("integer_1");
+            equals &= firstResult.equals(secondResult);
+        }
+        assertTrue("Expected same sorting!", equals);
+    }
 
 }

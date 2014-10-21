@@ -15,49 +15,37 @@
  */
 package com.stratio.cassandra.lucene;
 
+import com.stratio.cassandra.lucene.suite.*;
 import org.apache.log4j.Logger;
 import org.junit.runner.JUnitCore;
 
-import com.stratio.cassandra.lucene.suite.BreakDownSuite;
-import com.stratio.cassandra.lucene.suite.CollectionsSuite;
-import com.stratio.cassandra.lucene.suite.ComplexNumericPrimaryKeySuite;
-import com.stratio.cassandra.lucene.suite.ComposedNumericPrimaryKeySuite;
-import com.stratio.cassandra.lucene.suite.DeletionSuite;
-import com.stratio.cassandra.lucene.suite.IndexesSuite;
-import com.stratio.cassandra.lucene.suite.MultipleNumericPrimaryKeySuite;
-import com.stratio.cassandra.lucene.suite.SingleNumericPrimaryKeySuite;
-import com.stratio.cassandra.lucene.suite.SingleStringPrimaryKeySuite;
-import com.stratio.cassandra.lucene.suite.SingleTextPrimaryKeySuite;
-import com.stratio.cassandra.lucene.suite.StoriesSuite;
-import com.stratio.cassandra.lucene.suite.VariaSuite;
-
 public class LuceneTestsLauncher {
 
-	private static final Logger logger = Logger.getLogger(LuceneTestsLauncher.class);
+    private static final Logger logger = Logger.getLogger(LuceneTestsLauncher.class);
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		if (args.length != 2) {
-			System.err.println("You must set the arguments: %1 - replication factor; %2 - consistency level");
-			return;
-		} else {
-			System.setProperty(TestingConstants.REPLICATION_FACTOR_CONSTANT_NAME, args[0]);
-			System.setProperty(TestingConstants.CONSISTENCY_LEVEL_CONSTANT_NAME, args[1]);
-		}
+        if (args.length != 2) {
+            System.err.println("You must set the arguments: %1 - replication factor; %2 - consistency level");
+            return;
+        } else {
+            System.setProperty(TestingConstants.REPLICATION_FACTOR_CONSTANT_NAME, args[0]);
+            System.setProperty(TestingConstants.CONSISTENCY_LEVEL_CONSTANT_NAME, args[1]);
+        }
 
-		JUnitCore.runClasses(CollectionsSuite.class,
-		                     ComplexNumericPrimaryKeySuite.class,
-		                     ComposedNumericPrimaryKeySuite.class,
-		                     DeletionSuite.class,
-		                     IndexesSuite.class,
-		                     MultipleNumericPrimaryKeySuite.class,
-		                     SingleNumericPrimaryKeySuite.class,
-		                     SingleStringPrimaryKeySuite.class,
-		                     SingleTextPrimaryKeySuite.class,
-		                     VariaSuite.class,
-		                     BreakDownSuite.class,
-		                     StoriesSuite.class);
+        JUnitCore.runClasses(ComplexNumericPrimaryKeySuite.class,
+                             ComposedNumericPrimaryKeySuite.class,
+                             MultipleNumericPrimaryKeySuite.class,
+                             SingleNumericPrimaryKeySuite.class,
+                             SingleStringPrimaryKeySuite.class,
+                             SingleTextPrimaryKeySuite.class);
 
-		logger.info("Tests finished!");
-	}
+        JUnitCore.runClasses(DeletionSuite.class);
+        JUnitCore.runClasses(IndexesSuite.class);
+        JUnitCore.runClasses(VariaSuite.class);
+        JUnitCore.runClasses(BreakDownSuite.class);
+        JUnitCore.runClasses(StoriesSuite.class);
+
+        logger.info("Tests finished!");
+    }
 }

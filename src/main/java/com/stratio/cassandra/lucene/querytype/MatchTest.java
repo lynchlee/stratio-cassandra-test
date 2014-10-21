@@ -15,614 +15,847 @@
  */
 package com.stratio.cassandra.lucene.querytype;
 
-/**
- * Created by Jcalderin on 24/03/14.
- */
-
-import static org.junit.Assert.assertEquals;
+import com.datastax.driver.core.exceptions.DriverInternalError;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.exceptions.InvalidQueryException;
+import static com.stratio.cassandra.index.query.builder.SearchBuilders.match;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
 public class MatchTest extends AbstractWatchedTest {
 
-	@Test
-	public void matchAsciiFieldTest1() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("ascii_1", "frase tipo ascii", null));
-
-		
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
-
-	@Test
-	public void matchAsciiFieldTest2() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("ascii_1", "frase", null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void matchAsciiFieldTest3() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("ascii_1", "frase tipo asciii", null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test(expected = InvalidQueryException.class)
-	public void matchAsciiFieldTest4() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("ascii_1", "", null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void matchAsciiFieldTest5() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("ascii_1", "frase tipo asci", null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void matchBigintTest2() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("bigint_1", "1000000000000000", null));
-
-		
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
-
-	@Test
-	public void matchBigintTest3() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("bigint_1", "3000000000000000", null));
-
-		
-
-		assertEquals("Expected 3 results!", 3, rows.size());
-	}
-
-	@Test
-	public void matchBigintTest4() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("bigint_1", "10000000000000000", null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void matchBigintTest5() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("bigint_1", "100000000000000", null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test(expected = InvalidQueryException.class)
-	public void matchBlobTest1() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("blob_1", "", null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void matchBlobTest2() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("blob_1", "3E0A16", null));
-
-		
-
-		assertEquals("Expected 4 results!", 4, rows.size());
-	}
-
-	@Test
-	public void matchBlobTest3() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("blob_1", "3E0A161", null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void matchBlobTest4() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("blob_1", "3E0A1", null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void matchBlobTest5() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("blob_1", "3E0A15", null));
-
-		
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
-
-	@Test(expected = InvalidQueryException.class)
-	public void matchBooleanTest1() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("boolean_1", "", null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void matchBooleanTest3() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("boolean_1", "true", null));
-
-		
-
-		assertEquals("Expected 4 results!", 4, rows.size());
-	}
-
-	@Test
-	public void matchBooleanTest4() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("boolean_1", "false", null));
-
-		
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
-
-	@Test
-	public void matchBooleanTest5() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("boolean_1", "else", null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void matchDecimalTest2() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("decimal_1", "3000000000.0", null));
-
-		
-
-		assertEquals("Expected 3 results!", 3, rows.size());
-	}
-
-	@Test
-	public void matchDecimalTest3() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("decimal_1", "300000000.0", null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void matchDecimalTest4() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("decimal_1", "3000000000.00", null));
-
-		
-
-		assertEquals("Expected 3 results!", 3, rows.size());
-	}
-
-	@Test
-	public void matchDecimalTest5() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("decimal_1", "1000000000.0", null));
-
-		
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
-
-	@Test
-	public void matchDateTest1() {
-
-		DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
-		Date date = new Date();
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("date_1", df.format(date), null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void matchDateTest2() {
-
-		DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.DATE, -1);
-		Date date = calendar.getTime();
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("date_1", df.format(date), null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void matchDateTest3() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("date_1",
-		                                                                        "1970/01/01 00:00:00.000",
-		                                                                        null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void matchDateTest4() {
-
-		DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.DATE, -1);
-		Date date = calendar.getTime();
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("date_1", df.format(date), null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void matchDoubleTest1() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("double_1", "0", null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void matchDoubleTest2() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("double_1", "2.0", null));
-
-		
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
-
-	@Test
-	public void matchDoubleTest3() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("double_1", "2", null));
-
-		
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
-
-	@Test
-	public void matchDoubleTest4() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("double_1", "2.00", null));
-
-		
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
-
-	@Test
-	public void matchFloatTest1() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("float_1", "0", null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void matchFloatTest2() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("float_1", "2.0", null));
-
-		
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
-
-	@Test
-	public void matchFloatTest3() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("float_1", "2", null));
-
-		
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
-
-	@Test
-	public void matchFloatTest4() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("float_1", "2.00", null));
-
-		
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
-
-	@Test
-	public void matchIntegerTest1() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("integer_1", "-2", null));
-
-		
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
-
-	@Test
-	public void matchIntegerTest2() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("integer_1", "2", null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void matchIntegerTest3() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("integer_1", "0", null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void matchIntegerTest4() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("integer_1", "-1", null));
-
-		
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
-
-	@Test
-	public void matchUuidTest1() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("uuid_1", "0", null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void matchUuidTest2() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("uuid_1",
-		                                                                        "60297440-b4fa-11e3-8b5a-0002a5d5c51b",
-		                                                                        null));
-
-		
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
-
-	@Test
-	public void matchUuidTest3() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("uuid_1",
-		                                                                        "60297440-b4fa-11e3-0002a5d5c51b",
-		                                                                        null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void matchTimeuuidTest1() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("timeuuid_1", "0", null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void matchTimeuuidTest2() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("timeuuid_1",
-		                                                                        "a4a70900-24e1-11df-8924-001ff3591711",
-		                                                                        null));
-
-		
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
-
-	@Test
-	public void matchTimeuuidTest3() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("timeuuid_1",
-		                                                                        "a4a70900-24e1-11df-001ff3591711",
-		                                                                        null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void matchInetFieldTest1() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("inet_1", "127.1.1.1", null));
-
-		
-
-		assertEquals("Expected 2 results!", 2, rows.size());
-	}
-
-	@Test
-	public void matchInetFieldTest2() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("inet_1", "127.0.1.1", null));
-
-		
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
-
-	@Test
-	public void matchInetFieldTest3() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("inet_1", "127.0.1.1.", null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test(expected = InvalidQueryException.class)
-	public void matchInetFieldTest4() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("inet_1", "", null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void matchTextFieldTest1() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("text_1", "Frase", null));
-
-		
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
-
-	@Test
-	public void matchTextFieldTest2() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("text_1", "Frase*", null));
-
-		
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
-
-	@Test
-	public void matchTextFieldTest3() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("text_1",
-		                                                                        "Frasesinespaciosconarticulosylaspalabrassuficientesperomaslarga",
-		                                                                        null));
-
-		
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
-
-	@Test(expected = InvalidQueryException.class)
-	public void matchTextFieldTest4() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("text_1", "", null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void matchVarcharFieldTest1() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("varchar_1",
-		                                                                        "frasesencillasinespaciosperomaslarga",
-		                                                                        null));
-
-		
-
-		assertEquals("Expected 2 results!", 2, rows.size());
-	}
-
-	@Test
-	public void matchVarcharFieldTest2() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("varchar_1", "frase*", null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
-
-	@Test
-	public void matchVarcharFieldTest3() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("varchar_1",
-		                                                                        "frasesencillasinespacios",
-		                                                                        null));
-
-		
-
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
-
-	@Test(expected = InvalidQueryException.class)
-	public void matchVarcharFieldTest4() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getMatchQuery("varchar_1", "", null));
-
-		
-
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
+    @Test
+    public void matchQueryAsciiFieldTest1() {
+        int n = cassandraUtils.query(match("ascii_1", "frase tipo ascii")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchQueryAsciiFieldTest2() {
+        int n = cassandraUtils.query(match("ascii_1", "frase")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryAsciiFieldTest3() {
+        int n = cassandraUtils.query(match("ascii_1", "frase tipo asciii")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test(expected = DriverInternalError.class)
+    public void matchQueryAsciiFieldTest4() {
+        int n = cassandraUtils.query(match("ascii_1", "")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryAsciiFieldTest5() {
+        int n = cassandraUtils.query(match("ascii_1", "frase tipo asci")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryBigintTest2() {
+        int n = cassandraUtils.query(match("bigint_1", "1000000000000000")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchQueryBigintTest3() {
+        int n = cassandraUtils.query(match("bigint_1", "3000000000000000")).count();
+        assertEquals("Expected 3 results!", 3, n);
+    }
+
+    @Test
+    public void matchQueryBigintTest4() {
+        int n = cassandraUtils.query(match("bigint_1", "10000000000000000")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryBigintTest5() {
+        int n = cassandraUtils.query(match("bigint_1", "100000000000000")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test(expected = DriverInternalError.class)
+    public void matchQueryBlobTest1() {
+        int n = cassandraUtils.query(match("blob_1", "")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryBlobTest2() {
+        int n = cassandraUtils.query(match("blob_1", "3E0A16")).count();
+        assertEquals("Expected 4 results!", 4, n);
+    }
+
+    @Test
+    public void matchQueryBlobTest3() {
+        int n = cassandraUtils.query(match("blob_1", "3E0A161")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryBlobTest4() {
+        int n = cassandraUtils.query(match("blob_1", "3E0A1")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryBlobTest5() {
+        int n = cassandraUtils.query(match("blob_1", "3E0A15")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test(expected = DriverInternalError.class)
+    public void matchQueryBooleanTest1() {
+        int n = cassandraUtils.query(match("boolean_1", "")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryBooleanTest3() {
+        int n = cassandraUtils.query(match("boolean_1", "true")).count();
+        assertEquals("Expected 4 results!", 4, n);
+    }
+
+    @Test
+    public void matchQueryBooleanTest4() {
+        int n = cassandraUtils.query(match("boolean_1", "false")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchQueryBooleanTest5() {
+        int n = cassandraUtils.query(match("boolean_1", "else")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryDecimalTest2() {
+        int n = cassandraUtils.query(match("decimal_1", "3000000000.0")).count();
+        assertEquals("Expected 3 results!", 3, n);
+    }
+
+    @Test
+    public void matchQueryDecimalTest3() {
+        int n = cassandraUtils.query(match("decimal_1", "300000000.0")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryDecimalTest4() {
+        int n = cassandraUtils.query(match("decimal_1", "3000000000.0")).count();
+        assertEquals("Expected 3 results!", 3, n);
+    }
+
+    @Test
+    public void matchQueryDecimalTest5() {
+        int n = cassandraUtils.query(match("decimal_1", "1000000000.0")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchQueryDateTest1() {
+
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
+        Date date = new Date();
+
+        int n = cassandraUtils.query(match("date_1", df.format(date))).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryDateTest2() {
+
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, -1);
+        Date date = calendar.getTime();
+
+        int n = cassandraUtils.query(match("date_1", df.format(date))).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryDateTest3() {
+        int n = cassandraUtils.query(match("date_1", "1970/01/01 00:00:00.000")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryDateTest4() {
+
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, -1);
+        Date date = calendar.getTime();
+
+        int n = cassandraUtils.query(match("date_1", df.format(date))).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryDoubleTest1() {
+        int n = cassandraUtils.query(match("double_1", "0")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryDoubleTest2() {
+        int n = cassandraUtils.query(match("double_1", "2.0")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchQueryDoubleTest3() {
+        int n = cassandraUtils.query(match("double_1", "2")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchQueryDoubleTest4() {
+        int n = cassandraUtils.query(match("double_1", "2.00")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchQueryFloatTest1() {
+        int n = cassandraUtils.query(match("float_1", "0")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryFloatTest2() {
+        int n = cassandraUtils.query(match("float_1", "2.0")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchQueryFloatTest3() {
+        int n = cassandraUtils.query(match("float_1", "2")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchQueryFloatTest4() {
+        int n = cassandraUtils.query(match("float_1", "2.00")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchQueryIntegerTest1() {
+        int n = cassandraUtils.query(match("integer_1", "-2")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchQueryIntegerTest2() {
+        int n = cassandraUtils.query(match("integer_1", "2")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryIntegerTest3() {
+        int n = cassandraUtils.query(match("integer_1", "0")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryIntegerTest4() {
+        int n = cassandraUtils.query(match("integer_1", "-1")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchQueryUuidTest1() {
+        int n = cassandraUtils.query(match("uuid_1", "0")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryUuidTest2() {
+
+        int n = cassandraUtils.query(match("uuid_1", "60297440-b4fa-11e3-8b5a-0002a5d5c51b")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchQueryUuidTest3() {
+        int n = cassandraUtils.query(match("uuid_1", "60297440-b4fa-11e3-0002a5d5c51b")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryTimeuuidTest1() {
+        int n = cassandraUtils.query(match("timeuuid_1", "0")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryTimeuuidTest2() {
+        int n = cassandraUtils.query(match("timeuuid_1", "a4a70900-24e1-11df-8924-001ff3591711")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchQueryTimeuuidTest3() {
+        int n = cassandraUtils.query(match("timeuuid_1", "a4a70900-24e1-11df-001ff3591711")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryInetFieldTest1() {
+        int n = cassandraUtils.query(match("inet_1", "127.1.1.1")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
+
+    @Test
+    public void matchQueryInetFieldTest2() {
+        int n = cassandraUtils.query(match("inet_1", "127.0.1.1")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchQueryInetFieldTest3() {
+        int n = cassandraUtils.query(match("inet_1", "127.1.1.")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test(expected = DriverInternalError.class)
+    public void matchQueryInetFieldTest4() {
+        int n = cassandraUtils.query(match("inet_1", "")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryTextFieldTest1() {
+        int n = cassandraUtils.query(match("text_1", "Frase")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchQueryTextFieldTest2() {
+        int n = cassandraUtils.query(match("text_1", "Frase*")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchQueryTextFieldTest3() {
+        int n = cassandraUtils.query(match("text_1", "Frasesinespaciosconarticulosylaspalabrassuficientesperomaslarga"))
+                              .count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test(expected = DriverInternalError.class)
+    public void matchQueryTextFieldTest4() {
+        int n = cassandraUtils.query(match("text_1", "")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryVarcharFieldTest1() {
+        int n = cassandraUtils.query(match("varchar_1", "frasesencillasinespaciosperomaslarga")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
+
+    @Test
+    public void matchQueryVarcharFieldTest2() {
+        int n = cassandraUtils.query(match("varchar_1", "frase*")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryVarcharFieldTest3() {
+        int n = cassandraUtils.query(match("varchar_1", "frasesencillasinespacios")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test(expected = DriverInternalError.class)
+    public void matchQueryVarcharFieldTest4() {
+        int n = cassandraUtils.query(match("varchar_1", "")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test(expected = DriverInternalError.class)
+    public void matchQueryListFieldTest1() {
+        int n = cassandraUtils.query(match("list_1", "")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryListFieldTest2() {
+        int n = cassandraUtils.query(match("list_1", "l1")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
+
+    @Test
+    public void matchQueryListFieldTest3() {
+        int n = cassandraUtils.query(match("list_1", "s1")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test(expected = DriverInternalError.class)
+    public void matchQuerySetFieldTest1() {
+        int n = cassandraUtils.query(match("set_1", "")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQuerySetFieldTest2() {
+        int n = cassandraUtils.query(match("set_1", "l1")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQuerySetFieldTest3() {
+        int n = cassandraUtils.query(match("set_1", "s1")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
+
+    @Test(expected = DriverInternalError.class)
+    public void matchQueryMapFieldTest1() {
+        int n = cassandraUtils.query(match("map_1.k1", "")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryMapFieldTest2() {
+        int n = cassandraUtils.query(match("map_1.k1", "l1")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryMapFieldTest3() {
+        int n = cassandraUtils.query(match("map_1.k1", "k1")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchQueryMapFieldTest4() {
+        int n = cassandraUtils.query(match("map_1.k1", "v1")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
+
+    @Test
+    public void matchFilterAsciiFieldTest1() {
+        int n = cassandraUtils.filter(match("ascii_1", "frase tipo ascii")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchFilterAsciiFieldTest2() {
+        int n = cassandraUtils.filter(match("ascii_1", "frase")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterAsciiFieldTest3() {
+        int n = cassandraUtils.filter(match("ascii_1", "frase tipo asciii")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test(expected = DriverInternalError.class)
+    public void matchFilterAsciiFieldTest4() {
+        int n = cassandraUtils.filter(match("ascii_1", "")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterAsciiFieldTest5() {
+        int n = cassandraUtils.filter(match("ascii_1", "frase tipo asci")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterBigintTest2() {
+        int n = cassandraUtils.filter(match("bigint_1", "1000000000000000")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchFilterBigintTest3() {
+        int n = cassandraUtils.filter(match("bigint_1", "3000000000000000")).count();
+        assertEquals("Expected 3 results!", 3, n);
+    }
+
+    @Test
+    public void matchFilterBigintTest4() {
+        int n = cassandraUtils.filter(match("bigint_1", "10000000000000000")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterBigintTest5() {
+        int n = cassandraUtils.filter(match("bigint_1", "100000000000000")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test(expected = DriverInternalError.class)
+    public void matchFilterBlobTest1() {
+        int n = cassandraUtils.filter(match("blob_1", "")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterBlobTest2() {
+        int n = cassandraUtils.filter(match("blob_1", "3E0A16")).count();
+        assertEquals("Expected 4 results!", 4, n);
+    }
+
+    @Test
+    public void matchFilterBlobTest3() {
+        int n = cassandraUtils.filter(match("blob_1", "3E0A161")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterBlobTest4() {
+        int n = cassandraUtils.filter(match("blob_1", "3E0A1")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterBlobTest5() {
+        int n = cassandraUtils.filter(match("blob_1", "3E0A15")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test(expected = DriverInternalError.class)
+    public void matchFilterBooleanTest1() {
+        int n = cassandraUtils.filter(match("boolean_1", "")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterBooleanTest3() {
+        int n = cassandraUtils.filter(match("boolean_1", "true")).count();
+        assertEquals("Expected 4 results!", 4, n);
+    }
+
+    @Test
+    public void matchFilterBooleanTest4() {
+        int n = cassandraUtils.filter(match("boolean_1", "false")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchFilterBooleanTest5() {
+        int n = cassandraUtils.filter(match("boolean_1", "else")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterDecimalTest2() {
+        int n = cassandraUtils.filter(match("decimal_1", "3000000000.0")).count();
+        assertEquals("Expected 3 results!", 3, n);
+    }
+
+    @Test
+    public void matchFilterDecimalTest3() {
+        int n = cassandraUtils.filter(match("decimal_1", "300000000.0")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterDecimalTest4() {
+        int n = cassandraUtils.filter(match("decimal_1", "3000000000.0")).count();
+        assertEquals("Expected 3 results!", 3, n);
+    }
+
+    @Test
+    public void matchFilterDecimalTest5() {
+        int n = cassandraUtils.filter(match("decimal_1", "1000000000.0")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchFilterDateTest1() {
+
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
+        Date date = new Date();
+
+        int n = cassandraUtils.filter(match("date_1", df.format(date))).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterDateTest2() {
+
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, -1);
+        Date date = calendar.getTime();
+
+        int n = cassandraUtils.filter(match("date_1", df.format(date))).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterDateTest3() {
+        int n = cassandraUtils.filter(match("date_1", "1970/01/01 00:00:00.000")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterDateTest4() {
+
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, -1);
+        Date date = calendar.getTime();
+
+        int n = cassandraUtils.filter(match("date_1", df.format(date))).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterDoubleTest1() {
+        int n = cassandraUtils.filter(match("double_1", "0")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterDoubleTest2() {
+        int n = cassandraUtils.filter(match("double_1", "2.0")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchFilterDoubleTest3() {
+        int n = cassandraUtils.filter(match("double_1", "2")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchFilterDoubleTest4() {
+        int n = cassandraUtils.filter(match("double_1", "2.00")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchFilterFloatTest1() {
+        int n = cassandraUtils.filter(match("float_1", "0")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterFloatTest2() {
+        int n = cassandraUtils.filter(match("float_1", "2.0")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchFilterFloatTest3() {
+        int n = cassandraUtils.filter(match("float_1", "2")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchFilterFloatTest4() {
+        int n = cassandraUtils.filter(match("float_1", "2.00")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchFilterIntegerTest1() {
+        int n = cassandraUtils.filter(match("integer_1", "-2")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchFilterIntegerTest2() {
+        int n = cassandraUtils.filter(match("integer_1", "2")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterIntegerTest3() {
+        int n = cassandraUtils.filter(match("integer_1", "0")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterIntegerTest4() {
+        int n = cassandraUtils.filter(match("integer_1", "-1")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchFilterUuidTest1() {
+        int n = cassandraUtils.filter(match("uuid_1", "0")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterUuidTest2() {
+
+        int n = cassandraUtils.filter(match("uuid_1", "60297440-b4fa-11e3-8b5a-0002a5d5c51b")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchFilterUuidTest3() {
+        int n = cassandraUtils.filter(match("uuid_1", "60297440-b4fa-11e3-0002a5d5c51b")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterTimeuuidTest1() {
+        int n = cassandraUtils.filter(match("timeuuid_1", "0")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterTimeuuidTest2() {
+        int n = cassandraUtils.filter(match("timeuuid_1", "a4a70900-24e1-11df-8924-001ff3591711")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchFilterTimeuuidTest3() {
+        int n = cassandraUtils.filter(match("timeuuid_1", "a4a70900-24e1-11df-001ff3591711")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterInetFieldTest1() {
+        int n = cassandraUtils.filter(match("inet_1", "127.1.1.1")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
+
+    @Test
+    public void matchFilterInetFieldTest2() {
+        int n = cassandraUtils.filter(match("inet_1", "127.0.1.1")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchFilterInetFieldTest3() {
+        int n = cassandraUtils.filter(match("inet_1", "127.1.1.")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test(expected = DriverInternalError.class)
+    public void matchFilterInetFieldTest4() {
+        int n = cassandraUtils.filter(match("inet_1", "")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterTextFieldTest1() {
+        int n = cassandraUtils.filter(match("text_1", "Frase")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchFilterTextFieldTest2() {
+        int n = cassandraUtils.filter(match("text_1", "Frase*")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test
+    public void matchFilterTextFieldTest3() {
+        int n = cassandraUtils.filter(match("text_1",
+                                            "Frasesinespaciosconarticulosylaspalabrassuficientesperomaslarga")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test(expected = DriverInternalError.class)
+    public void matchFilterTextFieldTest4() {
+        int n = cassandraUtils.filter(match("text_1", "")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterVarcharFieldTest1() {
+        int n = cassandraUtils.filter(match("varchar_1", "frasesencillasinespaciosperomaslarga")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
+
+    @Test
+    public void matchFilterVarcharFieldTest2() {
+        int n = cassandraUtils.filter(match("varchar_1", "frase*")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterVarcharFieldTest3() {
+        int n = cassandraUtils.filter(match("varchar_1", "frasesencillasinespacios")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
+
+    @Test(expected = DriverInternalError.class)
+    public void matchFilterVarcharFieldTest4() {
+        int n = cassandraUtils.filter(match("varchar_1", "")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test(expected = DriverInternalError.class)
+    public void matchFilterListFieldTest1() {
+        int n = cassandraUtils.filter(match("list_1", "")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterListFieldTest2() {
+        int n = cassandraUtils.filter(match("list_1", "l1")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
+
+    @Test
+    public void matchFilterListFieldTest3() {
+        int n = cassandraUtils.filter(match("list_1", "s1")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test(expected = DriverInternalError.class)
+    public void matchFilterSetFieldTest1() {
+        int n = cassandraUtils.filter(match("set_1", "")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterSetFieldTest2() {
+        int n = cassandraUtils.filter(match("set_1", "l1")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterSetFieldTest3() {
+        int n = cassandraUtils.filter(match("set_1", "s1")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
+
+    @Test(expected = DriverInternalError.class)
+    public void matchFilterMapFieldTest1() {
+        int n = cassandraUtils.filter(match("map_1.k1", "")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterMapFieldTest2() {
+        int n = cassandraUtils.filter(match("map_1.k1", "l1")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterMapFieldTest3() {
+        int n = cassandraUtils.filter(match("map_1.k1", "k1")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void matchFilterMapFieldTest4() {
+        int n = cassandraUtils.filter(match("map_1.k1", "v1")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
 }

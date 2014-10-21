@@ -15,206 +15,157 @@
  */
 package com.stratio.cassandra.lucene.deletion;
 
-/**
- * Created by Jcalderin on 24/03/14.
- */
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.datastax.driver.core.Row;
+import com.stratio.cassandra.lucene.TestingConstants;
+import com.stratio.cassandra.lucene.util.CassandraUtils;
 import org.apache.log4j.Logger;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import com.datastax.driver.core.Row;
-import com.stratio.cassandra.lucene.TestingConstants;
-import com.stratio.cassandra.lucene.util.CassandraUtils;
-import com.stratio.cassandra.lucene.util.QueryUtils;
-import com.stratio.cassandra.lucene.util.QueryUtilsBuilder;
+import java.util.List;
+import java.util.Map;
+
+import static com.stratio.cassandra.index.query.builder.SearchBuilders.wildcard;
+import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
 public class ComposedKeyDataDeletionTest {
 
-	private static final Logger logger = Logger.getLogger(ComposedKeyDataDeletionTest.class);
+    private CassandraUtils cassandraUtils;
 
-	private static QueryUtils queryUtils;
+    @Before
+    public void before() {
 
-	private static CassandraUtils cassandraUtils;
+        cassandraUtils = CassandraUtils.builder()
+                                       .withHost(TestingConstants.CASSANDRA_LOCALHOST_CONSTANT)
+                                       .withTable(TestingConstants.TABLE_NAME_CONSTANT)
+                                       .withIndexColumn(TestingConstants.INDEX_COLUMN_CONSTANT)
+                                       .withPartitionKey("integer_1", "ascii_1")
+                                       .withClusteringKey()
+                                       .withColumn("ascii_1", "ascii")
+                                       .withColumn("bigint_1", "bigint")
+                                       .withColumn("blob_1", "blob")
+                                       .withColumn("boolean_1", "boolean")
+                                       .withColumn("decimal_1", "decimal")
+                                       .withColumn("date_1", "timestamp")
+                                       .withColumn("double_1", "double")
+                                       .withColumn("float_1", "float")
+                                       .withColumn("integer_1", "int")
+                                       .withColumn("inet_1", "inet")
+                                       .withColumn("text_1", "text")
+                                       .withColumn("varchar_1", "varchar")
+                                       .withColumn("uuid_1", "uuid")
+                                       .withColumn("timeuuid_1", "timeuuid")
+                                       .withColumn("list_1", "list<text>")
+                                       .withColumn("set_1", "set<text>")
+                                       .withColumn("map_1", "map<text,text>")
+                                       .withColumn("lucene", "text")
+                                       .build()
+                                       .createKeyspace()
+                                       .createTable()
+                                       .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                                       .insert(DeletionDataHelper.data1)
+                                       .insert(DeletionDataHelper.data2)
+                                       .insert(DeletionDataHelper.data3)
+                                       .insert(DeletionDataHelper.data4)
+                                       .insert(DeletionDataHelper.data5)
+                                       .insert(DeletionDataHelper.data6)
+                                       .insert(DeletionDataHelper.data7)
+                                       .insert(DeletionDataHelper.data8)
+                                       .insert(DeletionDataHelper.data9)
+                                       .insert(DeletionDataHelper.data10)
+                                       .waitForIndexRefresh();
+    }
 
-	@BeforeClass
-	public static void setUpSuite() {
+    @After
+    public void after() {
+        cassandraUtils.dropKeyspace().disconnect();
+    }
 
-		// Initializing suite data
-		Map<String, String> columns = new LinkedHashMap<String, String>();
-		columns.put("ascii_1", "ascii");
-		columns.put("bigint_1", "bigint");
-		columns.put("blob_1", "blob");
-		columns.put("boolean_1", "boolean");
-		columns.put("decimal_1", "decimal");
-		columns.put("date_1", "timestamp");
-		columns.put("double_1", "double");
-		columns.put("float_1", "float");
-		columns.put("integer_1", "int");
-		columns.put("inet_1", "inet");
-		columns.put("text_1", "text");
-		columns.put("varchar_1", "varchar");
-		columns.put("uuid_1", "uuid");
-		columns.put("timeuuid_1", "timeuuid");
-		columns.put("list_1", "list<text>");
-		columns.put("set_1", "set<text>");
-		columns.put("map_1", "map<text,text>");
-		columns.put("lucene", "text");
+    @Test
+    public void columnDeletion() {
 
-		Map<String, List<String>> primaryKey = new LinkedHashMap<String, List<String>>();
-		String[] inarray = { "integer_1", "ascii_1" };
-		String[] outarray = {};
-		List<String> in = Arrays.asList(inarray);
-		List<String> out = Arrays.asList(outarray);
-		primaryKey.put("in", in);
-		primaryKey.put("out", out);
+        cassandraUtils.deleteValueByCondition("bigint_1", "integer_1 = 1 and ascii_1 = 'ascii'").waitForIndexRefresh();
 
-		queryUtils = new QueryUtilsBuilder(TestingConstants.TABLE_NAME_CONSTANT,
-		                                   columns,
-		                                   primaryKey,
-		                                   TestingConstants.INDEX_COLUMN_CONSTANT).build();
+        List<Row> rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
-		cassandraUtils = new CassandraUtils(TestingConstants.CASSANDRA_LOCALHOST_CONSTANT);
-	};
+        assertEquals("Expected 10 results!", 10, rows.size());
 
-	@AfterClass
-	public static void tearDownSuite() {
+        int integerValue;
+        String asciiValue;
+        double doubleValue;
+        for (Row row : rows) {
+            integerValue = row.getInt("integer_1");
+            asciiValue = row.getString("ascii_1");
+            doubleValue = row.getDouble("double_1");
+            if ((integerValue == 1) && (asciiValue.equals("ascii")) && (doubleValue == 1)) {
+                assertTrue("Must be null!", row.isNull("bigint_1"));
+            }
+        }
+    }
 
-		cassandraUtils.disconnect();
-	};
+    @Test
+    public void mapElementDeletion() {
 
-	@Before
-	public void setUp() throws InterruptedException {
+        cassandraUtils.deleteValueByCondition("map_1['k1']", "integer_1 = 1 and ascii_1 = 'ascii'")
+                      .waitForIndexRefresh();
 
-		cassandraUtils.execute(queryUtils.createKeyspaceQuery(),
-		                       queryUtils.createTableQuery(),
-		                       queryUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT),
-		                       queryUtils.getInsert(DeletionDataHelper.data1),
-		                       queryUtils.getInsert(DeletionDataHelper.data2),
-		                       queryUtils.getInsert(DeletionDataHelper.data3),
-		                       queryUtils.getInsert(DeletionDataHelper.data4),
-		                       queryUtils.getInsert(DeletionDataHelper.data5),
-		                       queryUtils.getInsert(DeletionDataHelper.data6),
-		                       queryUtils.getInsert(DeletionDataHelper.data7),
-		                       queryUtils.getInsert(DeletionDataHelper.data8),
-		                       queryUtils.getInsert(DeletionDataHelper.data9),
-		                       queryUtils.getInsert(DeletionDataHelper.data10));
-	}
+        List<Row> rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
-	@After
-	public void tearDown() {
-		// Dropping keyspace
-		logger.debug("Dropping keyspace");
-		cassandraUtils.execute(queryUtils.dropKeyspaceQuery());
-	}
+        assertEquals("Expected 10 results!", 10, rows.size());
 
-	@Test
-	public void columnDeletion() {
+        int integerValue;
+        String asciiValue;
+        double doubleValue;
+        Map<String, String> mapValue = null;
+        for (Row row : rows) {
+            integerValue = row.getInt("integer_1");
+            asciiValue = row.getString("ascii_1");
+            doubleValue = row.getDouble("double_1");
+            if ((integerValue == 1) && (asciiValue.equals("ascii")) && (doubleValue == 1)) {
+                mapValue = row.getMap("map_1", String.class, String.class);
+            }
+        }
 
-		cassandraUtils.execute(queryUtils.constructValueDeleteQueryByCondition("bigint_1",
-		                                                   "integer_1 = 1 and ascii_1 = 'ascii'"));
+        assertNotNull("Must not be null!", mapValue);
+        assertNull("Must be null!", mapValue.get("k1"));
+    }
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
+    @Test
+    public void listElementDeletion() {
 
-		
+        cassandraUtils.deleteValueByCondition("list_1[0]", "integer_1 = 1 and ascii_1 = 'ascii'").waitForIndexRefresh();
 
-		assertEquals("Expected 10 results!", 10, rows.size());
+        List<Row> rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
-		int integerValue;
-		String asciiValue;
-		double doubleValue;
-		for (Row row : rows) {
-			integerValue = row.getInt("integer_1");
-			asciiValue = row.getString("ascii_1");
-			doubleValue = row.getDouble("double_1");
-			if ((integerValue == 1) && (asciiValue.equals("ascii")) && (doubleValue == 1)) {
-				assertTrue("Must be null!", row.isNull("bigint_1"));
-			}
-		}
-	}
+        assertEquals("Expected 10 results!", 10, rows.size());
 
-	@Test
-	public void mapElementDeletion() {
+        int integerValue;
+        String stringValue;
+        List<String> listValue = null;
+        for (Row row : rows) {
+            integerValue = row.getInt("integer_1");
+            stringValue = row.getString("ascii_1");
+            if (integerValue == 1 && stringValue.equals("ascii")) {
+                listValue = row.getList("list_1", String.class);
+            }
+        }
 
-		cassandraUtils.execute(queryUtils.constructValueDeleteQueryByCondition("map_1['k1']",
-		                                                   "integer_1 = 1 and ascii_1 = 'ascii'"));
+        assertNotNull("Must not be null!", listValue);
+        assertEquals("Lenght unexpected", 1, listValue.size());
+    }
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
+    @Test
+    public void totalPartitionDeletion() {
 
-		
+        cassandraUtils.deleteByCondition("integer_1 = 1 and ascii_1 = 'ascii'").waitForIndexRefresh();
 
-		assertEquals("Expected 10 results!", 10, rows.size());
+        List<Row> rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
-		int integerValue;
-		String asciiValue;
-		double doubleValue;
-		Map<String, String> mapValue = null;
-		for (Row row : rows) {
-			integerValue = row.getInt("integer_1");
-			asciiValue = row.getString("ascii_1");
-			doubleValue = row.getDouble("double_1");
-			if ((integerValue == 1) && (asciiValue.equals("ascii")) && (doubleValue == 1)) {
-				mapValue = row.getMap("map_1", String.class, String.class);
-			}
-		}
+        assertEquals("Expected 9 results!", 9, rows.size());
 
-		assertNotNull("Must not be null!", mapValue);
-		assertNull("Must be null!", mapValue.get("k1"));
-	}
-
-	@Test
-	public void listElementDeletion() {
-
-		cassandraUtils.execute(queryUtils.constructValueDeleteQueryByCondition("list_1[0]",
-		                                                   "integer_1 = 1 and ascii_1 = 'ascii'"));
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
-
-		
-
-		assertEquals("Expected 10 results!", 10, rows.size());
-
-		int integerValue;
-		String stringValue;
-		List<String> listValue = null;
-		for (Row row : rows) {
-			integerValue = row.getInt("integer_1");
-			stringValue = row.getString("ascii_1");
-			if (integerValue == 1 && stringValue.equals("ascii")) {
-				listValue = row.getList("list_1", String.class);
-			}
-		}
-
-		assertNotNull("Must not be null!", listValue);
-		assertEquals("Lenght unexpected", 1, listValue.size());
-	}
-
-	@Test
-	public void totalPartitionDeletion() {
-
-		cassandraUtils.execute(queryUtils.constructDeleteQueryByCondition("integer_1 = 1 and ascii_1 = 'ascii'"));
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getWildcardQuery("ascii_1", "*", null));
-
-		
-
-		assertEquals("Expected 9 results!", 9, rows.size());
-
-	}
+    }
 }

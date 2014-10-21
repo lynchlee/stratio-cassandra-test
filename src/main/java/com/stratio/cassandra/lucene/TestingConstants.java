@@ -17,10 +17,10 @@ package com.stratio.cassandra.lucene;
 
 public final class TestingConstants {
 
-	public static final Long WAIT_TIME = 3000L;
-	
-	public static final String DEFAULT_CONSISTENCY_LEVEL = "ONE";
-	
+    public static final Long WAIT_TIME = 3000L;
+
+    public static final String DEFAULT_CONSISTENCY_LEVEL = "ONE";
+
     public static final String CASSANDRA_LOCALHOST_CONSTANT = "127.0.0.1";
     // public static final String CASSANDRA_LOCALHOST_CONSTANT = "10.200.0.6";
 
@@ -61,5 +61,5 @@ public final class TestingConstants {
     public static final String SHOULD_PARAM_CONSTANT = "should";
 
     public static final String NOT_PARAM_CONSTANT = "not";
-    
+
 }

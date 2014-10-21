@@ -15,154 +15,303 @@
  */
 package com.stratio.cassandra.lucene.querytype;
 
-/**
- * Created by Jcalderin on 24/03/14.
- */
-
-import static org.junit.Assert.assertEquals;
-
-import java.util.List;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import com.datastax.driver.core.Row;
+import static com.stratio.cassandra.index.query.builder.SearchBuilders.prefix;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
 public class PrefixTest extends AbstractWatchedTest {
 
-	@Test
-	public void prefixAsciiFieldTest1() {
+    @Test
+    public void prefixQueryAsciiFieldTest1() {
+        int n = cassandraUtils.query(prefix("ascii_1", "frase ")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getPrefixQuery("ascii_1", "frase ", null));
+    @Test
+    public void prefixQueryAsciiFieldTest2() {
+        int n = cassandraUtils.query(prefix("ascii_1", "frase")).count();
+        assertEquals("Expected 4 results!", 4, n);
+    }
 
-		
+    @Test
+    public void prefixQueryAsciiFieldTest3() {
+        int n = cassandraUtils.query(prefix("ascii_1", "F")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 
-		assertEquals("Expected 1 result!", 1, rows.size());
-	}
+    @Test
+    public void prefixQueryAsciiFieldTest4() {
+        int n = cassandraUtils.query(prefix("ascii_1", "")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-	@Test
-	public void prefixAsciiFieldTest2() {
+    @Test
+    public void prefixQueryInetFieldTest1() {
+        int n = cassandraUtils.query(prefix("inet_1", "127")).count();
+        assertEquals("Expected 4 results!", 4, n);
+    }
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getPrefixQuery("ascii_1", "frase", null));
+    @Test
+    public void prefixQueryInetFieldTest2() {
+        int n = cassandraUtils.query(prefix("inet_1", "")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-		
+    @Test
+    public void prefixQueryInetFieldTest3() {
+        int n = cassandraUtils.query(prefix("inet_1", "127.0.")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
 
-		assertEquals("Expected 4 results!", 4, rows.size());
-	}
+    @Test
+    public void prefixQueryTextFieldTest1() {
+        int n = cassandraUtils.query(prefix("text_1", "Frase con espacios articulos y las palabras suficientes"))
+                              .count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 
-	@Test
-	public void prefixAsciiFieldTest3() {
+    @Test
+    public void prefixQueryTextFieldTest2() {
+        int n = cassandraUtils.query(prefix("text_1", "Frase")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getPrefixQuery("ascii_1", "F", null));
+    @Test
+    public void prefixQueryTextFieldTest3() {
+        int n = cassandraUtils.query(prefix("text_1", "")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-		
+    @Test
+    public void prefixQueryVarcharFieldTest1() {
+        int n = cassandraUtils.query(prefix("varchar_1", "frasesencillasinespaciosperomaslarga")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
 
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
+    @Test
+    public void prefixQueryVarcharFieldTest2() {
+        int n = cassandraUtils.query(prefix("varchar_1", "frase")).count();
+        assertEquals("Expected 4 results!", 4, n);
+    }
 
-	@Test
-	public void prefixAsciiFieldTest4() {
+    @Test
+    public void prefixQueryVarcharFieldTest3() {
+        int n = cassandraUtils.query(prefix("varchar_1", "")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getPrefixQuery("ascii_1", "", null));
+    @Test
+    public void prefixQueryListFieldTest1() {
+        int n = cassandraUtils.query(prefix("list_1", "")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-		
+    @Test
+    public void prefixQueryListFieldTest2() {
+        int n = cassandraUtils.query(prefix("list_1", "l1")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
 
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
+    @Test
+    public void prefixQueryListFieldTest3() {
+        int n = cassandraUtils.query(prefix("list_1", "l")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-	@Test
-	public void prefixInetFieldTest1() {
+    @Test
+    public void prefixQueryListFieldTest4() {
+        int n = cassandraUtils.query(prefix("list_1", "s1")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getPrefixQuery("inet_1", "127", null));
+    @Test
+    public void prefixQuerySetFieldTest1() {
+        int n = cassandraUtils.query(prefix("set_1", "")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-		
+    @Test
+    public void prefixQuerySetFieldTest2() {
+        int n = cassandraUtils.query(prefix("set_1", "l1")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 
-		assertEquals("Expected 4 results!", 4, rows.size());
-	}
+    @Test
+    public void prefixQuerySetFieldTest3() {
+        int n = cassandraUtils.query(prefix("set_1", "s1")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
 
-	@Test
-	public void prefixInetFieldTest2() {
+    @Test
+    public void prefixQueryMapFieldTest1() {
+        int n = cassandraUtils.query(prefix("map_1.k1", "")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getPrefixQuery("inet_1", "", null));
+    @Test
+    public void prefixQueryMapFieldTest2() {
+        int n = cassandraUtils.query(prefix("map_1.k1", "l1")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 
-		
+    @Test
+    public void prefixQueryMapFieldTest3() {
+        int n = cassandraUtils.query(prefix("map_1.k1", "k1")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
+    @Test
+    public void prefixQueryMapFieldTest4() {
+        int n = cassandraUtils.query(prefix("map_1.k1", "v1")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
 
-	@Test
-	public void prefixInetFieldTest3() {
+    @Test
+    public void prefixFilterAsciiFieldTest1() {
+        int n = cassandraUtils.filter(prefix("ascii_1", "frase ")).count();
+        assertEquals("Expected 1 result!", 1, n);
+    }
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getPrefixQuery("inet_1", "127.0.", null));
+    @Test
+    public void prefixFilterAsciiFieldTest2() {
+        int n = cassandraUtils.filter(prefix("ascii_1", "frase")).count();
+        assertEquals("Expected 4 results!", 4, n);
+    }
 
-		
+    @Test
+    public void prefixFilterAsciiFieldTest3() {
+        int n = cassandraUtils.filter(prefix("ascii_1", "F")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 
-		assertEquals("Expected 2 results!", 2, rows.size());
-	}
+    @Test
+    public void prefixFilterAsciiFieldTest4() {
+        int n = cassandraUtils.filter(prefix("ascii_1", "")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-	@Test
-	public void prefixTextFieldTest1() {
+    @Test
+    public void prefixFilterInetFieldTest1() {
+        int n = cassandraUtils.filter(prefix("inet_1", "127")).count();
+        assertEquals("Expected 4 results!", 4, n);
+    }
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getPrefixQuery("text_1",
-		                                                                         "Frase con espacios articulos y las palabras suficientes",
-		                                                                         null));
+    @Test
+    public void prefixFilterInetFieldTest2() {
+        int n = cassandraUtils.filter(prefix("inet_1", "")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-		
+    @Test
+    public void prefixFilterInetFieldTest3() {
+        int n = cassandraUtils.filter(prefix("inet_1", "127.0.")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
 
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
+    @Test
+    public void prefixFilterTextFieldTest1() {
+        int n = cassandraUtils.filter(prefix("text_1", "Frase con espacios articulos y las palabras suficientes"))
+                              .count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 
-	@Test
-	public void prefixTextFieldTest2() {
+    @Test
+    public void prefixFilterTextFieldTest2() {
+        int n = cassandraUtils.filter(prefix("text_1", "Frase")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getPrefixQuery("text_1", "Frase", null));
+    @Test
+    public void prefixFilterTextFieldTest3() {
+        int n = cassandraUtils.filter(prefix("text_1", "")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-		
+    @Test
+    public void prefixFilterVarcharFieldTest1() {
+        int n = cassandraUtils.filter(prefix("varchar_1", "frasesencillasinespaciosperomaslarga")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
 
-		assertEquals("Expected 0 results!", 0, rows.size());
-	}
+    @Test
+    public void prefixFilterVarcharFieldTest2() {
+        int n = cassandraUtils.filter(prefix("varchar_1", "frase")).count();
+        assertEquals("Expected 4 results!", 4, n);
+    }
 
-	@Test
-	public void prefixTextFieldTest3() {
+    @Test
+    public void prefixFilterVarcharFieldTest3() {
+        int n = cassandraUtils.filter(prefix("varchar_1", "")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getPrefixQuery("text_1", "", null));
+    @Test
+    public void prefixFilterListFieldTest1() {
+        int n = cassandraUtils.filter(prefix("list_1", "")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-		
+    @Test
+    public void prefixFilterListFieldTest2() {
+        int n = cassandraUtils.filter(prefix("list_1", "l1")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
 
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
+    @Test
+    public void prefixFilterListFieldTest3() {
+        int n = cassandraUtils.filter(prefix("list_1", "l")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-	@Test
-	public void prefixVarcharFieldTest1() {
+    @Test
+    public void prefixFilterListFieldTest4() {
+        int n = cassandraUtils.filter(prefix("list_1", "s1")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getPrefixQuery("varchar_1",
-		                                                                         "frasesencillasinespaciosperomaslarga",
-		                                                                         null));
+    @Test
+    public void prefixFilterSetFieldTest1() {
+        int n = cassandraUtils.filter(prefix("set_1", "")).count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
 
-		
+    @Test
+    public void prefixFilterSetFieldTest2() {
+        int n = cassandraUtils.filter(prefix("set_1", "l1")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 
-		assertEquals("Expected 2 results!", 2, rows.size());
-	}
+    @Test
+    public void prefixFilterSetFieldTest3() {
+        int n = cassandraUtils.filter(prefix("set_1", "s1")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
 
-	@Test
-	public void prefixVarcharFieldTest2() {
+    @Test
+    public void prefixFilterMapFieldTest1() {
+        int n = cassandraUtils.filter(prefix("map_1.k1", "")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
 
-		List<Row> rows = cassandraUtils.execute(queryUtils.getPrefixQuery("varchar_1", "frase", null));
+    @Test
+    public void prefixFilterMapFieldTest2() {
+        int n = cassandraUtils.filter(prefix("map_1.k1", "l1")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 
-		
+    @Test
+    public void prefixFilterMapFieldTest3() {
+        int n = cassandraUtils.filter(prefix("map_1.k1", "k1")).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
 
-		assertEquals("Expected 4 results!", 4, rows.size());
-	}
-
-	@Test
-	public void prefixVarcharFieldTest3() {
-
-		List<Row> rows = cassandraUtils.execute(queryUtils.getPrefixQuery("varchar_1", "", null));
-
-		
-
-		assertEquals("Expected 5 results!", 5, rows.size());
-	}
+    @Test
+    public void prefixFilterMapFieldTest4() {
+        int n = cassandraUtils.filter(prefix("map_1.k1", "v1")).count();
+        assertEquals("Expected 2 results!", 2, n);
+    }
 }
