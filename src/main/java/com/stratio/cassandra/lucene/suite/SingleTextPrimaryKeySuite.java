@@ -34,7 +34,8 @@ import java.util.Properties;
                PhraseTest.class,
                RegExpTest.class,
                RangeTest.class,
-               BooleanTest.class})
+               BooleanTest.class
+              })
 public class SingleTextPrimaryKeySuite {
 
     private static CassandraUtils cassandraUtils;

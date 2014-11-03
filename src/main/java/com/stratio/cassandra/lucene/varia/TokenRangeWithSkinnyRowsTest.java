@@ -15,14 +15,8 @@
  */
 package com.stratio.cassandra.lucene.varia;
 
-/**
- * Created by Jcalderin on 24/03/14.
- */
-
 import com.stratio.cassandra.lucene.TestingConstants;
 import com.stratio.cassandra.lucene.util.CassandraUtils;
-import org.apache.log4j.Logger;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,7 +26,7 @@ import org.junit.runners.JUnit4;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
-public class TokenCriteriaWithComplexKeyTest {
+public class TokenRangeWithSkinnyRowsTest {
 
     private static CassandraUtils cassandraUtils;
 
@@ -43,7 +37,6 @@ public class TokenCriteriaWithComplexKeyTest {
                                        .withTable(TestingConstants.TABLE_NAME_CONSTANT)
                                        .withIndexColumn(TestingConstants.INDEX_COLUMN_CONSTANT)
                                        .withPartitionKey("integer_1", "ascii_1")
-                                       .withClusteringKey("double_1")
                                        .withColumn("ascii_1", "ascii")
                                        .withColumn("bigint_1", "bigint")
                                        .withColumn("blob_1", "blob")
@@ -91,32 +84,66 @@ public class TokenCriteriaWithComplexKeyTest {
 
     @AfterClass
     public static void after() {
-        cassandraUtils.dropIndex(TestingConstants.INDEX_NAME_CONSTANT).dropTable().dropKeyspace();
+        cassandraUtils.dropIndex(TestingConstants.INDEX_NAME_CONSTANT).dropTable().dropKeyspace().waitForIndexRefresh();
     }
 
     @Test
     public void tokenSearchTest1() {
-        int n = cassandraUtils.searchAll()
-                              .and("AND TOKEN(integer_1, ascii_1) > TOKEN(1, 'ascii')")
-                              .count();
-        assertEquals("Expected 8 results!", 8, n);
+        int n = cassandraUtils.searchAll().and("AND TOKEN(integer_1, ascii_1) > TOKEN(1, 'ascii')").count();
+        assertEquals("Expected 4 results!", 4, n);
     }
 
     @Test
     public void tokenSearchTest2() {
+        int n = cassandraUtils.searchAll().and("AND TOKEN(integer_1, ascii_1) >= TOKEN(1, 'ascii')").count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
+
+    @Test
+    public void tokenSearchTest3() {
+        int n = cassandraUtils.searchAll().and("AND TOKEN(integer_1, ascii_1) < TOKEN(1, 'ascii')").count();
+        assertEquals("Expected 5 results!", 5, n);
+    }
+
+    @Test
+    public void tokenSearchTest4() {
+        int n = cassandraUtils.searchAll().and("AND TOKEN(integer_1, ascii_1) <= TOKEN(1, 'ascii')").count();
+        assertEquals("Expected 6 results!", 6, n);
+    }
+
+    @Test
+    public void tokenSearchTest5() {
         int n = cassandraUtils.searchAll()
                               .and("AND TOKEN(integer_1, ascii_1) > TOKEN(1, 'ascii')")
-                              .andEq("double_1", 2)
+                              .and("AND TOKEN(integer_1, ascii_1) < TOKEN(3, 'ascii')")
+                              .count();
+        assertEquals("Expected 3 results!", 3, n);
+    }
+
+    @Test
+    public void tokenSearchTest6() {
+        int n = cassandraUtils.searchAll()
+                              .and("AND TOKEN(integer_1, ascii_1) >= TOKEN(1, 'ascii')")
+                              .and("AND TOKEN(integer_1, ascii_1) < TOKEN(3, 'ascii')")
                               .count();
         assertEquals("Expected 4 results!", 4, n);
     }
 
     @Test
-    public void tokenSearchTest3() {
+    public void tokenSearchTest7() {
         int n = cassandraUtils.searchAll()
                               .and("AND TOKEN(integer_1, ascii_1) > TOKEN(1, 'ascii')")
-                              .and("AND TOKEN(integer_1, ascii_1) < TOKEN(3, 'ascii')")
+                              .and("AND TOKEN(integer_1, ascii_1) <= TOKEN(3, 'ascii')")
                               .count();
-        assertEquals("Expected 6 results!", 6, n);
+        assertEquals("Expected 4 results!", 4, n);
+    }
+
+    @Test
+    public void tokenSearchTest8() {
+        int n = cassandraUtils.searchAll()
+                              .and("AND TOKEN(integer_1, ascii_1) >= TOKEN(1, 'ascii')")
+                              .and("AND TOKEN(integer_1, ascii_1) <= TOKEN(3, 'ascii')")
+                              .count();
+        assertEquals("Expected 5 results!", 5, n);
     }
 }

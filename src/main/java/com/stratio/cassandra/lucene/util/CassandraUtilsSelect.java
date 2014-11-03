@@ -96,7 +96,6 @@ public class CassandraUtilsSelect {
             where.and(clause);
         }
         if (searchBuilder != null) {
-            logger.info("ADDING SEARCH BUILDER FOR " + searchBuilder.toJson());
             where.and(QueryBuilder.eq(parent.getIndexColumn(), searchBuilder.toJson()));
         }
         BuiltStatement statement = limit == null ? where : where.limit(limit);

@@ -36,8 +36,6 @@ import static org.junit.Assert.assertEquals;
 @RunWith(JUnit4.class)
 public class AllowFilteringWith1000MixedRowsTest extends Abstract1000RegistersWatchedTest {
 
-    private static final Logger logger = Logger.getLogger(AllowFilteringWith1000MixedRowsTest.class);
-
     private static CassandraUtils cassandraUtils;
 
     @BeforeClass

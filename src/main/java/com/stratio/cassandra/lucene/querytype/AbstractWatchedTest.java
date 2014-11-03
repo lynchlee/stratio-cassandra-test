@@ -65,6 +65,11 @@ public abstract class AbstractWatchedTest {
 
     @AfterClass
     public static void tearDownSuite() {
-        cassandraUtils.dropIndex(TestingConstants.INDEX_NAME_CONSTANT).truncateTable().dropTable().dropKeyspace();
+        cassandraUtils.dropIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .waitForIndexRefresh()
+                      .dropTable()
+                      .waitForIndexRefresh()
+                      .dropKeyspace()
+                      .waitForIndexRefresh();
     }
 }

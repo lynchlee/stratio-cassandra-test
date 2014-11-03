@@ -80,7 +80,7 @@ public class CassandraUtils {
         String replicationFactorString = System.getProperty(TestingConstants.REPLICATION_FACTOR_CONSTANT_NAME);
 
         if (replicationFactorString == null || Integer.parseInt(replicationFactorString) < 1)
-            replicationFactorString = "2";
+            replicationFactorString = "1";
 
         this.replicationFactor = replicationFactorString;
 
@@ -130,6 +130,13 @@ public class CassandraUtils {
     protected List<Row> execute(String query) {
         if (!query.endsWith(";")) query += ";";
         logger.debug("CQL: " + query);
+        if (TestingConstants.READ_WAIT_TIME > 0) {
+            try {
+                Thread.sleep(TestingConstants.READ_WAIT_TIME);
+            } catch (InterruptedException e) {
+                logger.error("Interruption catched during a Thread.sleep; index might be unstable");
+            }
+        }
         return session.execute(query).all();
     }
 
@@ -142,7 +149,7 @@ public class CassandraUtils {
         // Waiting for the custom index to be refreshed
         logger.debug("Waiting for the index to be refreshed...");
         try {
-            Thread.sleep(TestingConstants.WAIT_TIME);
+            Thread.sleep(TestingConstants.WRITE_WAIT_TIME);
         } catch (InterruptedException e) {
             logger.error("Interruption catched during a Thread.sleep; index might be unstable");
         }

@@ -15,9 +15,7 @@
  */
 package com.stratio.cassandra.lucene.suite;
 
-import com.stratio.cassandra.lucene.varia.AllowFilteringWith1000MixedRowsTest;
-import com.stratio.cassandra.lucene.varia.AllowFilteringWith1000SimilarRowsTest;
-import com.stratio.cassandra.lucene.varia.TokenCriteriaWithComplexKeyTest;
+import com.stratio.cassandra.lucene.varia.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -25,7 +23,9 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({AllowFilteringWith1000SimilarRowsTest.class,
                AllowFilteringWith1000MixedRowsTest.class,
-               TokenCriteriaWithComplexKeyTest.class})
+               TokenRangeWithSkinnyRowsTest.class,
+               TokenRangeWithWideRowsTest.class,
+               SearchWithVeryWideRowsTest.class})
 public class VariaSuite {
 
 }

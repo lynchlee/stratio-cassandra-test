@@ -18,8 +18,6 @@ package com.stratio.cassandra.lucene.varia;
 import com.stratio.cassandra.lucene.util.CassandraUtils;
 
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 public final class VariaDataHelper {
@@ -474,8 +472,6 @@ public final class VariaDataHelper {
     protected static void generateCustomInsertionsWithModule(int insertionsNumber,
                                                              int module,
                                                              CassandraUtils cassandraUtils) {
-
-        List<String> queriesList = new LinkedList<>();
 
         for (int i = 0; i < insertionsNumber; i++) {
             Map<String, String> dataAux = new LinkedHashMap<>();

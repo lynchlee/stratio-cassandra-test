@@ -115,7 +115,7 @@ public final class QueryTypeDataHelper {
         data4.put("set_1", "{'s2','s3'}");
         data4.put("map_1", "{'k2':'v2','k3':'v3'}");
 
-        data5 = new LinkedHashMap<>();
+        data5 = new LinkedHashMap<>(); ///
 
         data5.put("ascii_1", "'prase tipo ascii'");
         data5.put("bigint_1", "3000000000000000");
