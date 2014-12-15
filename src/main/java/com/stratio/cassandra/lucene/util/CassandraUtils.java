@@ -3,6 +3,7 @@ package com.stratio.cassandra.lucene.util;
 import com.datastax.driver.core.*;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.stratio.cassandra.index.query.builder.ConditionBuilder;
+import com.stratio.cassandra.index.query.builder.SortFieldBuilder;
 import com.stratio.cassandra.lucene.TestingConstants;
 import org.apache.log4j.Logger;
 
@@ -73,6 +74,7 @@ public class CassandraUtils {
         this.host = host;
         this.cluster = Cluster.builder().addContactPoint(host).build();
         this.cluster.getConfiguration().getQueryOptions().setConsistencyLevel(consistencyLevel);
+        this.cluster.getConfiguration().getSocketOptions().setReadTimeoutMillis(600000);
         metadata = cluster.getMetadata();
         logger.debug("Connected to cluster (" + this.host + "): " + metadata.getClusterName() + "\n");
         session = cluster.connect();
@@ -134,7 +136,7 @@ public class CassandraUtils {
             try {
                 Thread.sleep(TestingConstants.READ_WAIT_TIME);
             } catch (InterruptedException e) {
-                logger.error("Interruption catched during a Thread.sleep; index might be unstable");
+                logger.error("Interruption caught during a Thread.sleep; index might be unstable");
             }
         }
         return session.execute(query).all();
@@ -151,7 +153,7 @@ public class CassandraUtils {
         try {
             Thread.sleep(TestingConstants.WRITE_WAIT_TIME);
         } catch (InterruptedException e) {
-            logger.error("Interruption catched during a Thread.sleep; index might be unstable");
+            logger.error("Interruption caught during a Thread.sleep; index might be unstable");
         }
         logger.debug("Index ready to rock!");
 
@@ -324,6 +326,10 @@ public class CassandraUtils {
 
     public CassandraUtilsSelect filter(ConditionBuilder<?, ?> filter) {
         return new CassandraUtilsSelect(this).filter(filter);
+    }
+
+    public CassandraUtilsSelect sort(SortFieldBuilder... sort) {
+        return new CassandraUtilsSelect(this).sort(sort);
     }
 
 }

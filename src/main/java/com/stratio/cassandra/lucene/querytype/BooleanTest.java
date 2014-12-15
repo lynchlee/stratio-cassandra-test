@@ -20,6 +20,7 @@ package com.stratio.cassandra.lucene.querytype;
  */
 
 import com.datastax.driver.core.Row;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -63,6 +64,7 @@ public class BooleanTest extends AbstractWatchedTest {
         assertEquals("Expected 3 results!", 3, n);
     }
 
+    //@Ignore
     @Test
     public void booleanQueryMustWithBoostTest() {
 

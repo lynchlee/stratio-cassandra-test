@@ -15,7 +15,7 @@
  */
 package com.stratio.cassandra.lucene.querytype;
 
-import com.datastax.driver.core.exceptions.DriverInternalError;
+import com.datastax.driver.core.exceptions.DriverException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -49,7 +49,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void matchQueryAsciiFieldTest4() {
         int n = cassandraUtils.query(match("ascii_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -85,7 +85,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void matchQueryBlobTest1() {
         int n = cassandraUtils.query(match("blob_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -115,7 +115,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void matchQueryBooleanTest1() {
         int n = cassandraUtils.query(match("boolean_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -330,7 +330,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void matchQueryInetFieldTest4() {
         int n = cassandraUtils.query(match("inet_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -355,7 +355,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void matchQueryTextFieldTest4() {
         int n = cassandraUtils.query(match("text_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -379,13 +379,13 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void matchQueryVarcharFieldTest4() {
         int n = cassandraUtils.query(match("varchar_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void matchQueryListFieldTest1() {
         int n = cassandraUtils.query(match("list_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -403,7 +403,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void matchQuerySetFieldTest1() {
         int n = cassandraUtils.query(match("set_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -421,7 +421,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 2 results!", 2, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void matchQueryMapFieldTest1() {
         int n = cassandraUtils.query(match("map_1.k1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -463,7 +463,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void matchFilterAsciiFieldTest4() {
         int n = cassandraUtils.filter(match("ascii_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -499,7 +499,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void matchFilterBlobTest1() {
         int n = cassandraUtils.filter(match("blob_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -529,7 +529,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void matchFilterBooleanTest1() {
         int n = cassandraUtils.filter(match("boolean_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -744,7 +744,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void matchFilterInetFieldTest4() {
         int n = cassandraUtils.filter(match("inet_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -769,7 +769,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void matchFilterTextFieldTest4() {
         int n = cassandraUtils.filter(match("text_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -793,13 +793,13 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void matchFilterVarcharFieldTest4() {
         int n = cassandraUtils.filter(match("varchar_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void matchFilterListFieldTest1() {
         int n = cassandraUtils.filter(match("list_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -817,7 +817,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void matchFilterSetFieldTest1() {
         int n = cassandraUtils.filter(match("set_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -835,7 +835,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 2 results!", 2, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void matchFilterMapFieldTest1() {
         int n = cassandraUtils.filter(match("map_1.k1", "")).count();
         assertEquals("Expected 0 results!", 0, n);

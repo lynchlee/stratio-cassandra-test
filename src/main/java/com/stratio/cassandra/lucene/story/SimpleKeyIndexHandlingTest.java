@@ -19,7 +19,6 @@ import com.stratio.cassandra.lucene.TestingConstants;
 import com.stratio.cassandra.lucene.util.CassandraUtils;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -68,7 +67,6 @@ public class SimpleKeyIndexHandlingTest {
     }
 
     @Test
-    @Ignore("Waiting for Cassandra to fix the keyspace recreation bug")
     public void createIndexAfterInsertionsTest() {
 
         cassandraUtils.insert(StoryDataHelper.data1)

@@ -29,7 +29,7 @@ import static org.junit.Assert.assertEquals;
  * @author Andres de la Pena <adelapena@stratio.com>
  */
 @RunWith(JUnit4.class)
-public class TokenRangeWithWideRowsTest {
+public class TokenRangeWithWideRowsMultiClusteringTest {
 
     private static CassandraUtils cassandraUtils;
 
@@ -39,8 +39,8 @@ public class TokenRangeWithWideRowsTest {
         cassandraUtils = CassandraUtils.builder()
                                        .withTable(TestingConstants.TABLE_NAME_CONSTANT)
                                        .withIndexColumn(TestingConstants.INDEX_COLUMN_CONSTANT)
-                                       .withPartitionKey("integer_1", "ascii_1")
-                                       .withClusteringKey("double_1")
+                                       .withPartitionKey("integer_1")
+                                       .withClusteringKey("ascii_1", "double_1")
                                        .withColumn("ascii_1", "ascii")
                                        .withColumn("bigint_1", "bigint")
                                        .withColumn("blob_1", "blob")
@@ -93,42 +93,42 @@ public class TokenRangeWithWideRowsTest {
 
     @Test
     public void tokenSearchTest1() {
-        int n = cassandraUtils.searchAll().and("AND TOKEN(integer_1, ascii_1) > TOKEN(1, 'ascii')").count();
-        assertEquals("Expected 8 results!", 8, n);
+        int n = cassandraUtils.searchAll().and("AND TOKEN(integer_1) > TOKEN(1)").count();
+        assertEquals("Expected 12 results!", 12, n);
     }
 
     @Test
     public void tokenSearchTest2() {
-        int n = cassandraUtils.searchAll().and("AND TOKEN(integer_1, ascii_1) >= TOKEN(1, 'ascii')").count();
-        assertEquals("Expected 10 results!", 10, n);
+        int n = cassandraUtils.searchAll().and("AND TOKEN(integer_1) >= TOKEN(1)").count();
+        assertEquals("Expected 16 results!", 16, n);
     }
 
     @Test
     public void tokenSearchTest3() {
-        int n = cassandraUtils.searchAll().and("AND TOKEN(integer_1, ascii_1) < TOKEN(1, 'ascii')").count();
-        assertEquals("Expected 10 results!", 10, n);
+        int n = cassandraUtils.searchAll().and("AND TOKEN(integer_1) < TOKEN(1)").count();
+        assertEquals("Expected 4 results!", 4, n);
     }
 
     @Test
     public void tokenSearchTest4() {
-        int n = cassandraUtils.searchAll().and("AND TOKEN(integer_1, ascii_1) <= TOKEN(1, 'ascii')").count();
-        assertEquals("Expected 12 results!", 12, n);
+        int n = cassandraUtils.searchAll().and("AND TOKEN(integer_1) <= TOKEN(1)").count();
+        assertEquals("Expected 8 results!", 8, n);
     }
 
     @Test
     public void tokenSearchTest5() {
         int n = cassandraUtils.searchAll()
-                              .and("AND TOKEN(integer_1, ascii_1) > TOKEN(1, 'ascii')")
-                              .and("AND TOKEN(integer_1, ascii_1) < TOKEN(3, 'ascii')")
+                              .and("AND TOKEN(integer_1) > TOKEN(1)")
+                              .and("AND TOKEN(integer_1) < TOKEN(4)")
                               .count();
-        assertEquals("Expected 6 results!", 6, n);
+        assertEquals("Expected 4 results!", 4, n);
     }
 
     @Test
     public void tokenSearchTest6() {
         int n = cassandraUtils.searchAll()
-                              .and("AND TOKEN(integer_1, ascii_1) >= TOKEN(1, 'ascii')")
-                              .and("AND TOKEN(integer_1, ascii_1) < TOKEN(3, 'ascii')")
+                              .and("AND TOKEN(integer_1) >= TOKEN(1)")
+                              .and("AND TOKEN(integer_1) < TOKEN(4)")
                               .count();
         assertEquals("Expected 8 results!", 8, n);
     }
@@ -136,8 +136,8 @@ public class TokenRangeWithWideRowsTest {
     @Test
     public void tokenSearchTest7() {
         int n = cassandraUtils.searchAll()
-                              .and("AND TOKEN(integer_1, ascii_1) > TOKEN(1, 'ascii')")
-                              .and("AND TOKEN(integer_1, ascii_1) <= TOKEN(3, 'ascii')")
+                              .and("AND TOKEN(integer_1) > TOKEN(1)")
+                              .and("AND TOKEN(integer_1) <= TOKEN(4)")
                               .count();
         assertEquals("Expected 8 results!", 8, n);
     }
@@ -145,105 +145,99 @@ public class TokenRangeWithWideRowsTest {
     @Test
     public void tokenSearchTest8() {
         int n = cassandraUtils.searchAll()
-                              .and("AND TOKEN(integer_1, ascii_1) >= TOKEN(1, 'ascii')")
-                              .and("AND TOKEN(integer_1, ascii_1) <= TOKEN(3, 'ascii')")
+                              .and("AND TOKEN(integer_1) >= TOKEN(1)")
+                              .and("AND TOKEN(integer_1) <= TOKEN(4)")
                               .count();
-        assertEquals("Expected 10 results!", 10, n);
+        assertEquals("Expected 12 results!", 12, n);
+    }
+
+    @Test
+    public void tokenSearchTest9() {
+        int n = cassandraUtils.searchAll()
+                              .and("AND TOKEN(integer_1) = TOKEN(1)")
+                              .count();
+        assertEquals("Expected 4 results!", 4, n);
+    }
+
+    @Test
+    public void tokenSearchTest10() {
+        int n = cassandraUtils.searchAll()
+                              .count();
+        assertEquals("Expected 20 results!", 20, n);
     }
 
     @Test
     public void tokenClusteringSearchTest1() {
         int n = cassandraUtils.searchAll()
-                              .and("AND TOKEN(integer_1, ascii_1) > TOKEN(1, 'ascii_bis') AND double_1 > 1")
+                              .and("AND integer_1 = 1 AND ascii_1 = 'ascii_bis' AND double_1 > 1")
                               .count();
-        assertEquals("Expected 8 results!", 8, n);
+        assertEquals("Expected 1 results!", 1, n);
     }
 
     @Test
     public void tokenClusteringSearchTest2() {
         int n = cassandraUtils.searchAll()
-                              .and("AND TOKEN(integer_1, ascii_1) > TOKEN(1, 'ascii_bis') AND double_1 >= 1")
-                              .count();
-        assertEquals("Expected 16 results!", 16, n);
+                              .and("AND integer_1 = 1 AND ascii_1 = 'ascii_bis' AND double_1 >= 1").count();
+        assertEquals("Expected 2 results!", 2, n);
     }
 
     @Test
     public void tokenClusteringSearchTest3() {
         int n = cassandraUtils.searchAll()
-                              .and("AND TOKEN(integer_1, ascii_1) > TOKEN(1, 'ascii_bis') AND double_1 < 2")
-                              .count();
-        assertEquals("Expected 8 results!", 8, n);
+                              .and("AND integer_1 = 1 AND ascii_1 = 'ascii_bis' AND double_1 < 2").count();
+        assertEquals("Expected 1 results!", 1, n);
     }
 
     @Test
     public void tokenClusteringSearchTest4() {
         int n = cassandraUtils.searchAll()
-                              .and("AND TOKEN(integer_1, ascii_1) > TOKEN(1, 'ascii_bis') AND double_1 <= 2")
-                              .count();
-        assertEquals("Expected 16results!", 16, n);
+                              .and("AND integer_1 = 1 AND ascii_1 = 'ascii_bis' AND double_1 <= 2").count();
+        assertEquals("Expected 2 results!", 2, n);
     }
 
     @Test
     public void tokenClusteringSearchTest5() {
         int n = cassandraUtils.searchAll()
-                              .and("AND TOKEN(integer_1, ascii_1) > TOKEN(1, 'ascii_bis') AND double_1 < 1")
-                              .count();
-        assertEquals("Expected 0 results!", 0, n);
+                              .and("AND integer_1 = 1 AND ascii_1 = 'ascii_bis' AND double_1 = 1").count();
+        assertEquals("Expected 1 results!", 1, n);
     }
 
     @Test
     public void tokenClusteringSearchTest6() {
         int n = cassandraUtils.searchAll()
-                              .and("AND TOKEN(integer_1, ascii_1) > TOKEN(1, 'ascii_bis') AND double_1 <= 1")
+                              .and("AND integer_1 = 1 AND ascii_1 = 'ascii_bis' AND double_1 = 2").count();
+        assertEquals("Expected 1 results!", 1, n);
+    }
+
+    @Test
+    public void tokenWideClusteringSearchTest1() {
+        int n = cassandraUtils.searchAll()
+                              .and("AND integer_1 = 2 AND ascii_1 > 'ascii'")
                               .count();
-        assertEquals("Expected 8 results!", 8, n);
+        assertEquals("Expected 2 results!", 2, n);
     }
 
     @Test
-    public void clusteringSearchTest1() {
-        int n = cassandraUtils.searchAll().and("AND double_1 < 1").count();
+    public void tokenWideClusteringSearchTest2() {
+        int n = cassandraUtils.searchAll()
+                              .and("AND integer_1 = 2 AND ascii_1 >= 'ascii'")
+                              .count();
+        assertEquals("Expected 4 results!", 4, n);
+    }
+
+    @Test
+    public void tokenWideClusteringSearchTest3() {
+        int n = cassandraUtils.searchAll()
+                              .and("AND integer_1 = 2 AND ascii_1 < 'ascii'")
+                              .count();
         assertEquals("Expected 0 results!", 0, n);
     }
 
     @Test
-    public void clusteringSearchTest2() {
-        int n = cassandraUtils.searchAll().and("AND double_1 <= 1").count();
-        assertEquals("Expected 10 results!", 10, n);
-    }
-
-    @Test
-    public void clusteringSearchTest3() {
-        int n = cassandraUtils.searchAll().and("AND double_1 < 2").count();
-        assertEquals("Expected 10 results!", 10, n);
-    }
-
-    @Test
-    public void clusteringSearchTest4() {
-        int n = cassandraUtils.searchAll().and("AND double_1 <= 2").count();
-        assertEquals("Expected 20 results!", 20, n);
-    }
-
-    @Test
-    public void clusteringSearchTest5() { //
-        int n = cassandraUtils.searchAll().and("AND double_1 > 1").count();
-        assertEquals("Expected 10 results!", 10, n);
-    }
-
-    @Test
-    public void clusteringSearchTest6() {
-        int n = cassandraUtils.searchAll().and("AND double_1 >= 1").count();
-        assertEquals("Expected 20 results!", 20, n);
-    }
-
-    @Test
-    public void clusteringSearchTest7() {
-        int n = cassandraUtils.searchAll().and("AND double_1 > 2").count();
-        assertEquals("Expected 0 results!", 0, n);
-    }
-
-    @Test
-    public void clusteringSearchTest8() {
-        int n = cassandraUtils.searchAll().and("AND double_1 >= 2").count();
-        assertEquals("Expected 10 results!", 10, n);
+    public void tokenWideClusteringSearchTest4() {
+        int n = cassandraUtils.searchAll()
+                              .and("AND integer_1 = 2 AND ascii_1 <= 'ascii'")
+                              .count();
+        assertEquals("Expected 2 results!", 2, n);
     }
 }

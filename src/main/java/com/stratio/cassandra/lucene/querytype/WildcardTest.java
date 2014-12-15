@@ -15,7 +15,7 @@
  */
 package com.stratio.cassandra.lucene.querytype;
 
-import com.datastax.driver.core.exceptions.DriverInternalError;
+import com.datastax.driver.core.exceptions.DriverException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -44,7 +44,7 @@ public class WildcardTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void wildcardQueryAsciiFieldTest4() {
         int n = cassandraUtils.query(wildcard("ascii_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -68,7 +68,7 @@ public class WildcardTest extends AbstractWatchedTest {
         assertEquals("Expected 2 results!", 2, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void wildcardQueryInetFieldTest4() {
         cassandraUtils.query(wildcard("inet_1", "")).count();
     }
@@ -91,7 +91,7 @@ public class WildcardTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void wildcardQueryTextFieldTest4() {
         cassandraUtils.query(wildcard("text_1", "")).count();
     }
@@ -114,7 +114,7 @@ public class WildcardTest extends AbstractWatchedTest {
         assertEquals("Expected 1 results!", 1, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void wildcardQueryVarcharFieldTest4() {
         cassandraUtils.query(wildcard("varchar_1", "")).count();
     }
@@ -137,7 +137,7 @@ public class WildcardTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void wildcardFilterAsciiFieldTest4() {
         int n = cassandraUtils.filter(wildcard("ascii_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -161,7 +161,7 @@ public class WildcardTest extends AbstractWatchedTest {
         assertEquals("Expected 2 results!", 2, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void wildcardFilterInetFieldTest4() {
         cassandraUtils.filter(wildcard("inet_1", "")).count();
     }
@@ -184,7 +184,7 @@ public class WildcardTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void wildcardFilterTextFieldTest4() {
         cassandraUtils.filter(wildcard("text_1", "")).count();
     }
@@ -207,7 +207,7 @@ public class WildcardTest extends AbstractWatchedTest {
         assertEquals("Expected 1 results!", 1, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void wildcardFilterVarcharFieldTest4() {
         cassandraUtils.filter(wildcard("varchar_1", "")).count();
     }
@@ -224,7 +224,7 @@ public class WildcardTest extends AbstractWatchedTest {
         assertEquals("Expected 5 results!", 4, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void wildcardQueryListFieldTest1() {
         int n = cassandraUtils.query(wildcard("list_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -242,7 +242,7 @@ public class WildcardTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void wildcardQuerySetFieldTest1() {
         int n = cassandraUtils.query(wildcard("set_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -260,7 +260,7 @@ public class WildcardTest extends AbstractWatchedTest {
         assertEquals("Expected 5 results!", 5, n);
     }
 
-    @Test(expected = DriverInternalError.class)
+    @Test(expected = DriverException.class)
     public void wildcardQueryMapFieldTest1() {
         int n = cassandraUtils.query(wildcard("map_1.k1", "")).count();
         assertEquals("Expected 0 results!", 0, n);

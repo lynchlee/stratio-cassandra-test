@@ -15,15 +15,10 @@
  */
 package com.stratio.cassandra.lucene.story;
 
-/**
- * Created by Jcalderin on 24/03/14.
- */
-
 import com.stratio.cassandra.lucene.TestingConstants;
 import com.stratio.cassandra.lucene.util.CassandraUtils;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -74,7 +69,6 @@ public class MultipleKeyIndexHandlingTest {
     }
 
     @Test
-    @Ignore("Waiting for Cassandra to fix the keyspace recreation bug")
     public void createIndexAfterInsertionsTest() {
 
         // Preparing data
@@ -98,7 +92,6 @@ public class MultipleKeyIndexHandlingTest {
     }
 
     @Test
-    @Ignore("Waiting for Cassandra to fix the keyspace recreation bug")
     public void createIndexDuringInsertionsTest1() {
 
         // Preparing initial data
@@ -122,7 +115,6 @@ public class MultipleKeyIndexHandlingTest {
     }
 
     @Test
-    @Ignore("Waiting for Cassandra to fix the keyspace recreation bug")
     public void createIndexDuringInsertionsTest2() {
 
         cassandraUtils.insert(StoryDataHelper.data1)
@@ -145,7 +137,6 @@ public class MultipleKeyIndexHandlingTest {
     }
 
     @Test
-    @Ignore("Waiting for Cassandra to fix the keyspace recreation bug")
     public void createIndexDuringInsertionsTest3() {
 
         // Preparing initial data
@@ -169,7 +160,6 @@ public class MultipleKeyIndexHandlingTest {
     }
 
     @Test
-    @Ignore("Waiting for Cassandra to fix the keyspace recreation bug")
     public void recreateIndexAfterInsertionsTest() {
 
         cassandraUtils.insert(StoryDataHelper.data1)

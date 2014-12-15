@@ -24,7 +24,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({AllowFilteringWith1000SimilarRowsTest.class,
                AllowFilteringWith1000MixedRowsTest.class,
                TokenRangeWithSkinnyRowsTest.class,
-               TokenRangeWithWideRowsTest.class,
+               TokenRangeWithWideRowsMultiPartitionTest.class,
+               TokenRangeWithWideRowsMultiClusteringTest.class,
                SearchWithVeryWideRowsTest.class})
 public class VariaSuite {
 

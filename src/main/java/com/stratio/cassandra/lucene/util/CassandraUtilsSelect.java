@@ -5,11 +5,10 @@ import com.datastax.driver.core.querybuilder.BuiltStatement;
 import com.datastax.driver.core.querybuilder.Clause;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
-import com.stratio.cassandra.index.query.builder.ConditionBuilder;
-import com.stratio.cassandra.index.query.builder.SearchBuilder;
-import com.stratio.cassandra.index.query.builder.SearchBuilders;
+import com.stratio.cassandra.index.query.builder.*;
 import org.apache.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -85,6 +84,15 @@ public class CassandraUtilsSelect {
         return this;
     }
 
+    public CassandraUtilsSelect sort(SortFieldBuilder... sort) {
+        if (searchBuilder == null) {
+            searchBuilder = SearchBuilders.sort(sort);
+        } else {
+            searchBuilder.sort(sort);
+        }
+        return this;
+    }
+
     public CassandraUtilsSelect limit(Integer limit) {
         this.limit = limit;
         return this;
@@ -115,4 +123,43 @@ public class CassandraUtilsSelect {
         return get().size();
     }
 
+    public Integer[] intColumn(String name) {
+        List<Row> rows = get();
+        Integer[] values = new Integer[rows.size()];
+        int count = 0;
+        for (Row row : get()) {
+            values[count++] = row.getInt(name);
+        }
+        return values;
+    }
+
+    public Long[] longColumn(String name) {
+        List<Row> rows = get();
+        Long[] values = new Long[rows.size()];
+        int count = 0;
+        for (Row row : get()) {
+            values[count++] = row.getLong(name);
+        }
+        return values;
+    }
+
+    public Float[] floatColumn(String name) {
+        List<Row> rows = get();
+        Float[] values = new Float[rows.size()];
+        int count = 0;
+        for (Row row : get()) {
+            values[count++] = row.getFloat(name);
+        }
+        return values;
+    }
+
+    public Double[] doubleColumn(String name) {
+        List<Row> rows = get();
+        Double[] values = new Double[rows.size()];
+        int count = 0;
+        for (Row row : get()) {
+            values[count++] = row.getDouble(name);
+        }
+        return values;
+    }
 }

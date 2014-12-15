@@ -94,7 +94,7 @@ public class ComplexKeyDataDeletionTest {
 
     @After
     public void after() {
-//        cassandraUtils.dropKeyspace().disconnect();
+        cassandraUtils.dropKeyspace().disconnect();
     }
 
     @Test
