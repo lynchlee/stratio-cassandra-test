@@ -185,4 +185,21 @@ public class MultipleKeyDataHandlingTest {
 
         assertEquals("Expected 5 results!", 5, n);
     }
+
+    @Test
+    public void updateTest() {
+        int n = cassandraUtils.query(wildcard("text_1", "text")).count();
+        assertEquals("Expected 8 results!", 8, n);
+
+        cassandraUtils.update()
+                      .set("text_1", "other")
+                      .where("integer_1", 1)
+                      .and("ascii_1", "ascii")
+                      .execute()
+                      .waitForIndexRefresh();
+        n = cassandraUtils.query(wildcard("text_1", "text")).count();
+        assertEquals("Expected 7 results!", 7, n);
+        n = cassandraUtils.query(wildcard("text_1", "other")).count();
+        assertEquals("Expected 1 results!", 1, n);
+    }
 }

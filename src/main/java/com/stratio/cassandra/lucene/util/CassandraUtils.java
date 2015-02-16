@@ -312,6 +312,10 @@ public class CassandraUtils {
         return this;
     }
 
+    public CassandraUtilsUpdate update() {
+        return new CassandraUtilsUpdate(this);
+    }
+
     public CassandraUtilsSelect select() {
         return new CassandraUtilsSelect(this);
     }

@@ -204,4 +204,20 @@ public class SimpleKeyDataHandlingTest {
         assertEquals("Expected 0 results!", 0, rows.size());
         assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 1));
     }
+
+    @Test
+    public void updateTest() {
+        int n = cassandraUtils.query(wildcard("text_1", "text")).count();
+        assertEquals("Expected 3 results!", 3, n);
+
+        cassandraUtils.update()
+                      .set("text_1", "other")
+                      .where("integer_1", 2)
+                      .execute()
+                      .waitForIndexRefresh();
+        n = cassandraUtils.query(wildcard("text_1", "text")).count();
+        assertEquals("Expected 2 results!", 2, n);
+        n = cassandraUtils.query(wildcard("text_1", "other")).count();
+        assertEquals("Expected 1 results!", 1, n);
+    }
 }

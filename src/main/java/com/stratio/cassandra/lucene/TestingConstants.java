@@ -17,7 +17,7 @@ package com.stratio.cassandra.lucene;
 
 public final class TestingConstants {
 
-    public static final Long WRITE_WAIT_TIME = 3000L;
+    public static final Long WRITE_WAIT_TIME = 2000L;
 
     public static final Long READ_WAIT_TIME = 0L;
 

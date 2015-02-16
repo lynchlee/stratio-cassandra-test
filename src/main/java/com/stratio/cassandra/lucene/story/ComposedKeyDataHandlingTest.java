@@ -33,48 +33,47 @@ import static org.junit.Assert.assertEquals;
 @RunWith(JUnit4.class)
 public class ComposedKeyDataHandlingTest {
 
-    private  CassandraUtils cassandraUtils;
+    private CassandraUtils cassandraUtils;
 
     @Before
     public void before() {
 
-        cassandraUtils =
-                CassandraUtils.builder()
-                              .withTable(TestingConstants.TABLE_NAME_CONSTANT)
-                              .withIndexColumn(TestingConstants.INDEX_COLUMN_CONSTANT)
-                              .withPartitionKey("integer_1", "ascii_1")
-                              .withClusteringKey()
-                              .withColumn("ascii_1", "ascii")
-                              .withColumn("bigint_1", "bigint")
-                              .withColumn("blob_1", "blob")
-                              .withColumn("boolean_1", "boolean")
-                              .withColumn("decimal_1", "decimal")
-                              .withColumn("date_1", "timestamp")
-                              .withColumn("double_1", "double")
-                              .withColumn("float_1", "float")
-                              .withColumn("integer_1", "int")
-                              .withColumn("inet_1", "inet")
-                              .withColumn("text_1", "text")
-                              .withColumn("varchar_1", "varchar")
-                              .withColumn("uuid_1", "uuid")
-                              .withColumn("timeuuid_1", "timeuuid")
-                              .withColumn("list_1", "list<text>")
-                              .withColumn("set_1", "set<text>")
-                              .withColumn("map_1", "map<text,text>")
-                              .withColumn("lucene", "text")
-                              .build()
-                              .createKeyspace()
-                              .createTable()
-                              .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
-                              .insert(StoryDataHelper.data1)
-                              .insert(StoryDataHelper.data2)
-                              .insert(StoryDataHelper.data3)
-                              .insert(StoryDataHelper.data6)
-                              .insert(StoryDataHelper.data7)
-                              .insert(StoryDataHelper.data8)
-                              .insert(StoryDataHelper.data9)
-                              .insert(StoryDataHelper.data10)
-                              .waitForIndexRefresh();
+        cassandraUtils = CassandraUtils.builder()
+                                       .withTable(TestingConstants.TABLE_NAME_CONSTANT)
+                                       .withIndexColumn(TestingConstants.INDEX_COLUMN_CONSTANT)
+                                       .withPartitionKey("integer_1", "ascii_1")
+                                       .withClusteringKey()
+                                       .withColumn("ascii_1", "ascii")
+                                       .withColumn("bigint_1", "bigint")
+                                       .withColumn("blob_1", "blob")
+                                       .withColumn("boolean_1", "boolean")
+                                       .withColumn("decimal_1", "decimal")
+                                       .withColumn("date_1", "timestamp")
+                                       .withColumn("double_1", "double")
+                                       .withColumn("float_1", "float")
+                                       .withColumn("integer_1", "int")
+                                       .withColumn("inet_1", "inet")
+                                       .withColumn("text_1", "text")
+                                       .withColumn("varchar_1", "varchar")
+                                       .withColumn("uuid_1", "uuid")
+                                       .withColumn("timeuuid_1", "timeuuid")
+                                       .withColumn("list_1", "list<text>")
+                                       .withColumn("set_1", "set<text>")
+                                       .withColumn("map_1", "map<text,text>")
+                                       .withColumn("lucene", "text")
+                                       .build()
+                                       .createKeyspace()
+                                       .createTable()
+                                       .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                                       .insert(StoryDataHelper.data1)
+                                       .insert(StoryDataHelper.data2)
+                                       .insert(StoryDataHelper.data3)
+                                       .insert(StoryDataHelper.data6)
+                                       .insert(StoryDataHelper.data7)
+                                       .insert(StoryDataHelper.data8)
+                                       .insert(StoryDataHelper.data9)
+                                       .insert(StoryDataHelper.data10)
+                                       .waitForIndexRefresh();
     }
 
     @After
@@ -169,5 +168,22 @@ public class ComposedKeyDataHandlingTest {
         cassandraUtils.deleteByCondition("integer_1 = 1 and ascii_1 = 'ascii'").waitForIndexRefresh();
         n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
         assertEquals("Expected 5 results!", 5, n);
+    }
+
+    @Test
+    public void updateTest() {
+        int n = cassandraUtils.query(wildcard("text_1", "text")).count();
+        assertEquals("Expected 8 results!", 8, n);
+
+        cassandraUtils.update()
+                      .set("text_1", "other")
+                      .where("integer_1", 1)
+                      .and("ascii_1", "ascii")
+                      .execute()
+                      .waitForIndexRefresh();
+        n = cassandraUtils.query(wildcard("text_1", "text")).count();
+        assertEquals("Expected 7 results!", 7, n);
+        n = cassandraUtils.query(wildcard("text_1", "other")).count();
+        assertEquals("Expected 1 results!", 1, n);
     }
 }

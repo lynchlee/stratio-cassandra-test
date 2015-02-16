@@ -16,6 +16,7 @@
 package com.stratio.cassandra.lucene.querytype;
 
 import com.datastax.driver.core.exceptions.DriverException;
+import com.datastax.driver.core.exceptions.InvalidQueryException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -277,8 +278,7 @@ public class MatchTest extends AbstractWatchedTest {
 
     @Test
     public void matchQueryUuidTest1() {
-        int n = cassandraUtils.query(match("uuid_1", "0")).count();
-        assertEquals("Expected 0 results!", 0, n);
+        cassandraUtils.query(match("uuid_1", "0"));
     }
 
     @Test
@@ -288,16 +288,14 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, n);
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void matchQueryUuidTest3() {
-        int n = cassandraUtils.query(match("uuid_1", "60297440-b4fa-11e3-0002a5d5c51b")).count();
-        assertEquals("Expected 0 results!", 0, n);
+        cassandraUtils.query(match("uuid_1", "60297440-b4fa-11e3-0002a5d5c51b")).count();
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void matchQueryTimeuuidTest1() {
-        int n = cassandraUtils.query(match("timeuuid_1", "0")).count();
-        assertEquals("Expected 0 results!", 0, n);
+        cassandraUtils.query(match("timeuuid_1", "0")).count();
     }
 
     @Test
@@ -306,10 +304,9 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, n);
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void matchQueryTimeuuidTest3() {
-        int n = cassandraUtils.query(match("timeuuid_1", "a4a70900-24e1-11df-001ff3591711")).count();
-        assertEquals("Expected 0 results!", 0, n);
+        cassandraUtils.query(match("timeuuid_1", "a4a70900-24e1-11df-001ff3591711")).count();
     }
 
     @Test
@@ -689,7 +686,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, n);
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void matchFilterUuidTest1() {
         int n = cassandraUtils.filter(match("uuid_1", "0")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -702,16 +699,14 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, n);
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void matchFilterUuidTest3() {
-        int n = cassandraUtils.filter(match("uuid_1", "60297440-b4fa-11e3-0002a5d5c51b")).count();
-        assertEquals("Expected 0 results!", 0, n);
+        cassandraUtils.filter(match("uuid_1", "60297440-b4fa-11e3-0002a5d5c51b")).count();
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void matchFilterTimeuuidTest1() {
-        int n = cassandraUtils.filter(match("timeuuid_1", "0")).count();
-        assertEquals("Expected 0 results!", 0, n);
+        cassandraUtils.filter(match("timeuuid_1", "0")).count();
     }
 
     @Test
@@ -720,10 +715,9 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, n);
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void matchFilterTimeuuidTest3() {
-        int n = cassandraUtils.filter(match("timeuuid_1", "a4a70900-24e1-11df-001ff3591711")).count();
-        assertEquals("Expected 0 results!", 0, n);
+        cassandraUtils.filter(match("timeuuid_1", "a4a70900-24e1-11df-001ff3591711")).count();
     }
 
     @Test

@@ -15,6 +15,7 @@
  */
 package com.stratio.cassandra.lucene.story;
 
+import com.datastax.driver.core.Row;
 import com.stratio.cassandra.lucene.TestingConstants;
 import com.stratio.cassandra.lucene.util.CassandraUtils;
 import org.junit.After;
@@ -24,6 +25,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import static com.stratio.cassandra.index.query.builder.SearchBuilders.wildcard;
+import static com.stratio.cassandra.index.query.builder.SearchBuilders.range;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
@@ -178,5 +180,23 @@ public class ComplexKeyDataHandlingTest {
         n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
 
         assertEquals("Expected 15 results!", 15, n);
+    }
+
+    @Test
+    public void updateTest() {
+        int n = cassandraUtils.query(wildcard("text_1", "text")).count();
+        assertEquals("Expected 18 results!", 18, n);
+
+        cassandraUtils.update()
+                      .set("text_1", "other")
+                      .where("integer_1", 4)
+                      .and("ascii_1", "ascii")
+                      .and("double_1", 1)
+                      .execute()
+                      .waitForIndexRefresh();
+        n = cassandraUtils.query(wildcard("text_1", "text")).count();
+        assertEquals("Expected 17 results!", 17, n);
+        n = cassandraUtils.query(wildcard("text_1", "other")).count();
+        assertEquals("Expected 1 results!", 1, n);
     }
 }

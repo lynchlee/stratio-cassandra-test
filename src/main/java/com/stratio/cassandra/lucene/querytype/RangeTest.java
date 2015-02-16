@@ -16,6 +16,7 @@
 package com.stratio.cassandra.lucene.querytype;
 
 import com.datastax.driver.core.exceptions.DriverInternalError;
+import com.datastax.driver.core.exceptions.InvalidQueryException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -269,10 +270,9 @@ public class RangeTest extends AbstractWatchedTest {
         assertEquals("Expected 5 results!", 5, count);
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void rangeQueryUuidTest2() {
-        int count = cassandraUtils.query(range("uuid_1").lower("1").upper("9")).count();
-        assertEquals("Expected 5 results!", 5, count);
+        cassandraUtils.query(range("uuid_1").lower("1").upper("9")).count();
     }
 
     @Test
@@ -297,10 +297,9 @@ public class RangeTest extends AbstractWatchedTest {
         assertEquals("Expected 5 results!", 5, count);
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void rangeQueryTimeuuidTest2() {
-        int count = cassandraUtils.query(range("timeuuid_1").lower("a").upper("z")).count();
-        assertEquals("Expected 5 results!", 5, count);
+        cassandraUtils.query(range("timeuuid_1").lower("a").upper("z")).count();
     }
 
     @Test
@@ -722,10 +721,9 @@ public class RangeTest extends AbstractWatchedTest {
         assertEquals("Expected 5 results!", 5, count);
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void rangeFilterUuidTest2() {
-        int count = cassandraUtils.filter(range("uuid_1").lower("1").upper("9")).count();
-        assertEquals("Expected 5 results!", 5, count);
+        cassandraUtils.filter(range("uuid_1").lower("1").upper("9")).count();
     }
 
     @Test
@@ -750,7 +748,7 @@ public class RangeTest extends AbstractWatchedTest {
         assertEquals("Expected 5 results!", 5, count);
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void rangeFilterTimeuuidTest2() {
         int count = cassandraUtils.filter(range("timeuuid_1").lower("a").upper("z")).count();
         assertEquals("Expected 5 results!", 5, count);
