@@ -2,8 +2,8 @@ package com.stratio.cassandra.lucene.util;
 
 import com.datastax.driver.core.*;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
-import com.stratio.cassandra.index.query.builder.ConditionBuilder;
-import com.stratio.cassandra.index.query.builder.SortFieldBuilder;
+import com.stratio.cassandra.lucene.query.builder.ConditionBuilder;
+import com.stratio.cassandra.lucene.query.builder.SortFieldBuilder;
 import com.stratio.cassandra.lucene.TestingConstants;
 import org.apache.log4j.Logger;
 
@@ -122,14 +122,26 @@ public class CassandraUtils {
     }
 
     protected List<Row> execute(StringBuilder sb) {
-        return execute(sb.toString());
+        return execute(sb.toString(), TestingConstants.FETCH_SIZE);
+    }
+
+    protected List<Row> execute(StringBuilder sb, int fetchSize) {
+        return execute(sb.toString(), fetchSize);
     }
 
     protected List<Row> execute(Statement statement) {
-        return execute(statement.toString());
+        return execute(statement.toString(), TestingConstants.FETCH_SIZE);
+    }
+
+    protected List<Row> execute(Statement statement, int fetchSize) {
+        return execute(statement.toString(), fetchSize);
     }
 
     protected List<Row> execute(String query) {
+        return execute(query, TestingConstants.FETCH_SIZE);
+    }
+
+    protected List<Row> execute(String query, int fetchSize) {
         if (!query.endsWith(";")) query += ";";
         logger.debug("CQL: " + query);
         if (TestingConstants.READ_WAIT_TIME > 0) {
@@ -139,8 +151,16 @@ public class CassandraUtils {
                 logger.error("Interruption caught during a Thread.sleep; index might be unstable");
             }
         }
-        return session.execute(query).all();
+        Statement statement = new SimpleStatement(query);
+        statement.setFetchSize(fetchSize);
+        return session.execute(statement).all();
     }
+
+    public Session getSession() {
+        return session;
+    }
+
+
 
     public void disconnect() {
         session.close();
@@ -210,7 +230,8 @@ public class CassandraUtils {
                                    .append(qualifiedTable)
                                    .append(" (")
                                    .append(indexColumn)
-                                   .append(") USING 'org.apache.cassandra.db.index.stratio.RowIndex' WITH OPTIONS = {")
+//                                   .append(") USING 'com.stratio.cassandra.index.RowIndex' WITH OPTIONS = {")
+                                   .append(") USING 'com.stratio.cassandra.lucene.Index' WITH OPTIONS = {")
                                    .append("'refresh_seconds':'0.1',")
                                    .append("'num_cached_filters':'1',")
                                    .append("'ram_buffer_mb':'64',")
@@ -235,6 +256,7 @@ public class CassandraUtils {
             if (!columns.get(s).endsWith(">")) {
                 String type = columns.get(s);
                 String lucenetype = conversionCassandraLucene.get(type);
+                lucenetype = lucenetype.replace("}",", sorted:\"true\"}");
                 converted = converted + s + lucenetype + ",";
             } else {
                 String typeComp = columns.get(s);
@@ -246,6 +268,7 @@ public class CassandraUtils {
                 }
 
                 String lucenetype = conversionCassandraLucene.get(type);
+                lucenetype = lucenetype.replace("}",", sorted:\"false\"}");
                 converted = converted + s + lucenetype + ",";
             }
         }
@@ -290,6 +313,11 @@ public class CassandraUtils {
                                    .append(values)
                                    .append(");"));
 
+        return this;
+    }
+
+    public CassandraUtils insert(String[] names, Object[] values) {
+        execute(QueryBuilder.insertInto(keyspace, table).values(names,values));
         return this;
     }
 

@@ -35,4 +35,6 @@ public final class TestingConstants {
 
     public static final String INDEX_COLUMN_CONSTANT = "lucene";
 
+    public static final int FETCH_SIZE = 100;
+
 }

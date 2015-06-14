@@ -16,7 +16,15 @@
 package com.stratio.cassandra.lucene.suite;
 
 import com.stratio.cassandra.lucene.TestingConstants;
-import com.stratio.cassandra.lucene.querytype.*;
+import com.stratio.cassandra.lucene.querytype.BooleanTest;
+import com.stratio.cassandra.lucene.querytype.FuzzyTest;
+import com.stratio.cassandra.lucene.querytype.MatchTest;
+import com.stratio.cassandra.lucene.querytype.PhraseTest;
+import com.stratio.cassandra.lucene.querytype.PrefixTest;
+import com.stratio.cassandra.lucene.querytype.RangeTest;
+import com.stratio.cassandra.lucene.querytype.RegexpTest;
+import com.stratio.cassandra.lucene.querytype.SortTest;
+import com.stratio.cassandra.lucene.querytype.WildcardTest;
 import com.stratio.cassandra.lucene.util.CassandraUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -32,11 +40,10 @@ import java.util.Properties;
                MatchTest.class,
                PrefixTest.class,
                PhraseTest.class,
-               RegExpTest.class,
+               RegexpTest.class,
                RangeTest.class,
                BooleanTest.class,
-               SortTest.class
-              })
+               SortTest.class})
 public class ComplexNumericPrimaryKeySuite {
 
     private static CassandraUtils cassandraUtils;
@@ -44,31 +51,30 @@ public class ComplexNumericPrimaryKeySuite {
     @BeforeClass
     public static void before() {
 
-        cassandraUtils =
-                CassandraUtils.builder()
-                              .withTable(TestingConstants.TABLE_NAME_CONSTANT)
-                              .withIndexColumn(TestingConstants.INDEX_COLUMN_CONSTANT)
-                              .withPartitionKey("integer_1", "double_1")
-                              .withClusteringKey("ascii_1")
-                              .withColumn("ascii_1", "ascii")
-                              .withColumn("bigint_1", "bigint")
-                              .withColumn("blob_1", "blob")
-                              .withColumn("boolean_1", "boolean")
-                              .withColumn("decimal_1", "decimal")
-                              .withColumn("date_1", "timestamp")
-                              .withColumn("double_1", "double")
-                              .withColumn("float_1", "float")
-                              .withColumn("integer_1", "int")
-                              .withColumn("inet_1", "inet")
-                              .withColumn("text_1", "text")
-                              .withColumn("varchar_1", "varchar")
-                              .withColumn("uuid_1", "uuid")
-                              .withColumn("timeuuid_1", "timeuuid")
-                              .withColumn("list_1", "list<text>")
-                              .withColumn("set_1", "set<text>")
-                              .withColumn("map_1", "map<text,text>")
-                              .withColumn("lucene", "text")
-                              .build();
+        cassandraUtils = CassandraUtils.builder()
+                                       .withTable(TestingConstants.TABLE_NAME_CONSTANT)
+                                       .withIndexColumn(TestingConstants.INDEX_COLUMN_CONSTANT)
+                                       .withPartitionKey("integer_1", "double_1")
+                                       .withClusteringKey("ascii_1")
+                                       .withColumn("ascii_1", "ascii")
+                                       .withColumn("bigint_1", "bigint")
+                                       .withColumn("blob_1", "blob")
+                                       .withColumn("boolean_1", "boolean")
+                                       .withColumn("decimal_1", "decimal")
+                                       .withColumn("date_1", "timestamp")
+                                       .withColumn("double_1", "double")
+                                       .withColumn("float_1", "float")
+                                       .withColumn("integer_1", "int")
+                                       .withColumn("inet_1", "inet")
+                                       .withColumn("text_1", "text")
+                                       .withColumn("varchar_1", "varchar")
+                                       .withColumn("uuid_1", "uuid")
+                                       .withColumn("timeuuid_1", "timeuuid")
+                                       .withColumn("list_1", "list<text>")
+                                       .withColumn("set_1", "set<text>")
+                                       .withColumn("map_1", "map<text,text>")
+                                       .withColumn("lucene", "text")
+                                       .build();
 
         // Add to context ready for suite's tests usage
         Properties context = new Properties();

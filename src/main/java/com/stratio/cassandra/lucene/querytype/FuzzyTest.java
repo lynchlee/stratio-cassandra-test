@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import static com.stratio.cassandra.index.query.builder.SearchBuilders.fuzzy;
+import static com.stratio.cassandra.lucene.query.builder.SearchBuilders.fuzzy;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
@@ -32,9 +32,10 @@ public class FuzzyTest extends AbstractWatchedTest {
         assertEquals("Expected 2 result!", 2, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void fuzzyQueryEmptyAsciiFieldTest() {
-        cassandraUtils.query(fuzzy("ascii_1", "")).count();
+        int n = cassandraUtils.query(fuzzy("ascii_1", "")).count();
+        assertEquals("Expected 0 results!", 0, n);
     }
 
     @Test
@@ -99,7 +100,7 @@ public class FuzzyTest extends AbstractWatchedTest {
         assertEquals("Expected 4 results!", 4, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void fuzzyQueryEmptyInetFieldTest() {
         cassandraUtils.query(fuzzy("inet_1", "")).count();
     }
@@ -166,7 +167,7 @@ public class FuzzyTest extends AbstractWatchedTest {
         assertEquals("Expected 2 result!", 2, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void fuzzyQueryEmptyTextFieldTest() {
         cassandraUtils.query(fuzzy("text_1", "")).count();
     }
@@ -174,7 +175,7 @@ public class FuzzyTest extends AbstractWatchedTest {
     @Test
     public void fuzzyQueryTextFieldWith1MaxEditsTest() {
 
-        int n = cassandraUtils.query(fuzzy("text_1", "Frasesinespaciosconarticulosylaspalabrassuficiente").maxEdits(1))
+        int n = cassandraUtils.query(fuzzy("text_1", "frasesinespaciosconarticulosylaspalabrassuficiente").maxEdits(1))
                               .count();
 
         assertEquals("Expected 1 result!", 1, n);
@@ -189,7 +190,7 @@ public class FuzzyTest extends AbstractWatchedTest {
 
     @Test
     public void fuzzyQueryTextFieldWith2PrefixLengthTest1() {
-        int n = cassandraUtils.query(fuzzy("text_1", "Frasesinespaciosconarticulosylaspalabrassuficiente").prefixLength(
+        int n = cassandraUtils.query(fuzzy("text_1", "frasesinespaciosconarticulosylaspalabrassuficiente").prefixLength(
                 2)).count();
         assertEquals("Expected 1 result!", 1, n);
     }
@@ -200,15 +201,6 @@ public class FuzzyTest extends AbstractWatchedTest {
                 2)).count();
         assertEquals("Expected 0 results!", 0, n);
     }
-
-//    @Test
-//    // 2
-//    public void fuzzyQueryTextFieldWith1MaxExpansionsTest() throws InterruptedException {
-//        int n = cassandraUtils.query(fuzzy("text_1",
-//                                           "Frasesinespaciosconarticulosylaspalabrassuficiente").maxExpansions(1))
-//                              .count();
-//        assertEquals("Expected 1 result!", 1, n);
-//    }
 
     @Test
     public void fuzzyQueryTextFieldWith10MaxExpansionsTest() throws InterruptedException {
@@ -229,7 +221,7 @@ public class FuzzyTest extends AbstractWatchedTest {
     @Test
     public void fuzzyQueryTextFieldWithTranspositionsTest() {
         int n = cassandraUtils.query(fuzzy("text_1",
-                                           "Frasseinespacisoconarticulosylaspalabrassuficientes").transpositions(true))
+                                           "frasseinespacisoconarticulosylaspalabrassuficientes").transpositions(true))
                               .count();
         assertEquals("Expected 1 result!", 1, n);
     }
@@ -249,7 +241,7 @@ public class FuzzyTest extends AbstractWatchedTest {
         assertEquals("Expected 3 results!", 3, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void fuzzyQueryEmptyVarcharFieldTest() {
         cassandraUtils.query(fuzzy("varchar_1", "")).count();
     }
@@ -314,7 +306,7 @@ public class FuzzyTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void fuzzyQueryListFieldTest1() {
         int n = cassandraUtils.query(fuzzy("list_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -338,7 +330,7 @@ public class FuzzyTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void fuzzyQuerySetFieldTest1() {
         int n = cassandraUtils.query(fuzzy("set_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -362,7 +354,7 @@ public class FuzzyTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void fuzzyQueryMapFieldTest1() {
         int n = cassandraUtils.query(fuzzy("map_1.k1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -389,12 +381,13 @@ public class FuzzyTest extends AbstractWatchedTest {
     @Test
     public void fuzzyFilterAsciiFieldTest() {
         int n = cassandraUtils.filter(fuzzy("ascii_1", "frase tipo asci")).count();
-        assertEquals("Expected 2 result!", 2, n);
+        assertEquals("Expected 2 results!", 2, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void fuzzyFilterEmptyAsciiFieldTest() {
-        cassandraUtils.filter(fuzzy("ascii_1", "")).count();
+        int n = cassandraUtils.filter(fuzzy("ascii_1", "")).count();
+        assertEquals("Expected 0 results!", 0, n);
     }
 
     @Test
@@ -460,7 +453,7 @@ public class FuzzyTest extends AbstractWatchedTest {
         assertEquals("Expected 4 results!", 4, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void fuzzyFilterEmptyInetFieldTest() {
         cassandraUtils.filter(fuzzy("inet_1", "")).count();
     }
@@ -527,7 +520,7 @@ public class FuzzyTest extends AbstractWatchedTest {
         assertEquals("Expected 2 result!", 2, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void fuzzyFilterEmptyTextFieldTest() {
         cassandraUtils.filter(fuzzy("text_1", "")).count();
     }
@@ -535,7 +528,7 @@ public class FuzzyTest extends AbstractWatchedTest {
     @Test
     public void fuzzyFilterTextFieldWith1MaxEditsTest() {
 
-        int n = cassandraUtils.filter(fuzzy("text_1", "Frasesinespaciosconarticulosylaspalabrassuficiente").maxEdits(1))
+        int n = cassandraUtils.filter(fuzzy("text_1", "frasesinespaciosconarticulosylaspalabrassuficiente").maxEdits(1))
                               .count();
 
         assertEquals("Expected 1 result!", 1, n);
@@ -543,7 +536,7 @@ public class FuzzyTest extends AbstractWatchedTest {
 
     @Test
     public void fuzzyFilterTextFieldWith0MaxEditsTest() {
-        int n = cassandraUtils.filter(fuzzy("text_1", "Frasesinespaciosconarticulosylaspalabrassuficiente").maxEdits(0))
+        int n = cassandraUtils.filter(fuzzy("text_1", "frasesinespaciosconarticulosylaspalabrassuficiente").maxEdits(0))
                               .count();
         assertEquals("Expected 0 results!", 0, n);
     }
@@ -551,7 +544,7 @@ public class FuzzyTest extends AbstractWatchedTest {
     @Test
     public void fuzzyFilterTextFieldWith2PrefixLengthTest1() {
         int n = cassandraUtils.filter(fuzzy("text_1",
-                                            "Frasesinespaciosconarticulosylaspalabrassuficiente").prefixLength(2))
+                                            "frasesinespaciosconarticulosylaspalabrassuficiente").prefixLength(2))
                               .count();
         assertEquals("Expected 1 result!", 1, n);
     }
@@ -559,7 +552,7 @@ public class FuzzyTest extends AbstractWatchedTest {
     @Test
     public void fuzzyFilterTextFieldWith2PrefixLengthTest2() {
         int n = cassandraUtils.filter(fuzzy("text_1",
-                                            "rFasesinespaciosconarticulosylaspalabrassuficiente").prefixLength(2))
+                                            "rfasesinespaciosconarticulosylaspalabrassuficiente").prefixLength(2))
                               .count();
         assertEquals("Expected 0 results!", 0, n);
     }
@@ -592,7 +585,7 @@ public class FuzzyTest extends AbstractWatchedTest {
     @Test
     public void fuzzyFilterTextFieldWithTranspositionsTest() {
         int n = cassandraUtils.filter(fuzzy("text_1",
-                                            "Frasseinespacisoconarticulosylaspalabrassuficientes").transpositions(true))
+                                            "frasseinespacisoconarticulosylaspalabrassuficientes").transpositions(true))
                               .count();
         assertEquals("Expected 1 result!", 1, n);
     }
@@ -612,7 +605,7 @@ public class FuzzyTest extends AbstractWatchedTest {
         assertEquals("Expected 3 results!", 3, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void fuzzyFilterEmptyVarcharFieldTest() {
         cassandraUtils.filter(fuzzy("varchar_1", "")).count();
     }
@@ -680,7 +673,7 @@ public class FuzzyTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void fuzzyFilterListFieldTest1() {
         int n = cassandraUtils.filter(fuzzy("list_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -704,7 +697,7 @@ public class FuzzyTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void fuzzyFilterSetFieldTest1() {
         int n = cassandraUtils.filter(fuzzy("set_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -728,7 +721,7 @@ public class FuzzyTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void fuzzyFilterMapFieldTest1() {
         int n = cassandraUtils.filter(fuzzy("map_1.k1", "")).count();
         assertEquals("Expected 0 results!", 0, n);

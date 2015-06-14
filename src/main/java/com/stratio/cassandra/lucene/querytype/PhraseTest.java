@@ -23,9 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.util.ArrayList;
-
-import static com.stratio.cassandra.index.query.builder.SearchBuilders.phrase;
+import static com.stratio.cassandra.lucene.query.builder.SearchBuilders.phrase;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
@@ -33,43 +31,43 @@ public class PhraseTest extends AbstractWatchedTest {
 
     @Test()
     public void phraseQueryTextFieldTest1() {
-        int n = cassandraUtils.query(phrase("text_1", "Frase", "espacios")).count();
+        int n = cassandraUtils.query(phrase("text_1", "Frase espacios")).count();
         assertEquals("Expected 0 results!", 0, n);
     }
 
     @Test()
     public void phraseQueryTextFieldWithSlopTest1() {
-        int n = cassandraUtils.query(phrase("text_1", "Frase", "espacios").slop(2)).count();
+        int n = cassandraUtils.query(phrase("text_1", "Frase espacios").slop(2)).count();
         assertEquals("Expected 1 result!", 1, n);
     }
 
     @Test()
     public void phraseQueryTextFieldTest2() {
-        int n = cassandraUtils.query(phrase("text_1", "articulos", "suficientes")).count();
+        int n = cassandraUtils.query(phrase("text_1", "articulos suficientes")).count();
         assertEquals("Expected 0 results!", 0, n);
     }
 
     @Test()
     public void phraseQueryTextFieldWithSlopTest() {
-        int n = cassandraUtils.query(phrase("text_1", "articulos", "palabras").slop(2)).count();
+        int n = cassandraUtils.query(phrase("text_1", "articulos palabras").slop(2)).count();
         assertEquals("Expected 1 result!", 1, n);
     }
 
     @Test()
     public void phraseQueryTextFieldTest3() {
-        int n = cassandraUtils.query(phrase("text_1", "con", "los")).count();
+        int n = cassandraUtils.query(phrase("text_1", "con los")).count();
         assertEquals("Expected 0 results!", 0, n);
     }
 
     @Test()
     public void phraseQueryTextFieldTest4() {
-        int n = cassandraUtils.query(phrase("text_1", new ArrayList<String>())).count();
+        int n = cassandraUtils.query(phrase("text_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
     }
 
     @Test
     public void phraseQueryListFieldTest1() {
-        int n = cassandraUtils.query(phrase("list_1", new ArrayList<String>())).count();
+        int n = cassandraUtils.query(phrase("list_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
     }
 
@@ -81,7 +79,7 @@ public class PhraseTest extends AbstractWatchedTest {
 
     @Test
     public void phraseQueryListFieldTest3() {
-        int n = cassandraUtils.query(phrase("list_1", "l1", "l2")).count();
+        int n = cassandraUtils.query(phrase("list_1", "l1 l2")).count();
         assertEquals("Expected 1 results!", 1, n);
     }
 
@@ -93,19 +91,19 @@ public class PhraseTest extends AbstractWatchedTest {
 
     @Test
     public void phraseQueryListFieldTest5() {
-        int n = cassandraUtils.query(phrase("list_1", "l2", "l3")).count();
+        int n = cassandraUtils.query(phrase("list_1", "l2 l3")).count();
         assertEquals("Expected 3 results!", 3, n);
     }
 
     @Test
     public void phraseQueryListFieldTest6() {
-        int n = cassandraUtils.query(phrase("list_1", "l3", "l2")).count();
+        int n = cassandraUtils.query(phrase("list_1", "l3 l2")).count();
         assertEquals("Expected 0 results!", 0, n);
     }
 
     @Test
     public void phraseQuerySetFieldTest1() {
-        int n = cassandraUtils.query(phrase("set_1", new ArrayList<String>())).count();
+        int n = cassandraUtils.query(phrase("set_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
     }
 
@@ -123,7 +121,7 @@ public class PhraseTest extends AbstractWatchedTest {
 
     @Test
     public void phraseQueryMapFieldTest1() {
-        int n = cassandraUtils.query(phrase("map_1.k1", new ArrayList<String>())).count();
+        int n = cassandraUtils.query(phrase("map_1.k1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
     }
 
@@ -147,43 +145,43 @@ public class PhraseTest extends AbstractWatchedTest {
 
     @Test()
     public void phraseFilterTextFieldTest1() {
-        int n = cassandraUtils.filter(phrase("text_1", "Frase", "espacios")).count();
+        int n = cassandraUtils.filter(phrase("text_1", "Frase espacios")).count();
         assertEquals("Expected 0 results!", 0, n);
     }
 
     @Test()
     public void phraseFilterTextFieldWithSlopTest1() {
-        int n = cassandraUtils.filter(phrase("text_1", "Frase", "espacios").slop(2)).count();
+        int n = cassandraUtils.filter(phrase("text_1", "Frase espacios").slop(2)).count();
         assertEquals("Expected 1 result!", 1, n);
     }
 
     @Test()
     public void phraseFilterTextFieldTest2() {
-        int n = cassandraUtils.filter(phrase("text_1", "articulos", "suficientes")).count();
+        int n = cassandraUtils.filter(phrase("text_1", "articulos suficientes")).count();
         assertEquals("Expected 0 results!", 0, n);
     }
 
     @Test()
     public void phraseFilterTextFieldWithSlopTest() {
-        int n = cassandraUtils.filter(phrase("text_1", "articulos", "palabras").slop(2)).count();
+        int n = cassandraUtils.filter(phrase("text_1", "articulos palabras").slop(2)).count();
         assertEquals("Expected 1 result!", 1, n);
     }
 
     @Test()
     public void phraseFilterTextFieldTest3() {
-        int n = cassandraUtils.filter(phrase("text_1", "con", "los")).count();
+        int n = cassandraUtils.filter(phrase("text_1", "con los")).count();
         assertEquals("Expected 0 results!", 0, n);
     }
 
     @Test()
     public void phraseFilterTextFieldTest4() {
-        int n = cassandraUtils.filter(phrase("text_1", new ArrayList<String>())).count();
+        int n = cassandraUtils.filter(phrase("text_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
     }
 
     @Test
     public void phraseFilterListFieldTest1() {
-        int n = cassandraUtils.filter(phrase("list_1", new ArrayList<String>())).count();
+        int n = cassandraUtils.filter(phrase("list_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
     }
 
@@ -195,7 +193,7 @@ public class PhraseTest extends AbstractWatchedTest {
 
     @Test
     public void phraseFilterListFieldTest3() {
-        int n = cassandraUtils.filter(phrase("list_1", "l1", "l2")).count();
+        int n = cassandraUtils.filter(phrase("list_1", "l1 l2")).count();
         assertEquals("Expected 1 results!", 1, n);
     }
 
@@ -207,19 +205,19 @@ public class PhraseTest extends AbstractWatchedTest {
 
     @Test
     public void phraseFilterListFieldTest5() {
-        int n = cassandraUtils.filter(phrase("list_1", "l2", "l3")).count();
+        int n = cassandraUtils.filter(phrase("list_1", "l2 l3")).count();
         assertEquals("Expected 3 results!", 3, n);
     }
 
     @Test
     public void phraseFilterListFieldTest6() {
-        int n = cassandraUtils.filter(phrase("list_1", "l3", "l2")).count();
+        int n = cassandraUtils.filter(phrase("list_1", "l3 l2")).count();
         assertEquals("Expected 0 results!", 0, n);
     }
 
     @Test
     public void phraseFilterSetFieldTest1() {
-        int n = cassandraUtils.filter(phrase("set_1", new ArrayList<String>())).count();
+        int n = cassandraUtils.filter(phrase("set_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
     }
 
@@ -237,7 +235,7 @@ public class PhraseTest extends AbstractWatchedTest {
 
     @Test
     public void phraseFilterMapFieldTest1() {
-        int n = cassandraUtils.filter(phrase("map_1.k1", new ArrayList<String>())).count();
+        int n = cassandraUtils.filter(phrase("map_1.k1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
     }
 

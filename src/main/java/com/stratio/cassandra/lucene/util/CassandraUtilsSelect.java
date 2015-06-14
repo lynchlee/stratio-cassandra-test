@@ -5,7 +5,8 @@ import com.datastax.driver.core.querybuilder.BuiltStatement;
 import com.datastax.driver.core.querybuilder.Clause;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
-import com.stratio.cassandra.index.query.builder.*;
+import com.stratio.cassandra.lucene.query.builder.*;
+import com.stratio.cassandra.lucene.TestingConstants;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class CassandraUtilsSelect {
     private LinkedList<Clause> clauses;
     private LinkedList<String> extras;
     private Integer limit;
+    private Integer fetchSize = TestingConstants.FETCH_SIZE;
 
     public CassandraUtilsSelect(CassandraUtils parent) {
         this.parent = parent;
@@ -93,6 +95,11 @@ public class CassandraUtilsSelect {
         return this;
     }
 
+    public CassandraUtilsSelect fetchSize(Integer fetchSize) {
+        this.fetchSize = fetchSize;
+        return this;
+    }
+
     public CassandraUtilsSelect limit(Integer limit) {
         this.limit = limit;
         return this;
@@ -116,7 +123,7 @@ public class CassandraUtilsSelect {
             sb.append(extra);
             sb.append(" ");
         }
-        return parent.execute(sb);
+        return parent.execute(sb, fetchSize);
     }
 
     public int count() {

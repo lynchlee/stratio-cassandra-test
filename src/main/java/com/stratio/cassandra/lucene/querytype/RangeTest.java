@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import static com.stratio.cassandra.index.query.builder.SearchBuilders.range;
+import static com.stratio.cassandra.lucene.query.builder.SearchBuilders.range;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
@@ -355,22 +355,22 @@ public class RangeTest extends AbstractWatchedTest {
 
     @Test
     public void rangeQueryTextFieldTest2() {
-        int count = cassandraUtils.query(range("text_1").lower("Frase").upper("G")).count();
+        int count = cassandraUtils.query(range("text_1").lower("frase").upper("g")).count();
         assertEquals("Expected 3 results!", 3, count);
     }
 
     @Test
     public void rangeQueryTextFieldTest3() {
         int count = cassandraUtils.query(range("text_1").lower(
-                "Frasesinespaciosconarticulosylaspalabrassuficientesperomaslarga").upper("G")).count();
+                "frasesinespaciosconarticulosylaspalabrassuficientesperomaslarga").upper("g")).count();
         assertEquals("Expected 1 result!", 1, count);
     }
 
     @Test
     public void rangeQueryTextFieldTest4() {
         int count = cassandraUtils.query(range("text_1").lower(
-                "Frasesinespaciosconarticulosylaspalabrassuficientesperomaslarga")
-                                                        .upper("G")
+                "frasesinespaciosconarticulosylaspalabrassuficientesperomaslarga")
+                                                        .upper("g")
                                                         .includeLower(true)
                                                         .includeUpper(true)).count();
         assertEquals("Expected 2 results!", 2, count);
@@ -807,22 +807,22 @@ public class RangeTest extends AbstractWatchedTest {
 
     @Test
     public void rangeFilterTextFieldTest2() {
-        int count = cassandraUtils.filter(range("text_1").lower("Frase").upper("G")).count();
+        int count = cassandraUtils.filter(range("text_1").lower("frase").upper("g")).count();
         assertEquals("Expected 3 results!", 3, count);
     }
 
     @Test
     public void rangeFilterTextFieldTest3() {
         int count = cassandraUtils.filter(range("text_1").lower(
-                "Frasesinespaciosconarticulosylaspalabrassuficientesperomaslarga").upper("G")).count();
+                "frasesinespaciosconarticulosylaspalabrassuficientesperomaslarga").upper("g")).count();
         assertEquals("Expected 1 result!", 1, count);
     }
 
     @Test
     public void rangeFilterTextFieldTest4() {
         int count = cassandraUtils.filter(range("text_1").lower(
-                "Frasesinespaciosconarticulosylaspalabrassuficientesperomaslarga")
-                                                         .upper("G")
+                "frasesinespaciosconarticulosylaspalabrassuficientesperomaslarga")
+                                                         .upper("g")
                                                          .includeLower(true)
                                                          .includeUpper(true)).count();
         assertEquals("Expected 2 results!", 2, count);

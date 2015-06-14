@@ -32,7 +32,7 @@ import java.util.Properties;
                MatchTest.class,
                PrefixTest.class,
                PhraseTest.class,
-               RegExpTest.class,
+               RegexpTest.class,
                RangeTest.class,
                BooleanTest.class,
                SortTest.class

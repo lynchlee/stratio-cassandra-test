@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import static com.stratio.cassandra.index.query.builder.SearchBuilders.wildcard;
+import static com.stratio.cassandra.lucene.query.builder.SearchBuilders.wildcard;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
@@ -200,6 +200,21 @@ public class MultipleKeyDataHandlingTest {
         n = cassandraUtils.query(wildcard("text_1", "text")).count();
         assertEquals("Expected 7 results!", 7, n);
         n = cassandraUtils.query(wildcard("text_1", "other")).count();
+        assertEquals("Expected 1 results!", 1, n);
+    }
+
+    @Test
+    public void insertWithUpdateTest() {
+        int n = cassandraUtils.query(wildcard("text_1", "text")).count();
+        assertEquals("Expected 8 results!", 8, n);
+
+        cassandraUtils.update()
+                      .set("text_1", "new")
+                      .where("integer_1", 1000)
+                      .and("ascii_1", "ascii")
+                      .execute()
+                      .waitForIndexRefresh();
+        n = cassandraUtils.query(wildcard("text_1", "new")).count();
         assertEquals("Expected 1 results!", 1, n);
     }
 }

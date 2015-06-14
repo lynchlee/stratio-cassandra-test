@@ -88,7 +88,7 @@ public class TokenRangeWithWideRowsMultiPartitionTest {
 
     @AfterClass
     public static void after() {
-        cassandraUtils.dropIndex(TestingConstants.INDEX_NAME_CONSTANT).dropTable().dropKeyspace().waitForIndexRefresh();
+//        cassandraUtils.dropIndex(TestingConstants.INDEX_NAME_CONSTANT).dropTable().dropKeyspace().waitForIndexRefresh();
     }
 
     @Test

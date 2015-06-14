@@ -26,7 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.stratio.cassandra.index.query.builder.SearchBuilders.match;
+import static com.stratio.cassandra.lucene.query.builder.SearchBuilders.match;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
@@ -50,7 +50,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void matchQueryAsciiFieldTest4() {
         int n = cassandraUtils.query(match("ascii_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -86,7 +86,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void matchQueryBlobTest1() {
         int n = cassandraUtils.query(match("blob_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -98,13 +98,13 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 4 results!", 4, n);
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void matchQueryBlobTest3() {
         int n = cassandraUtils.query(match("blob_1", "3E0A161")).count();
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void matchQueryBlobTest4() {
         int n = cassandraUtils.query(match("blob_1", "3E0A1")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -134,7 +134,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, n);
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void matchQueryBooleanTest5() {
         int n = cassandraUtils.query(match("boolean_1", "else")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -321,13 +321,13 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, n);
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void matchQueryInetFieldTest3() {
         int n = cassandraUtils.query(match("inet_1", "127.1.1.")).count();
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test(expected = InvalidQueryException.class)
     public void matchQueryInetFieldTest4() {
         int n = cassandraUtils.query(match("inet_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -352,7 +352,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void matchQueryTextFieldTest4() {
         int n = cassandraUtils.query(match("text_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -376,13 +376,13 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void matchQueryVarcharFieldTest4() {
         int n = cassandraUtils.query(match("varchar_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void matchQueryListFieldTest1() {
         int n = cassandraUtils.query(match("list_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -400,7 +400,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void matchQuerySetFieldTest1() {
         int n = cassandraUtils.query(match("set_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -418,7 +418,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 2 results!", 2, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void matchQueryMapFieldTest1() {
         int n = cassandraUtils.query(match("map_1.k1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -460,7 +460,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void matchFilterAsciiFieldTest4() {
         int n = cassandraUtils.filter(match("ascii_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -496,7 +496,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void matchFilterBlobTest1() {
         int n = cassandraUtils.filter(match("blob_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -508,13 +508,13 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 4 results!", 4, n);
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void matchFilterBlobTest3() {
         int n = cassandraUtils.filter(match("blob_1", "3E0A161")).count();
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void matchFilterBlobTest4() {
         int n = cassandraUtils.filter(match("blob_1", "3E0A1")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -544,7 +544,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, n);
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void matchFilterBooleanTest5() {
         int n = cassandraUtils.filter(match("boolean_1", "else")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -732,7 +732,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, n);
     }
 
-    @Test
+    @Test(expected = InvalidQueryException.class)
     public void matchFilterInetFieldTest3() {
         int n = cassandraUtils.filter(match("inet_1", "127.1.1.")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -763,7 +763,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void matchFilterTextFieldTest4() {
         int n = cassandraUtils.filter(match("text_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -787,13 +787,13 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 1 result!", 1, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void matchFilterVarcharFieldTest4() {
         int n = cassandraUtils.filter(match("varchar_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void matchFilterListFieldTest1() {
         int n = cassandraUtils.filter(match("list_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -811,7 +811,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void matchFilterSetFieldTest1() {
         int n = cassandraUtils.filter(match("set_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -829,7 +829,7 @@ public class MatchTest extends AbstractWatchedTest {
         assertEquals("Expected 2 results!", 2, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void matchFilterMapFieldTest1() {
         int n = cassandraUtils.filter(match("map_1.k1", "")).count();
         assertEquals("Expected 0 results!", 0, n);

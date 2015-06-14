@@ -20,11 +20,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import static com.stratio.cassandra.index.query.builder.SearchBuilders.regexp;
+import static com.stratio.cassandra.lucene.query.builder.SearchBuilders.regexp;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
-public class RegExpTest extends AbstractWatchedTest {
+public class RegexpTest extends AbstractWatchedTest {
 
     @Test
     public void regexpQueryAsciiFieldTest1() {
@@ -44,7 +44,7 @@ public class RegExpTest extends AbstractWatchedTest {
         assertEquals("Expected 5 results!", 5, count);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void regexpQueryAsciiFieldTest4() {
         int count = cassandraUtils.query(regexp("ascii_1", "")).count();
         assertEquals("Expected 0 results!", 0, count);
@@ -74,7 +74,7 @@ public class RegExpTest extends AbstractWatchedTest {
         assertEquals("Expected 2 results!", 2, count);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void regexpQueryInetFieldTest4() {
         int count = cassandraUtils.query(regexp("inet_1", "")).count();
         assertEquals("Expected 0 results!", 0, count);
@@ -104,7 +104,7 @@ public class RegExpTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, count);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void regexpQueryTextFieldTest4() {
         int count = cassandraUtils.query(regexp("text_1", "")).count();
         assertEquals("Expected 0 results!", 0, count);
@@ -135,7 +135,7 @@ public class RegExpTest extends AbstractWatchedTest {
         assertEquals("Expected 1 results!", 1, count);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void regexpQueryVarcharFieldTest4() {
         int count = cassandraUtils.query(regexp("varchar_1", "")).count();
         assertEquals("Expected 0 results!", 0, count);
@@ -147,7 +147,7 @@ public class RegExpTest extends AbstractWatchedTest {
         assertEquals("Expected 1 results!", 1, count);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void regexpQueryListFieldTest1() {
         int n = cassandraUtils.query(regexp("list_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -165,7 +165,7 @@ public class RegExpTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void regexpQuerySetFieldTest1() {
         int n = cassandraUtils.query(regexp("set_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -183,7 +183,7 @@ public class RegExpTest extends AbstractWatchedTest {
         assertEquals("Expected 5 results!", 5, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void regexpQueryMapFieldTest1() {
         int n = cassandraUtils.query(regexp("map_1.k1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -225,7 +225,7 @@ public class RegExpTest extends AbstractWatchedTest {
         assertEquals("Expected 5 results!", 5, count);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void regexpFilterAsciiFieldTest4() {
         int count = cassandraUtils.filter(regexp("ascii_1", "")).count();
         assertEquals("Expected 0 results!", 0, count);
@@ -255,7 +255,7 @@ public class RegExpTest extends AbstractWatchedTest {
         assertEquals("Expected 2 results!", 2, count);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void regexpFilterInetFieldTest4() {
         int count = cassandraUtils.filter(regexp("inet_1", "")).count();
         assertEquals("Expected 0 results!", 0, count);
@@ -285,7 +285,7 @@ public class RegExpTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, count);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void regexpFilterTextFieldTest4() {
         int count = cassandraUtils.filter(regexp("text_1", "")).count();
         assertEquals("Expected 0 results!", 0, count);
@@ -316,7 +316,7 @@ public class RegExpTest extends AbstractWatchedTest {
         assertEquals("Expected 1 results!", 1, count);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void regexpFilterVarcharFieldTest4() {
         int count = cassandraUtils.filter(regexp("varchar_1", "")).count();
         assertEquals("Expected 0 results!", 0, count);
@@ -328,7 +328,7 @@ public class RegExpTest extends AbstractWatchedTest {
         assertEquals("Expected 1 results!", 1, count);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void regexpFilterListFieldTest1() {
         int n = cassandraUtils.filter(regexp("list_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -346,7 +346,7 @@ public class RegExpTest extends AbstractWatchedTest {
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void regexpFilterSetFieldTest1() {
         int n = cassandraUtils.filter(regexp("set_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);
@@ -364,7 +364,7 @@ public class RegExpTest extends AbstractWatchedTest {
         assertEquals("Expected 5 results!", 5, n);
     }
 
-    @Test(expected = DriverException.class)
+    @Test
     public void regexpFilterMapFieldTest1() {
         int n = cassandraUtils.filter(regexp("map_1.k1", "")).count();
         assertEquals("Expected 0 results!", 0, n);

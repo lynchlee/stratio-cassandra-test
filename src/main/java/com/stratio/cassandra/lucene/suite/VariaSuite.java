@@ -26,7 +26,7 @@ import org.junit.runners.Suite.SuiteClasses;
                TokenRangeWithSkinnyRowsTest.class,
                TokenRangeWithWideRowsMultiPartitionTest.class,
                TokenRangeWithWideRowsMultiClusteringTest.class,
-               SearchWithVeryWideRowsTest.class})
+               SearchWithLongWideRowsTest.class})
 public class VariaSuite {
 
 }
