@@ -1,10 +1,18 @@
 package com.stratio.cassandra.lucene.util;
 
-import com.datastax.driver.core.*;
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.ConsistencyLevel;
+import com.datastax.driver.core.Metadata;
+import com.datastax.driver.core.Row;
+import com.datastax.driver.core.Session;
+import com.datastax.driver.core.SimpleStatement;
+import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
+import com.stratio.cassandra.lucene.TestingConstants;
 import com.stratio.cassandra.lucene.query.builder.ConditionBuilder;
 import com.stratio.cassandra.lucene.query.builder.SortFieldBuilder;
-import com.stratio.cassandra.lucene.TestingConstants;
+import com.stratio.cassandra.lucene.schema.Schema;
+import com.stratio.cassandra.lucene.schema.mapping.builder.MapperBuilder;
 import org.apache.log4j.Logger;
 
 import java.util.LinkedHashMap;
@@ -160,8 +168,6 @@ public class CassandraUtils {
         return session;
     }
 
-
-
     public void disconnect() {
         session.close();
     }
@@ -230,7 +236,6 @@ public class CassandraUtils {
                                    .append(qualifiedTable)
                                    .append(" (")
                                    .append(indexColumn)
-//                                   .append(") USING 'com.stratio.cassandra.index.RowIndex' WITH OPTIONS = {")
                                    .append(") USING 'com.stratio.cassandra.lucene.Index' WITH OPTIONS = {")
                                    .append("'refresh_seconds':'0.1',")
                                    .append("'num_cached_filters':'1',")
@@ -240,6 +245,26 @@ public class CassandraUtils {
                                    .append(" 'schema':'{default_analyzer:")
                                    .append("\"org.apache.lucene.analysis.standard.StandardAnalyzer\",fields:{")
                                    .append(conversionCassToLucene())
+                                   .append("}}'};"));
+        return this;
+    }
+
+    public CassandraUtils createIndex(String indexName, String mappers) {
+        execute(new StringBuilder().append("CREATE CUSTOM INDEX ")
+                                   .append(indexName)
+                                   .append(" ON ")
+                                   .append(qualifiedTable)
+                                   .append(" (")
+                                   .append(indexColumn)
+                                   .append(") USING 'com.stratio.cassandra.lucene.Index' WITH OPTIONS = {")
+                                   .append("'refresh_seconds':'0.1',")
+                                   .append("'num_cached_filters':'1',")
+                                   .append("'ram_buffer_mb':'64',")
+                                   .append("'max_merge_mb':'5',")
+                                   .append("'max_cached_mb':'30',")
+                                   .append(" 'schema':'{default_analyzer:")
+                                   .append("\"org.apache.lucene.analysis.standard.StandardAnalyzer\",fields:{")
+                                   .append(mappers)
                                    .append("}}'};"));
 
         return this;
@@ -280,7 +305,7 @@ public class CassandraUtils {
             if (!columns.get(s).endsWith(">")) {
                 String type = columns.get(s);
                 String lucenetype = conversionCassandraLucene.get(type);
-                lucenetype = lucenetype.replace("}",", sorted:\"true\"}");
+                lucenetype = lucenetype.replace("}", ", sorted:\"true\"}");
                 converted = converted + s + lucenetype + ",";
             } else {
                 String typeComp = columns.get(s);
@@ -292,7 +317,7 @@ public class CassandraUtils {
                 }
 
                 String lucenetype = conversionCassandraLucene.get(type);
-                lucenetype = lucenetype.replace("}",", sorted:\"false\"}");
+                lucenetype = lucenetype.replace("}", ", sorted:\"false\"}");
                 converted = converted + s + lucenetype + ",";
             }
         }
@@ -351,7 +376,7 @@ public class CassandraUtils {
     }
 
     public CassandraUtils insert(String[] names, Object[] values) {
-        execute(QueryBuilder.insertInto(keyspace, table).values(names,values));
+        execute(QueryBuilder.insertInto(keyspace, table).values(names, values));
         return this;
     }
 

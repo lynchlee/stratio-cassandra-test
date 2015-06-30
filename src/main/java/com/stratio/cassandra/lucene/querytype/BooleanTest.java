@@ -20,7 +20,6 @@ package com.stratio.cassandra.lucene.querytype;
  */
 
 import com.datastax.driver.core.Row;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -28,9 +27,7 @@ import org.junit.runners.JUnit4;
 import java.util.List;
 
 import static com.stratio.cassandra.lucene.query.builder.SearchBuilders.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
 public class BooleanTest extends AbstractWatchedTest {
