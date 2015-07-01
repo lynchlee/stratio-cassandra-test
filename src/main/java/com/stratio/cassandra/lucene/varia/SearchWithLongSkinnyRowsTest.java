@@ -24,7 +24,6 @@ import org.junit.Test;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static com.stratio.cassandra.lucene.query.builder.SearchBuilders.match;
 import static org.junit.Assert.assertEquals;
 
 /**

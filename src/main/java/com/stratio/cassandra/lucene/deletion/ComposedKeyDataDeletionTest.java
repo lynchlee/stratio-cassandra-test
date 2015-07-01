@@ -28,7 +28,7 @@ import org.junit.runners.JUnit4;
 import java.util.List;
 import java.util.Map;
 
-import static com.stratio.cassandra.lucene.query.builder.SearchBuilders.wildcard;
+import static com.stratio.cassandra.lucene.search.SearchBuilders.wildcard;
 import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)

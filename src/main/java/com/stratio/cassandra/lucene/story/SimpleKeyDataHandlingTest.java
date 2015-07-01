@@ -27,7 +27,7 @@ import org.junit.runners.JUnit4;
 
 import java.util.List;
 
-import static com.stratio.cassandra.lucene.query.builder.SearchBuilders.wildcard;
+import static com.stratio.cassandra.lucene.search.SearchBuilders.wildcard;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 

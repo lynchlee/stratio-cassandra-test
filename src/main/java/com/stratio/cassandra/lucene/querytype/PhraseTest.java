@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import static com.stratio.cassandra.lucene.query.builder.SearchBuilders.phrase;
+import static com.stratio.cassandra.lucene.search.SearchBuilders.phrase;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
