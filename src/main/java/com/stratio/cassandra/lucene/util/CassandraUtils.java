@@ -269,6 +269,30 @@ public class CassandraUtils {
 
         return this;
     }
+    public CassandraUtils createCustomIndex(String indexName,Map<String,String> fieldsMap) {
+        StringBuilder stBuilder = new StringBuilder().append("CREATE CUSTOM INDEX ")
+                .append(indexName)
+                .append(" ON ")
+                .append(qualifiedTable)
+                .append(" (")
+                .append(indexColumn)
+                .append(") USING 'com.stratio.cassandra.lucene.Index' WITH OPTIONS = {")
+                .append("'refresh_seconds':'0.1',")
+                .append("'num_cached_filters':'1',")
+                .append("'ram_buffer_mb':'64',")
+                .append("'max_merge_mb':'5',")
+                .append("'max_cached_mb':'30',")
+                .append(" 'schema':'{default_analyzer:")
+                .append("\"org.apache.lucene.analysis.standard.StandardAnalyzer\",fields:{")
+                .append(produceFieldsString(fieldsMap))
+                .append("}}'};");
+
+        System.out.println("crreatuing index qith query: "+stBuilder.toString());
+        execute(stBuilder);
+
+        return this;
+
+    }
 
     public CassandraUtils dropIndex(String indexName) {
         execute(new StringBuilder().append("DROP INDEX ").append(keyspace).append(".").append(indexName).append(";"));
@@ -299,6 +323,16 @@ public class CassandraUtils {
         }
         return converted.substring(0, converted.length() - 1);
     }
+
+    private String produceFieldsString(Map<String,String> fieldsMap) {
+        String converted="";
+        for (String key:fieldsMap.keySet()) {
+            converted=converted+key+":"+fieldsMap.get(key)+",";
+
+        }
+        return converted.substring(0, converted.length() - 1);
+    }
+
 
     public List<Row> selectAllFromTable() {
         return execute(new StringBuilder().append("SELECT ")
