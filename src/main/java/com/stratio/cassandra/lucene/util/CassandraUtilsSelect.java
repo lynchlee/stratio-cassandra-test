@@ -136,7 +136,7 @@ public class CassandraUtilsSelect {
         List<Row> rows = get();
         Integer[] values = new Integer[rows.size()];
         int count = 0;
-        for (Row row : get()) {
+        for (Row row : rows) {
             values[count++] = row.getInt(name);
         }
         return values;
@@ -146,7 +146,7 @@ public class CassandraUtilsSelect {
         List<Row> rows = get();
         Long[] values = new Long[rows.size()];
         int count = 0;
-        for (Row row : get()) {
+        for (Row row : rows) {
             values[count++] = row.getLong(name);
         }
         return values;
@@ -156,7 +156,7 @@ public class CassandraUtilsSelect {
         List<Row> rows = get();
         Float[] values = new Float[rows.size()];
         int count = 0;
-        for (Row row : get()) {
+        for (Row row : rows) {
             values[count++] = row.getFloat(name);
         }
         return values;
@@ -166,7 +166,7 @@ public class CassandraUtilsSelect {
         List<Row> rows = get();
         Double[] values = new Double[rows.size()];
         int count = 0;
-        for (Row row : get()) {
+        for (Row row : rows) {
             values[count++] = row.getDouble(name);
         }
         return values;
