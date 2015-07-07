@@ -26,7 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.stratio.cassandra.lucene.query.builder.SearchBuilders.match;
+import static com.stratio.cassandra.lucene.search.SearchBuilders.match;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)

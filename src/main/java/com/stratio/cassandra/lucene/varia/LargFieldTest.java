@@ -9,8 +9,8 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.UUID;
 
-import static com.stratio.cassandra.lucene.query.builder.SearchBuilders.bool;
-import static com.stratio.cassandra.lucene.query.builder.SearchBuilders.match;
+import static com.stratio.cassandra.lucene.search.SearchBuilders.bool;
+import static com.stratio.cassandra.lucene.search.SearchBuilders.match;
 
 /**
  * @author Andres de la Pena <adelapena@stratio.com>

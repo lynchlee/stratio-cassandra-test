@@ -18,7 +18,7 @@ package com.stratio.cassandra.lucene.deletion;
 import com.datastax.driver.core.Row;
 import com.stratio.cassandra.lucene.TestingConstants;
 import com.stratio.cassandra.lucene.util.CassandraUtils;
-import org.apache.log4j.Logger;
+
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -26,7 +26,8 @@ import org.junit.runners.JUnit4;
 import java.util.List;
 import java.util.Map;
 
-import static com.stratio.cassandra.lucene.query.builder.SearchBuilders.wildcard;
+
+import static com.stratio.cassandra.lucene.search.SearchBuilders.wildcard;
 import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)

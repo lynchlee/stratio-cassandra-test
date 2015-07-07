@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import static com.stratio.cassandra.lucene.query.builder.SearchBuilders.regexp;
+import static com.stratio.cassandra.lucene.search.SearchBuilders.regexp;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
