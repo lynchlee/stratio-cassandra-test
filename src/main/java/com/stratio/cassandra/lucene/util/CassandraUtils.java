@@ -12,6 +12,7 @@ import com.stratio.cassandra.lucene.TestingConstants;
 import com.stratio.cassandra.lucene.search.condition.builder.ConditionBuilder;
 
 import com.stratio.cassandra.lucene.search.sort.builder.SortFieldBuilder;
+
 import org.apache.log4j.Logger;
 
 import java.util.LinkedHashMap;
