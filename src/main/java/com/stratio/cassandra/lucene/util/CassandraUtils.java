@@ -10,9 +10,9 @@ import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.stratio.cassandra.lucene.TestingConstants;
 import com.stratio.cassandra.lucene.search.condition.builder.ConditionBuilder;
+
 import com.stratio.cassandra.lucene.search.sort.builder.SortFieldBuilder;
-import com.stratio.cassandra.lucene.schema.Schema;
-import com.stratio.cassandra.lucene.schema.mapping.builder.MapperBuilder;
+
 import org.apache.log4j.Logger;
 
 import java.util.LinkedHashMap;
@@ -287,7 +287,6 @@ public class CassandraUtils {
                 .append(produceFieldsString(fieldsMap))
                 .append("}}'};");
 
-        System.out.println("crreatuing index qith query: "+stBuilder.toString());
         execute(stBuilder);
 
         return this;
