@@ -95,7 +95,7 @@ public class ComplexKeyIndexHandlingTest {
                       .waitForIndexRefresh();
 
         // Checking data
-        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
 
         assertEquals("Expected 20 results!", 20, n);
     }
@@ -127,7 +127,7 @@ public class ComplexKeyIndexHandlingTest {
                       .waitForIndexRefresh();
 
         // Checking data
-        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
 
         assertEquals("Expected 20 results!", 20, n);
     }
@@ -160,7 +160,7 @@ public class ComplexKeyIndexHandlingTest {
                       .waitForIndexRefresh();
 
         // Checking data
-        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
 
         assertEquals("Expected 20 results!", 20, n);
     }
@@ -193,7 +193,7 @@ public class ComplexKeyIndexHandlingTest {
                       .waitForIndexRefresh();
 
         // Checking data
-        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
 
         assertEquals("Expected 20 results!", 20, n);
     }
@@ -225,7 +225,7 @@ public class ComplexKeyIndexHandlingTest {
                       .waitForIndexRefresh();
 
         // Checking data
-        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
 
         assertEquals("Expected 20 results!", 20, n);
 
@@ -236,7 +236,7 @@ public class ComplexKeyIndexHandlingTest {
         cassandraUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT).waitForIndexRefresh();
 
         // Checking data
-        n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
 
         assertEquals("Expected 20 results!", 20, n);
     }

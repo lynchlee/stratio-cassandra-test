@@ -107,7 +107,7 @@ public class MultipleKeyDataDeletionTest {
 
         cassandraUtils.deleteValueByCondition("map_1['k1']", "integer_1 = 1 and ascii_1 = 'ascii'").waitForIndexRefresh();
 
-        List<Row> rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
+        List<Row> rows = cassandraUtils.filter(wildcard("ascii_1", "*")).get();
 
         assertEquals("Expected 10 results!", 10, rows.size());
 
@@ -133,7 +133,7 @@ public class MultipleKeyDataDeletionTest {
 
         cassandraUtils.deleteValueByCondition("list_1[0]", "integer_1 = 1 and ascii_1 = 'ascii'").waitForIndexRefresh();
 
-        List<Row> rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
+        List<Row> rows = cassandraUtils.filter(wildcard("ascii_1", "*")).get();
 
         assertEquals("Expected 10 results!", 10, rows.size());
 
@@ -159,7 +159,7 @@ public class MultipleKeyDataDeletionTest {
 
         cassandraUtils.deleteByCondition("integer_1 = 1 and ascii_1 = 'ascii'").waitForIndexRefresh();
 
-        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
 
         assertEquals("Expected 9 results!", 9, n);
 
@@ -170,7 +170,7 @@ public class MultipleKeyDataDeletionTest {
 
         cassandraUtils.deleteByCondition("integer_1 = 1").waitForIndexRefresh();
 
-        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
 
         assertEquals("Expected 8 results!", 8, n);
     }

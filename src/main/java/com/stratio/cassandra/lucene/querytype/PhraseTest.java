@@ -29,37 +29,37 @@ import static org.junit.Assert.assertEquals;
 @RunWith(JUnit4.class)
 public class PhraseTest extends AbstractWatchedTest {
 
-    @Test()
+    @Test
     public void phraseQueryTextFieldTest1() {
         int n = cassandraUtils.query(phrase("text_1", "Frase espacios")).count();
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test()
+    @Test
     public void phraseQueryTextFieldWithSlopTest1() {
         int n = cassandraUtils.query(phrase("text_1", "Frase espacios").slop(2)).count();
         assertEquals("Expected 1 result!", 1, n);
     }
 
-    @Test()
+    @Test
     public void phraseQueryTextFieldTest2() {
         int n = cassandraUtils.query(phrase("text_1", "articulos suficientes")).count();
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test()
+    @Test
     public void phraseQueryTextFieldWithSlopTest() {
         int n = cassandraUtils.query(phrase("text_1", "articulos palabras").slop(2)).count();
         assertEquals("Expected 1 result!", 1, n);
     }
 
-    @Test()
+    @Test
     public void phraseQueryTextFieldTest3() {
         int n = cassandraUtils.query(phrase("text_1", "con los")).count();
         assertEquals("Expected 0 results!", 0, n);
     }
 
-    @Test()
+    @Test
     public void phraseQueryTextFieldTest4() {
         int n = cassandraUtils.query(phrase("text_1", "")).count();
         assertEquals("Expected 0 results!", 0, n);

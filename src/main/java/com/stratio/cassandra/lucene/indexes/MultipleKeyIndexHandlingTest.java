@@ -83,7 +83,7 @@ public class MultipleKeyIndexHandlingTest {
                       .createIndex(TestingConstants.INDEX_NAME_CONSTANT).waitForIndexRefresh();
 
         // Checking data
-        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
         assertEquals("Expected 10 results!", 10, n);
     }
 
@@ -103,7 +103,7 @@ public class MultipleKeyIndexHandlingTest {
                       .insert(IndexesDataHelper.data10).waitForIndexRefresh();
 
         // Checking data
-        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
 
         assertEquals("Expected 10 results!", 10, n);
     }
@@ -124,7 +124,7 @@ public class MultipleKeyIndexHandlingTest {
                       .insert(IndexesDataHelper.data10).waitForIndexRefresh();
 
         // Checking data
-        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
 
         assertEquals("Expected 10 results!", 10, n);
     }
@@ -145,7 +145,7 @@ public class MultipleKeyIndexHandlingTest {
                       .insert(IndexesDataHelper.data10).waitForIndexRefresh();
 
         // Checking data
-        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
 
         assertEquals("Expected 10 results!", 10, n);
     }
@@ -167,7 +167,7 @@ public class MultipleKeyIndexHandlingTest {
                       .insert(IndexesDataHelper.data10).waitForIndexRefresh();
 
         // Checking data
-        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
 
         assertEquals("Expected 10 results!", 10, n);
 

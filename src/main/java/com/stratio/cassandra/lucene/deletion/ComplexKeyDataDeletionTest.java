@@ -103,7 +103,7 @@ public class ComplexKeyDataDeletionTest {
         cassandraUtils.deleteValueByCondition("bigint_1", "integer_1 = 1 and ascii_1 = 'ascii' and double_1 = 1")
                       .waitForIndexRefresh();
 
-        List<Row> rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
+        List<Row> rows = cassandraUtils.filter(wildcard("ascii_1", "*")).get();
 
         assertEquals("Expected 20 results!", 20, rows.size());
 
@@ -126,7 +126,7 @@ public class ComplexKeyDataDeletionTest {
         cassandraUtils.deleteValueByCondition("map_1['k1']", "integer_1 = 1 and ascii_1 = 'ascii' and double_1 = 1")
                       .waitForIndexRefresh();
 
-        List<Row> rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
+        List<Row> rows = cassandraUtils.filter(wildcard("ascii_1", "*")).get();
 
         assertEquals("Expected 20 results!", 20, rows.size());
 
@@ -153,7 +153,7 @@ public class ComplexKeyDataDeletionTest {
         cassandraUtils.deleteValueByCondition("list_1[0]", "integer_1 = 1 and ascii_1 = 'ascii' and double_1 = 1")
                       .waitForIndexRefresh();
 
-        List<Row> rows = cassandraUtils.select().query(wildcard("ascii_1", "*")).get();
+        List<Row> rows = cassandraUtils.select().filter(wildcard("ascii_1", "*")).get();
 
         assertEquals("Expected 20 results!", 20, rows.size());
 
@@ -171,13 +171,13 @@ public class ComplexKeyDataDeletionTest {
         }
 
         assertNotNull("Must not be null!", listValue);
-        assertEquals("Lenght unexpected", 1, listValue.size());
+        assertEquals("Length unexpected", 1, listValue.size());
     }
 
     @Test
     public void totalPartitionDeletion() {
         cassandraUtils.deleteByCondition("integer_1 = 1 and ascii_1 = 'ascii' and double_1 = 1").waitForIndexRefresh();
-        int n = cassandraUtils.select().query(wildcard("ascii_1", "*")).count();
+        int n = cassandraUtils.select().filter(wildcard("ascii_1", "*")).count();
         assertEquals("Expected 19 results!", 19, n);
 
     }
@@ -185,7 +185,7 @@ public class ComplexKeyDataDeletionTest {
     @Test
     public void partialPartitionDeletion() {
         cassandraUtils.deleteByCondition("integer_1 = 1 and ascii_1 = 'ascii'").waitForIndexRefresh();
-        int n = cassandraUtils.select().query(wildcard("ascii_1", "*")).count();
+        int n = cassandraUtils.select().filter(wildcard("ascii_1", "*")).count();
         assertEquals("Expected 18 results!", 18, n);
     }
 }

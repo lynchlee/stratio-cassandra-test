@@ -90,7 +90,7 @@ public class ComposedKeyDataDeletionTest {
 
         cassandraUtils.deleteValueByCondition("bigint_1", "integer_1 = 1 and ascii_1 = 'ascii'").waitForIndexRefresh();
 
-        List<Row> rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
+        List<Row> rows = cassandraUtils.filter(wildcard("ascii_1", "*")).get();
 
         assertEquals("Expected 10 results!", 10, rows.size());
 
@@ -113,7 +113,7 @@ public class ComposedKeyDataDeletionTest {
         cassandraUtils.deleteValueByCondition("map_1['k1']", "integer_1 = 1 and ascii_1 = 'ascii'")
                       .waitForIndexRefresh();
 
-        List<Row> rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
+        List<Row> rows = cassandraUtils.filter(wildcard("ascii_1", "*")).get();
 
         assertEquals("Expected 10 results!", 10, rows.size());
 
@@ -139,7 +139,7 @@ public class ComposedKeyDataDeletionTest {
 
         cassandraUtils.deleteValueByCondition("list_1[0]", "integer_1 = 1 and ascii_1 = 'ascii'").waitForIndexRefresh();
 
-        List<Row> rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
+        List<Row> rows = cassandraUtils.filter(wildcard("ascii_1", "*")).get();
 
         assertEquals("Expected 10 results!", 10, rows.size());
 
@@ -163,7 +163,7 @@ public class ComposedKeyDataDeletionTest {
 
         cassandraUtils.deleteByCondition("integer_1 = 1 and ascii_1 = 'ascii'").waitForIndexRefresh();
 
-        List<Row> rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
+        List<Row> rows = cassandraUtils.filter(wildcard("ascii_1", "*")).get();
 
         assertEquals("Expected 9 results!", 9, rows.size());
 

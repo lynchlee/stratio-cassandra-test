@@ -412,7 +412,7 @@ public class CassandraUtils {
     }
 
     public CassandraUtilsSelect query(ConditionBuilder<?, ?> query) {
-        return new CassandraUtilsSelect(this).query(query);
+        return new CassandraUtilsSelect(this).query(query).fetchSize(0);
     }
 
     public CassandraUtilsSelect filter(ConditionBuilder<?, ?> filter) {
@@ -420,7 +420,7 @@ public class CassandraUtils {
     }
 
     public CassandraUtilsSelect sort(SortFieldBuilder... sort) {
-        return new CassandraUtilsSelect(this).sort(sort);
+        return new CassandraUtilsSelect(this).sort(sort).fetchSize(0);
     }
 
 }

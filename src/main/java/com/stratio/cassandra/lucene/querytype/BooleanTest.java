@@ -61,7 +61,6 @@ public class BooleanTest extends AbstractWatchedTest {
         assertEquals("Expected 3 results!", 3, n);
     }
 
-    //@Ignore
     @Test
     public void booleanQueryMustWithBoostTest() {
 

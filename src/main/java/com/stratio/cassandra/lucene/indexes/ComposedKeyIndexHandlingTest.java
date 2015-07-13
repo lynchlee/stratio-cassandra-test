@@ -138,7 +138,7 @@ public class ComposedKeyIndexHandlingTest {
                       .waitForIndexRefresh();
 
         // Checking data
-        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
 
         assertEquals("Expected 10 results!", 10, n);
     }
@@ -183,7 +183,7 @@ public class ComposedKeyIndexHandlingTest {
                       .waitForIndexRefresh();
 
         // Checking data
-        int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
+        int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
 
         assertEquals("Expected 10 results!", 10, n);
 

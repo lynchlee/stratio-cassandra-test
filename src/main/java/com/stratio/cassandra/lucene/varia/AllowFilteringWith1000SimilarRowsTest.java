@@ -75,7 +75,7 @@ public class AllowFilteringWith1000SimilarRowsTest extends Abstract1000Registers
 
     @AfterClass
     public static void after() {
-        cassandraUtils.dropIndex(TestingConstants.INDEX_NAME_CONSTANT).dropTable().dropKeyspace();
+//        cassandraUtils.dropIndex(TestingConstants.INDEX_NAME_CONSTANT).dropTable().dropKeyspace();
     }
 
     @Test
