@@ -82,6 +82,7 @@ public class CassandraUtils {
         this.host = host;
         this.cluster = Cluster.builder().addContactPoint(host).build();
         this.cluster.getConfiguration().getQueryOptions().setConsistencyLevel(consistencyLevel);
+        this.cluster.getConfiguration().getQueryOptions().setFetchSize(Integer.MAX_VALUE);
         this.cluster.getConfiguration().getSocketOptions().setReadTimeoutMillis(600000);
         metadata = cluster.getMetadata();
         logger.debug("Connected to cluster (" + this.host + "): " + metadata.getClusterName() + "\n");
@@ -151,7 +152,7 @@ public class CassandraUtils {
 
     protected List<Row> execute(String query, int fetchSize) {
         if (!query.endsWith(";")) query += ";";
-        logger.debug("CQL: " + query);
+        logger.debug("CQL: " + query + " - " + fetchSize);
         if (TestingConstants.READ_WAIT_TIME > 0) {
             try {
                 Thread.sleep(TestingConstants.READ_WAIT_TIME);
@@ -411,7 +412,7 @@ public class CassandraUtils {
     }
 
     public CassandraUtilsSelect query(ConditionBuilder<?, ?> query) {
-        return new CassandraUtilsSelect(this).query(query).fetchSize(0);
+        return new CassandraUtilsSelect(this).query(query).fetchSize(-1);
     }
 
     public CassandraUtilsSelect filter(ConditionBuilder<?, ?> filter) {
@@ -419,7 +420,7 @@ public class CassandraUtils {
     }
 
     public CassandraUtilsSelect sort(SortFieldBuilder... sort) {
-        return new CassandraUtilsSelect(this).sort(sort).fetchSize(0);
+        return new CassandraUtilsSelect(this).sort(sort).fetchSize(-1);
     }
 
 }
