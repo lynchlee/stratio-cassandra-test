@@ -1,10 +1,13 @@
 package com.stratio.cassandra.lucene.querytype;
 
+import com.datastax.driver.core.*;
 import com.datastax.driver.core.exceptions.InvalidQueryException;
 import com.datastax.driver.core.exceptions.WriteTimeoutException;
+import com.datastax.driver.core.querybuilder.*;
 import com.stratio.cassandra.lucene.TestingConstants;
 import com.stratio.cassandra.lucene.util.CassandraUtils;
 import com.stratio.cassandra.lucene.util.CassandraUtilsSelect;
+import org.apache.cassandra.cql.UpdateStatement;
 import org.apache.log4j.Logger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -16,11 +19,13 @@ import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static com.stratio.cassandra.lucene.search.SearchBuilders.biTemporalSearch;
+import static com.stratio.cassandra.lucene.search.SearchBuilders.matchAll;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -40,6 +45,31 @@ class DataHelper {
     public static final Map<String, String> data5;
 
     public static final Map<String, String> data6;
+
+    public static final Map<String, String> data7;
+
+    public static final Map<String, String> data8;
+
+
+    public static final Map<String, String> data9;
+
+
+    public static final Map<String, String> data10;
+
+    public static final Map<String, String> data11;
+
+    /*
+    public static final Map<String, String> data12;
+    public static final Map<String, String> data13;
+    public static final Map<String, String> data14;
+    public static final Map<String, String> data15;
+    public static final Map<String, String> data16;
+    public static final Map<String, String> data17;
+
+    public static final Map<String, String> data18;
+    public static final Map<String, String> data19;
+*/
+
 
     static {
 
@@ -85,6 +115,54 @@ class DataHelper {
         data6.put("vt_to", "'2016/06/01 12:00:00.000'");
         data6.put("tt_from", "'2016/05/15 12:00:00.001'");
         data6.put("tt_to", "'2016/06/15 12:00:00.000'");
+
+
+
+        data7= new LinkedHashMap<>();
+        data7.put("id", "1");
+        data7.put("data", "'v1'");
+        data7.put("vt_from", "0");
+        data7.put("vt_to", "9223372036854775807");
+        data7.put("tt_from", "0");
+        data7.put("tt_to", "9223372036854775807");
+
+
+        data8= new LinkedHashMap<>();
+        data8.put("id", "2");
+        data8.put("data", "'v1'");
+        data8.put("vt_from", "0");
+        data8.put("vt_to", "9223372036854775807");
+        data8.put("tt_from", "0");
+        data8.put("tt_to", "9223372036854775807");
+
+
+        data9= new LinkedHashMap<>();
+        data9.put("id", "3");
+        data9.put("data", "'v1'");
+        data9.put("vt_from", "0");
+        data9.put("vt_to", "9223372036854775807");
+        data9.put("tt_from", "0");
+        data9.put("tt_to", "9223372036854775807");
+
+
+        data10= new LinkedHashMap<>();
+        data10.put("id", "4");
+        data10.put("data", "'v1'");
+        data10.put("vt_from", "0");
+        data10.put("vt_to", "9223372036854775807");
+        data10.put("tt_from", "0");
+        data10.put("tt_to", "9223372036854775807");
+
+        data11= new LinkedHashMap<>();
+        data11.put("id", "5");
+        data11.put("data", "'v1'");
+        data11.put("vt_from", "0");
+        data11.put("vt_to", "9223372036854775807");
+        data11.put("tt_from", "0");
+        data11.put("tt_to", "9223372036854775807");
+
+
+
 
     }
 }
@@ -154,6 +232,8 @@ public class BiTemporalTest {
                 .waitForIndexRefresh()
                 .dropKeyspace()
                 .waitForIndexRefresh();
+
+        System.out.println("tearDownSuite");
     }
 
     private String fromInteger(Integer[] list) {
@@ -593,6 +673,36 @@ public class BiTemporalTest {
 
         return cu;
     }
+    private CassandraUtils setUpSuite3() {
+        Map<String,String> fieldsMap= new HashMap<>();
+
+        fieldsMap.put("bitemporal","{type:\"bitemporal\",tt_from:\"tt_from\", tt_to:\"tt_to\",vt_from:\"vt_from\", vt_to:\"vt_to\"}");
+
+        CassandraUtils cu=
+                CassandraUtils.builder()
+                        .withHost(TestingConstants.CASSANDRA_LOCALHOST_CONSTANT)
+                        .withTable(TestingConstants.TABLE_NAME_CONSTANT)
+                        .withIndexColumn(TestingConstants.INDEX_COLUMN_CONSTANT)
+                        .withPartitionKey("id")
+                        .withClusteringKey("vt_from", "tt_from")
+                        .withColumn("id", "int")
+                        .withColumn("data", "text")
+                        .withColumn("vt_from", "bigint")
+                        .withColumn("vt_to", "bigint")
+                        .withColumn("tt_from", "bigint")
+                        .withColumn("tt_to", "bigint")
+                        .withColumn("lucene", "text")
+                        .build();
+
+        cu.createKeyspace()
+                .createTable()
+                .createCustomIndex(TestingConstants.INDEX_NAME_CONSTANT, fieldsMap)
+                .waitForIndexRefresh();
+
+        return cu;
+
+
+    }
     private void tearDown(CassandraUtils cu) {
         cu.dropIndex(TestingConstants.INDEX_NAME_CONSTANT)
                 .waitForIndexRefresh()
@@ -789,4 +899,81 @@ public class BiTemporalTest {
 
 
 
+    @Test
+    public void biTemporalQueryOverBigIntsWithDefaultPattern() {
+        CassandraUtils cu=this.setUpSuite3()
+                .insert(DataHelper.data7)
+                .insert(DataHelper.data8)
+                .insert(DataHelper.data9)
+                .insert(DataHelper.data10)
+                .insert(DataHelper.data11)
+                .waitForIndexRefresh();
+
+
+        CassandraUtilsSelect select=cu.searchAll();
+
+
+        assertEquals("Expected 5 results!", 5, select.count());
+        assertTrue("Unexpected results!! Expected: {1,2,3,4,5}, getted: "+fromInteger(select.intColumn("id")),isThisAndOnlyThis(select.intColumn("id"),new int[]{1,2,3,4,5}));
+
+
+
+        Batch batch= QueryBuilder.batch();
+        Update update = QueryBuilder.update(cu.getKeyspace(), cu.getTable());
+
+        update.where(QueryBuilder.eq("id", 1))
+                    .and(QueryBuilder.eq("vt_from",0))
+                    .and(QueryBuilder.eq("tt_from",0))
+                .onlyIf(QueryBuilder.eq("tt_to",9223372036854775807l))
+                .with(QueryBuilder.set("tt_to", 20150101));
+
+        batch.add(update);
+
+        Insert insert =  QueryBuilder.insertInto(cu.getKeyspace(),cu.getTable());
+        insert.value("id",1)
+                .value("data","v2")
+                .value("vt_from",0)
+                .value("vt_to", 9223372036854775807l)
+                .value("tt_from",20150102)
+                .value("tt_to",9223372036854775807l);
+
+        batch.add(insert);
+        ResultSet result = cu.getSession().execute(batch);
+
+
+        assertTrue("batch execution didnt worked",result.wasApplied());
+        cu.waitForIndexRefresh();
+
+
+        CassandraUtilsSelect select2=cu.filter(biTemporalSearch("bitemporal")
+                .operation("intersects")
+                .vtFrom(0)
+                .vtTo(9223372036854775807l)
+                .ttFrom(9223372036854775807l)
+                .ttTo(9223372036854775807l));
+
+
+        assertEquals("Expected 5 results!", 5, select2.count());
+        assertTrue("Unexpected results!! Expected: {1,2,3,4,5}, getted: "+fromInteger(select2.intColumn("id")),isThisAndOnlyThis(select2.intColumn("id"),new int[]{1,2,3,4,5}));
+
+
+
+        CassandraUtilsSelect select3=cu.filter(biTemporalSearch("bitemporal")
+                .operation("intersects")
+                .vtFrom(0)
+                .vtTo(9223372036854775807l)
+                .ttFrom(9223372036854775807l)
+                .ttTo(9223372036854775807l)).and("AND id = 1");
+
+        assertEquals("Expected 1 results!", 1, select3.count());
+        Row row=select3.get().get(0);
+
+        assertTrue("Unexpected results!! Expected result : {id=\"1\"}, getted: "+row.getInt("id"),row.getInt("id")==1);
+        assertTrue("Unexpected results!! Expected result : {data=\"v2\"}, getted: "+row.getString("data"),row.getString("data").equals("v2"));
+        assertTrue("Unexpected results!! Expected result : {vt_from=0}, getted: "+row.getLong("vt_from"),row.getLong("vt_from")==0l);
+        assertTrue("Unexpected results!! Expected result : {vt_to=0}, getted: "+row.getLong("vt_to"),row.getLong("vt_to")==9223372036854775807l);
+        assertTrue("Unexpected results!! Expected result : {tt_from=0}, getted: "+row.getLong("tt_from"),row.getLong("tt_from")==20150102l);
+        assertTrue("Unexpected results!! Expected result : {tt_to=0}, getted: "+row.getLong("tt_to"),row.getLong("tt_to")==9223372036854775807l);
+
+    }
 }
