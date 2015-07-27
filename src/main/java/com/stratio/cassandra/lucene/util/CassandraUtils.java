@@ -10,14 +10,15 @@ import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.stratio.cassandra.lucene.TestingConstants;
 import com.stratio.cassandra.lucene.search.condition.builder.ConditionBuilder;
-
 import com.stratio.cassandra.lucene.search.sort.builder.SortFieldBuilder;
-
 import org.apache.log4j.Logger;
 
+import java.sql.ResultSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.stratio.cassandra.lucene.TestingConstants.*;
 
 public class CassandraUtils {
 
@@ -73,9 +74,9 @@ public class CassandraUtils {
                           List<String> clusteringKey,
                           String indexColumn) {
 
-        String consistencyLevelString = System.getProperty(TestingConstants.CONSISTENCY_LEVEL_CONSTANT_NAME);
+        String consistencyLevelString = System.getProperty(CONSISTENCY_LEVEL_CONSTANT_NAME);
 
-        if (consistencyLevelString == null) consistencyLevelString = TestingConstants.DEFAULT_CONSISTENCY_LEVEL;
+        if (consistencyLevelString == null) consistencyLevelString = DEFAULT_CONSISTENCY_LEVEL;
 
         consistencyLevel = ConsistencyLevel.valueOf(consistencyLevelString);
 
@@ -91,7 +92,7 @@ public class CassandraUtils {
         String replicationFactorString = System.getProperty(TestingConstants.REPLICATION_FACTOR_CONSTANT_NAME);
 
         if (replicationFactorString == null || Integer.parseInt(replicationFactorString) < 1)
-            replicationFactorString = "1";
+            replicationFactorString = DEFAULT_REPLICATION_FACTOR;
 
         this.replicationFactor = replicationFactorString;
 
@@ -153,9 +154,9 @@ public class CassandraUtils {
     protected List<Row> execute(String query, int fetchSize) {
         if (!query.endsWith(";")) query += ";";
         logger.debug("CQL: " + query + " - " + fetchSize);
-        if (TestingConstants.READ_WAIT_TIME > 0) {
+        if (TestingConstants.READ_WAIT_MILLISECONDS > 0) {
             try {
-                Thread.sleep(TestingConstants.READ_WAIT_TIME);
+                Thread.sleep(TestingConstants.READ_WAIT_MILLISECONDS);
             } catch (InterruptedException e) {
                 logger.error("Interruption caught during a Thread.sleep; index might be unstable");
             }
@@ -178,7 +179,7 @@ public class CassandraUtils {
         // Waiting for the custom index to be refreshed
         logger.debug("Waiting for the index to be refreshed...");
         try {
-            Thread.sleep(TestingConstants.WRITE_WAIT_TIME);
+            Thread.sleep(TestingConstants.WRITE_WAIT_MILLISECONDS);
         } catch (InterruptedException e) {
             logger.error("Interruption caught during a Thread.sleep; index might be unstable");
         }
@@ -238,7 +239,7 @@ public class CassandraUtils {
                                    .append(" (")
                                    .append(indexColumn)
                                    .append(") USING 'com.stratio.cassandra.lucene.Index' WITH OPTIONS = {")
-                                   .append("'refresh_seconds':'0.1',")
+                                   .append("'refresh_seconds':'" + TestingConstants.INDEX_REFRESH_SECONDS +"',")
                                    .append("'num_cached_filters':'1',")
                                    .append("'ram_buffer_mb':'64',")
                                    .append("'max_merge_mb':'5',")
@@ -412,7 +413,8 @@ public class CassandraUtils {
     }
 
     public CassandraUtilsSelect query(ConditionBuilder<?, ?> query) {
-        return new CassandraUtilsSelect(this).query(query).fetchSize(-1);
+        return new CassandraUtilsSelect(this).query(query);
+//        return new CassandraUtilsSelect(this).query(query).fetchSize(-1);
     }
 
     public CassandraUtilsSelect filter(ConditionBuilder<?, ?> filter) {
@@ -420,7 +422,8 @@ public class CassandraUtils {
     }
 
     public CassandraUtilsSelect sort(SortFieldBuilder... sort) {
-        return new CassandraUtilsSelect(this).sort(sort).fetchSize(-1);
+        return new CassandraUtilsSelect(this).sort(sort);
+//        return new CassandraUtilsSelect(this).sort(sort).fetchSize(-1);
     }
 
 }

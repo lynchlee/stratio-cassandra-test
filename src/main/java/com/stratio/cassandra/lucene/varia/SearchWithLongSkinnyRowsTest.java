@@ -24,7 +24,7 @@ import org.junit.Test;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-
+import static com.stratio.cassandra.lucene.search.SearchBuilders.matchAll;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -100,32 +100,66 @@ public class SearchWithLongSkinnyRowsTest {
     }
 
     @Test
-    public void search1Test() {
-        int n = cassandraUtils.searchAll().fetchSize(10).limit(1).count();
+    public void query1Test() {
+        int n = cassandraUtils.query(matchAll()).fetchSize(10).limit(1).count();
         assertEquals("Expected 1 results!", 1, n);
     }
 
     @Test
-    public void search99Test() {
-        int n = cassandraUtils.searchAll().fetchSize(10).limit(99).count();
+    public void query99Test() {
+        int n = cassandraUtils.query(matchAll()).fetchSize(10).limit(99).count();
         assertEquals("Expected 99 results!", 99, n);
     }
 
     @Test
-    public void search100Test() {
-        int n = cassandraUtils.searchAll().fetchSize(10).limit(100).count();
+    public void query100Test() {
+        int n = cassandraUtils.query(matchAll()).fetchSize(10).limit(100).count();
         assertEquals("Expected 100 results!", 100, n);
     }
 
     @Test
-    public void search101Test() {
-        int n = cassandraUtils.searchAll().fetchSize(10).limit(101).count();
+    public void query101Test() {
+        int n = cassandraUtils.query(matchAll()).fetchSize(10).limit(101).count();
         assertEquals("Expected 100 results!", 100, n);
     }
 
     @Test
-    public void search1000Test() {
-        int n = cassandraUtils.searchAll().limit(1000).count();
+    public void query1000Test() {
+        int n = cassandraUtils.query(matchAll()).limit(1000).count();
+        assertEquals("Expected 100 results!", 100, n);
+    }
+
+
+
+
+
+    @Test
+    public void filter1Test() {
+        int n = cassandraUtils.filter(matchAll()).fetchSize(10).limit(1).count();
+        assertEquals("Expected 1 results!", 1, n);
+    }
+
+    @Test
+    public void filter99Test() {
+        int n = cassandraUtils.filter(matchAll()).fetchSize(10).limit(99).count();
+        assertEquals("Expected 99 results!", 99, n);
+    }
+
+    @Test
+    public void filter100Test() {
+        int n = cassandraUtils.filter(matchAll()).fetchSize(10).limit(100).count();
+        assertEquals("Expected 100 results!", 100, n);
+    }
+
+    @Test
+    public void filter101Test() {
+        int n = cassandraUtils.filter(matchAll()).fetchSize(10).limit(101).count();
+        assertEquals("Expected 100 results!", 100, n);
+    }
+
+    @Test
+    public void filter1000Test() {
+        int n = cassandraUtils.filter(matchAll()).limit(1000).count();
         assertEquals("Expected 100 results!", 100, n);
     }
 }

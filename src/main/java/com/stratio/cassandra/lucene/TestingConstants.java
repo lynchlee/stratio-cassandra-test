@@ -17,11 +17,15 @@ package com.stratio.cassandra.lucene;
 
 public final class TestingConstants {
 
-    public static final Long WRITE_WAIT_TIME = 2000L;
+    public static final float INDEX_REFRESH_SECONDS = 0.1f;
 
-    public static final Long READ_WAIT_TIME = 0L;
+    public static final Long WRITE_WAIT_MILLISECONDS = 3000L;
+
+    public static final Long READ_WAIT_MILLISECONDS = 0L;
 
     public static final String DEFAULT_CONSISTENCY_LEVEL = "QUORUM";
+
+    public static final String DEFAULT_REPLICATION_FACTOR = "3";
 
     public static final String CASSANDRA_LOCALHOST_CONSTANT = "127.0.0.1";
 
@@ -35,6 +39,6 @@ public final class TestingConstants {
 
     public static final String INDEX_COLUMN_CONSTANT = "lucene";
 
-    public static final int FETCH_SIZE = 2;
+    public static final int FETCH_SIZE = 1000;
 
 }

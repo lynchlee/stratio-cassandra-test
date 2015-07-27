@@ -15,10 +15,6 @@
  */
 package com.stratio.cassandra.lucene.querytype;
 
-/**
- * Created by Jcalderin on 24/03/14.
- */
-
 import com.datastax.driver.core.Row;
 import org.junit.Test;
 import org.junit.runner.RunWith;
