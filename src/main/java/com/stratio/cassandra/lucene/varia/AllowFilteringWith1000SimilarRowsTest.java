@@ -70,7 +70,6 @@ public class AllowFilteringWith1000SimilarRowsTest extends Abstract1000Registers
                               .createTable()
                               .createIndex(TestingConstants.INDEX_NAME_CONSTANT);
         VariaDataHelper.generateCustomInsertions(1000, cassandraUtils);
-        cassandraUtils.waitForIndexRefresh().waitForIndexRefresh();
     }
 
     @AfterClass

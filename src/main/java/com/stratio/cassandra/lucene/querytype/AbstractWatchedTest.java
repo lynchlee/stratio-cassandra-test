@@ -60,16 +60,16 @@ public abstract class AbstractWatchedTest {
                       .insert(QueryTypeDataHelper.data3)
                       .insert(QueryTypeDataHelper.data4)
                       .insert(QueryTypeDataHelper.data5)
-                      .waitForIndexRefresh();
+                      ;
     }
 
     @AfterClass
     public static void tearDownSuite() {
         cassandraUtils.dropIndex(TestingConstants.INDEX_NAME_CONSTANT)
-                      .waitForIndexRefresh()
+                      
                       .dropTable()
-                      .waitForIndexRefresh()
+                      
                       .dropKeyspace()
-                      .waitForIndexRefresh();
+                      ;
     }
 }

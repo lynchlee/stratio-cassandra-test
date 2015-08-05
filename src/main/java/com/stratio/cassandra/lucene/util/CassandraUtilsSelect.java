@@ -6,6 +6,7 @@ import com.datastax.driver.core.querybuilder.Clause;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 import com.stratio.cassandra.lucene.TestingConstants;
+import com.stratio.cassandra.lucene.querytype.BooleanTest;
 import com.stratio.cassandra.lucene.search.SearchBuilder;
 import com.stratio.cassandra.lucene.search.SearchBuilders;
 import com.stratio.cassandra.lucene.search.condition.builder.ConditionBuilder;
@@ -27,6 +28,7 @@ public class CassandraUtilsSelect {
     private LinkedList<String> extras;
     private Integer limit;
     private Integer fetchSize = TestingConstants.FETCH_SIZE;
+    private Boolean refresh = true;
 
     public CassandraUtilsSelect(CassandraUtils parent) {
         this.parent = parent;
@@ -101,6 +103,11 @@ public class CassandraUtilsSelect {
         return this;
     }
 
+    public CassandraUtilsSelect refresh(boolean refresh) {
+        this.refresh = refresh;
+        return this;
+    }
+
     public CassandraUtilsSelect limit(Integer limit) {
         this.limit = limit;
         return this;
@@ -112,7 +119,7 @@ public class CassandraUtilsSelect {
             where.and(clause);
         }
         if (searchBuilder != null) {
-            where.and(QueryBuilder.eq(parent.getIndexColumn(), searchBuilder.toJson()));
+            where.and(QueryBuilder.eq(parent.getIndexColumn(), searchBuilder.refresh(refresh).toJson()));
         }
         BuiltStatement statement = limit == null ? where : where.limit(limit);
 

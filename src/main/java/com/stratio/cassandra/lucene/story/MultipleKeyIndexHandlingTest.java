@@ -34,33 +34,32 @@ public class MultipleKeyIndexHandlingTest {
     @Before
     public void before() {
 
-        cassandraUtils =
-                CassandraUtils.builder()
-                              .withTable(TestingConstants.TABLE_NAME_CONSTANT)
-                              .withIndexColumn(TestingConstants.INDEX_COLUMN_CONSTANT)
-                              .withPartitionKey("integer_1")
-                              .withClusteringKey("ascii_1")
-                              .withColumn("ascii_1", "ascii")
-                              .withColumn("bigint_1", "bigint")
-                              .withColumn("blob_1", "blob")
-                              .withColumn("boolean_1", "boolean")
-                              .withColumn("decimal_1", "decimal")
-                              .withColumn("date_1", "timestamp")
-                              .withColumn("double_1", "double")
-                              .withColumn("float_1", "float")
-                              .withColumn("integer_1", "int")
-                              .withColumn("inet_1", "inet")
-                              .withColumn("text_1", "text")
-                              .withColumn("varchar_1", "varchar")
-                              .withColumn("uuid_1", "uuid")
-                              .withColumn("timeuuid_1", "timeuuid")
-                              .withColumn("list_1", "list<text>")
-                              .withColumn("set_1", "set<text>")
-                              .withColumn("map_1", "map<text,text>")
-                              .withColumn("lucene", "text")
-                              .build()
-                              .createKeyspace()
-                              .createTable();
+        cassandraUtils = CassandraUtils.builder()
+                                       .withTable(TestingConstants.TABLE_NAME_CONSTANT)
+                                       .withIndexColumn(TestingConstants.INDEX_COLUMN_CONSTANT)
+                                       .withPartitionKey("integer_1")
+                                       .withClusteringKey("ascii_1")
+                                       .withColumn("ascii_1", "ascii")
+                                       .withColumn("bigint_1", "bigint")
+                                       .withColumn("blob_1", "blob")
+                                       .withColumn("boolean_1", "boolean")
+                                       .withColumn("decimal_1", "decimal")
+                                       .withColumn("date_1", "timestamp")
+                                       .withColumn("double_1", "double")
+                                       .withColumn("float_1", "float")
+                                       .withColumn("integer_1", "int")
+                                       .withColumn("inet_1", "inet")
+                                       .withColumn("text_1", "text")
+                                       .withColumn("varchar_1", "varchar")
+                                       .withColumn("uuid_1", "uuid")
+                                       .withColumn("timeuuid_1", "timeuuid")
+                                       .withColumn("list_1", "list<text>")
+                                       .withColumn("set_1", "set<text>")
+                                       .withColumn("map_1", "map<text,text>")
+                                       .withColumn("lucene", "text")
+                                       .build()
+                                       .createKeyspace()
+                                       .createTable();
     }
 
     @After
@@ -82,8 +81,7 @@ public class MultipleKeyIndexHandlingTest {
                       .insert(StoryDataHelper.data8)
                       .insert(StoryDataHelper.data9)
                       .insert(StoryDataHelper.data10)
-                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
-                      .waitForIndexRefresh();
+                      .createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT);
 
         // Checking data
         int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
@@ -103,10 +101,9 @@ public class MultipleKeyIndexHandlingTest {
                       .insert(StoryDataHelper.data6)
                       .insert(StoryDataHelper.data7)
                       .insert(StoryDataHelper.data8)
-                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT)
                       .insert(StoryDataHelper.data9)
-                      .insert(StoryDataHelper.data10)
-                      .waitForIndexRefresh();
+                      .insert(StoryDataHelper.data10);
 
         // Checking data
         int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
@@ -125,10 +122,9 @@ public class MultipleKeyIndexHandlingTest {
                       .insert(StoryDataHelper.data7)
                       .insert(StoryDataHelper.data8)
                       .insert(StoryDataHelper.data9)
-                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT)
                       .insert(StoryDataHelper.data5)
-                      .insert(StoryDataHelper.data10)
-                      .waitForIndexRefresh();
+                      .insert(StoryDataHelper.data10);
 
         // Checking data
         int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
@@ -148,10 +144,9 @@ public class MultipleKeyIndexHandlingTest {
                       .insert(StoryDataHelper.data7)
                       .insert(StoryDataHelper.data8)
                       .insert(StoryDataHelper.data9)
-                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT)
                       .insert(StoryDataHelper.data1)
-                      .insert(StoryDataHelper.data10)
-                      .waitForIndexRefresh();
+                      .insert(StoryDataHelper.data10);
 
         // Checking data
         int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
@@ -172,8 +167,7 @@ public class MultipleKeyIndexHandlingTest {
                       .insert(StoryDataHelper.data8)
                       .insert(StoryDataHelper.data9)
                       .insert(StoryDataHelper.data10)
-                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
-                      .waitForIndexRefresh();
+                      .createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT);
 
         int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
 
@@ -183,7 +177,7 @@ public class MultipleKeyIndexHandlingTest {
         cassandraUtils.dropIndex(TestingConstants.INDEX_NAME_CONSTANT);
 
         // Recreating index
-        cassandraUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT).waitForIndexRefresh();
+        cassandraUtils.createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT);
 
         // Checking data
         n = cassandraUtils.query(wildcard("ascii_1", "*")).count();

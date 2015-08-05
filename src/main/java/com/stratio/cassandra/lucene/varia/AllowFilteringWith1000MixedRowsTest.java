@@ -70,7 +70,6 @@ public class AllowFilteringWith1000MixedRowsTest extends Abstract1000RegistersWa
                               .createTable()
                               .createIndex(TestingConstants.INDEX_NAME_CONSTANT);
         VariaDataHelper.generateCustomInsertionsWithModule(1000, 4, cassandraUtils);
-        cassandraUtils.waitForIndexRefresh().waitForIndexRefresh();
     }
 
     @AfterClass

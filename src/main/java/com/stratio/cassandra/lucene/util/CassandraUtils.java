@@ -9,11 +9,12 @@ import com.datastax.driver.core.SimpleStatement;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.stratio.cassandra.lucene.TestingConstants;
+import com.stratio.cassandra.lucene.schema.SchemaBuilder;
 import com.stratio.cassandra.lucene.search.condition.builder.ConditionBuilder;
 import com.stratio.cassandra.lucene.search.sort.builder.SortFieldBuilder;
 import org.apache.log4j.Logger;
 
-import java.sql.ResultSet;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -174,12 +175,12 @@ public class CassandraUtils {
         session.close();
     }
 
-    public CassandraUtils waitForIndexRefresh() {
+    public CassandraUtils waitForIndexing() {
 
         // Waiting for the custom index to be refreshed
-        logger.debug("Waiting for the index to be refreshed...");
+        logger.debug("Waiting for the index to be created...");
         try {
-            Thread.sleep(TestingConstants.WRITE_WAIT_MILLISECONDS);
+            Thread.sleep(TestingConstants.INDEX_WAIT_MILLISECONDS);
         } catch (InterruptedException e) {
             logger.error("Interruption caught during a Thread.sleep; index might be unstable");
         }
@@ -231,6 +232,12 @@ public class CassandraUtils {
         return this;
     }
 
+    public CassandraUtils createIndexWaiting(String indexName) {
+        createIndex(indexName);
+        waitForIndexing();
+        return this;
+    }
+
     public CassandraUtils createIndex(String indexName) {
         execute(new StringBuilder().append("CREATE CUSTOM INDEX ")
                                    .append(indexName)
@@ -239,8 +246,7 @@ public class CassandraUtils {
                                    .append(" (")
                                    .append(indexColumn)
                                    .append(") USING 'com.stratio.cassandra.lucene.Index' WITH OPTIONS = {")
-                                   .append("'refresh_seconds':'" + TestingConstants.INDEX_REFRESH_SECONDS +"',")
-                                   .append("'num_cached_filters':'1',")
+                                   .append("'refresh_seconds':'" + TestingConstants.INDEX_REFRESH_SECONDS + "',")
                                    .append("'ram_buffer_mb':'64',")
                                    .append("'max_merge_mb':'5',")
                                    .append("'max_cached_mb':'30',")
@@ -248,49 +254,26 @@ public class CassandraUtils {
                                    .append("\"org.apache.lucene.analysis.standard.StandardAnalyzer\",fields:{")
                                    .append(conversionCassToLucene())
                                    .append("}}'};"));
-        return this;
-    }
-
-    public CassandraUtils createIndex(String indexName, String mappers) {
-        execute(new StringBuilder().append("CREATE CUSTOM INDEX ")
-                                   .append(indexName)
-                                   .append(" ON ")
-                                   .append(qualifiedTable)
-                                   .append(" (")
-                                   .append(indexColumn)
-                                   .append(") USING 'com.stratio.cassandra.lucene.Index' WITH OPTIONS = {")
-                                   .append("'refresh_seconds':'0.1',")
-                                   .append("'num_cached_filters':'1',")
-                                   .append("'ram_buffer_mb':'64',")
-                                   .append("'max_merge_mb':'5',")
-                                   .append("'max_cached_mb':'30',")
-                                   .append(" 'schema':'{default_analyzer:")
-                                   .append("\"org.apache.lucene.analysis.standard.StandardAnalyzer\",fields:{")
-                                   .append(mappers)
-                                   .append("}}'};"));
 
         return this;
     }
-    public CassandraUtils createCustomIndex(String indexName,Map<String,String> fieldsMap) {
+
+    public CassandraUtils createIndex(String indexName, SchemaBuilder schemaBuilder) {
+        String schema = schemaBuilder.toJson();
         StringBuilder stBuilder = new StringBuilder().append("CREATE CUSTOM INDEX ")
-                .append(indexName)
-                .append(" ON ")
-                .append(qualifiedTable)
-                .append(" (")
-                .append(indexColumn)
-                .append(") USING 'com.stratio.cassandra.lucene.Index' WITH OPTIONS = {")
-                .append("'refresh_seconds':'0.1',")
-                .append("'num_cached_filters':'1',")
-                .append("'ram_buffer_mb':'64',")
-                .append("'max_merge_mb':'5',")
-                .append("'max_cached_mb':'30',")
-                .append(" 'schema':'{default_analyzer:")
-                .append("\"org.apache.lucene.analysis.standard.StandardAnalyzer\",fields:{")
-                .append(produceFieldsString(fieldsMap))
-                .append("}}'};");
-
+                                                     .append(indexName)
+                                                     .append(" ON ")
+                                                     .append(qualifiedTable)
+                                                     .append(" (")
+                                                     .append(indexColumn)
+                                                     .append(") USING 'com.stratio.cassandra.lucene.Index' WITH OPTIONS = {")
+                                                     .append("'refresh_seconds':'0.1',")
+                                                     .append("'ram_buffer_mb':'64',")
+                                                     .append("'max_merge_mb':'5',")
+                                                     .append("'max_cached_mb':'30',")
+                                                     .append(" 'schema':'" + schema + "'")
+                                                     .append("}}'};");
         execute(stBuilder);
-
         return this;
 
     }
@@ -325,16 +308,6 @@ public class CassandraUtils {
         return converted.substring(0, converted.length() - 1);
     }
 
-    private String produceFieldsString(Map<String,String> fieldsMap) {
-        String converted="";
-        for (String key:fieldsMap.keySet()) {
-            converted=converted+key+":"+fieldsMap.get(key)+",";
-
-        }
-        return converted.substring(0, converted.length() - 1);
-    }
-
-
     public List<Row> selectAllFromTable() {
         return execute(new StringBuilder().append("SELECT ")
                                           .append(columnsWithoutLucene)
@@ -345,7 +318,7 @@ public class CassandraUtils {
     public List<Row> selectAllFromIndexQueryWithFiltering(int limit, String name, Object value) {
         return execute(QueryBuilder.select()
                                    .from(keyspace, table)
-                                   .where(QueryBuilder.eq(indexColumn, "{}"))
+                                   .where(QueryBuilder.eq(indexColumn, "{refresh:true}"))
                                    .and(QueryBuilder.eq(name, value))
                                    .limit(limit)
                                    .allowFiltering()

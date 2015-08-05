@@ -79,12 +79,12 @@ public class TokenRangeWithSkinnyRowsTest {
                                        .insert(VariaDataHelper.data18)
                                        .insert(VariaDataHelper.data19)
                                        .insert(VariaDataHelper.data20)
-                                       .waitForIndexRefresh();
+                                       ;
     }
 
     @AfterClass
     public static void after() {
-        cassandraUtils.dropIndex(TestingConstants.INDEX_NAME_CONSTANT).dropTable().dropKeyspace().waitForIndexRefresh();
+        cassandraUtils.dropIndex(TestingConstants.INDEX_NAME_CONSTANT).dropTable().dropKeyspace();
     }
 
     @Test

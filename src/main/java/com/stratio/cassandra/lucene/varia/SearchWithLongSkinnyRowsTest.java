@@ -64,7 +64,7 @@ public class SearchWithLongSkinnyRowsTest {
                                        .createKeyspace()
                                        .createTable()
                                        .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
-                                       .waitForIndexRefresh();
+                                       ;
         int count = 0;
         for (Integer p = 0; p < 2; p++) {
             for (Integer i = 1; i <= 100; i++) {
@@ -91,12 +91,11 @@ public class SearchWithLongSkinnyRowsTest {
             }
         }
         System.out.println("INSERTIONS " + count);
-        cassandraUtils.waitForIndexRefresh();
     }
 
     @AfterClass
     public static void after() {
-        cassandraUtils.dropIndex(TestingConstants.INDEX_NAME_CONSTANT).dropTable().dropKeyspace().waitForIndexRefresh();
+        cassandraUtils.dropIndex(TestingConstants.INDEX_NAME_CONSTANT).dropTable().dropKeyspace();
     }
 
     @Test

@@ -81,7 +81,7 @@ public class SimpleKeyDataDeletionTest {
     @Test
     public void columnDeletion() {
 
-        cassandraUtils.deleteValueByCondition("bigint_1", "integer_1 = 1").waitForIndexRefresh();
+        cassandraUtils.deleteValueByCondition("bigint_1", "integer_1 = 1");
 
         List<Row> rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
@@ -99,7 +99,7 @@ public class SimpleKeyDataDeletionTest {
     @Test
     public void mapElementDeletion() {
 
-        cassandraUtils.deleteValueByCondition("map_1['k1']", "integer_1 = 1").waitForIndexRefresh();
+        cassandraUtils.deleteValueByCondition("map_1['k1']", "integer_1 = 1");
 
         List<Row> rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
@@ -121,7 +121,7 @@ public class SimpleKeyDataDeletionTest {
     @Test
     public void listElementDeletion() {
 
-        cassandraUtils.deleteValueByCondition("list_1[0]", "integer_1 = 1").waitForIndexRefresh();
+        cassandraUtils.deleteValueByCondition("list_1[0]", "integer_1 = 1");
 
         List<Row> rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
@@ -143,7 +143,7 @@ public class SimpleKeyDataDeletionTest {
     @Test
     public void totalPartitionDeletion() {
 
-        cassandraUtils.deleteByCondition("integer_1 = 1").waitForIndexRefresh();
+        cassandraUtils.deleteByCondition("integer_1 = 1");
 
         List<Row> rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 

@@ -34,33 +34,32 @@ public class ComplexKeyIndexHandlingTest {
     @Before
     public void before() {
 
-        cassandraUtils =
-                CassandraUtils.builder()
-                              .withTable(TestingConstants.TABLE_NAME_CONSTANT)
-                              .withIndexColumn(TestingConstants.INDEX_COLUMN_CONSTANT)
-                              .withPartitionKey("integer_1", "ascii_1")
-                              .withClusteringKey("double_1")
-                              .withColumn("ascii_1", "ascii")
-                              .withColumn("bigint_1", "bigint")
-                              .withColumn("blob_1", "blob")
-                              .withColumn("boolean_1", "boolean")
-                              .withColumn("decimal_1", "decimal")
-                              .withColumn("date_1", "timestamp")
-                              .withColumn("double_1", "double")
-                              .withColumn("float_1", "float")
-                              .withColumn("integer_1", "int")
-                              .withColumn("inet_1", "inet")
-                              .withColumn("text_1", "text")
-                              .withColumn("varchar_1", "varchar")
-                              .withColumn("uuid_1", "uuid")
-                              .withColumn("timeuuid_1", "timeuuid")
-                              .withColumn("list_1", "list<text>")
-                              .withColumn("set_1", "set<text>")
-                              .withColumn("map_1", "map<text,text>")
-                              .withColumn("lucene", "text")
-                              .build()
-                              .createKeyspace()
-                              .createTable();
+        cassandraUtils = CassandraUtils.builder()
+                                       .withTable(TestingConstants.TABLE_NAME_CONSTANT)
+                                       .withIndexColumn(TestingConstants.INDEX_COLUMN_CONSTANT)
+                                       .withPartitionKey("integer_1", "ascii_1")
+                                       .withClusteringKey("double_1")
+                                       .withColumn("ascii_1", "ascii")
+                                       .withColumn("bigint_1", "bigint")
+                                       .withColumn("blob_1", "blob")
+                                       .withColumn("boolean_1", "boolean")
+                                       .withColumn("decimal_1", "decimal")
+                                       .withColumn("date_1", "timestamp")
+                                       .withColumn("double_1", "double")
+                                       .withColumn("float_1", "float")
+                                       .withColumn("integer_1", "int")
+                                       .withColumn("inet_1", "inet")
+                                       .withColumn("text_1", "text")
+                                       .withColumn("varchar_1", "varchar")
+                                       .withColumn("uuid_1", "uuid")
+                                       .withColumn("timeuuid_1", "timeuuid")
+                                       .withColumn("list_1", "list<text>")
+                                       .withColumn("set_1", "set<text>")
+                                       .withColumn("map_1", "map<text,text>")
+                                       .withColumn("lucene", "text")
+                                       .build()
+                                       .createKeyspace()
+                                       .createTable();
     }
 
     @After
@@ -91,8 +90,7 @@ public class ComplexKeyIndexHandlingTest {
                       .insert(StoryDataHelper.data18)
                       .insert(StoryDataHelper.data19)
                       .insert(StoryDataHelper.data20)
-                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
-                      .waitForIndexRefresh();
+                      .createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT);
 
         // Checking data
         int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
@@ -118,13 +116,12 @@ public class ComplexKeyIndexHandlingTest {
                       .insert(StoryDataHelper.data13)
                       .insert(StoryDataHelper.data14)
                       .insert(StoryDataHelper.data15)
-                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT)
                       .insert(StoryDataHelper.data16)
                       .insert(StoryDataHelper.data17)
                       .insert(StoryDataHelper.data18)
                       .insert(StoryDataHelper.data19)
-                      .insert(StoryDataHelper.data20)
-                      .waitForIndexRefresh();
+                      .insert(StoryDataHelper.data20);
 
         // Checking data
         int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
@@ -152,12 +149,11 @@ public class ComplexKeyIndexHandlingTest {
                       .insert(StoryDataHelper.data17)
                       .insert(StoryDataHelper.data18)
                       .insert(StoryDataHelper.data19)
-                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT)
                       .insert(StoryDataHelper.data5)
                       .insert(StoryDataHelper.data10)
                       .insert(StoryDataHelper.data15)
-                      .insert(StoryDataHelper.data20)
-                      .waitForIndexRefresh();
+                      .insert(StoryDataHelper.data20);
 
         // Checking data
         int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
@@ -185,12 +181,11 @@ public class ComplexKeyIndexHandlingTest {
                       .insert(StoryDataHelper.data17)
                       .insert(StoryDataHelper.data18)
                       .insert(StoryDataHelper.data20)
-                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT)
                       .insert(StoryDataHelper.data1)
                       .insert(StoryDataHelper.data7)
                       .insert(StoryDataHelper.data13)
-                      .insert(StoryDataHelper.data19)
-                      .waitForIndexRefresh();
+                      .insert(StoryDataHelper.data19);
 
         // Checking data
         int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
@@ -201,7 +196,7 @@ public class ComplexKeyIndexHandlingTest {
     @Test
     public void recreateIndexAfterInsertionsTest() {
 
-        cassandraUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+        cassandraUtils.createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT)
                       .insert(StoryDataHelper.data1)
                       .insert(StoryDataHelper.data2)
                       .insert(StoryDataHelper.data3)
@@ -221,8 +216,7 @@ public class ComplexKeyIndexHandlingTest {
                       .insert(StoryDataHelper.data17)
                       .insert(StoryDataHelper.data18)
                       .insert(StoryDataHelper.data19)
-                      .insert(StoryDataHelper.data20)
-                      .waitForIndexRefresh();
+                      .insert(StoryDataHelper.data20);
 
         // Checking data
         int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
@@ -233,7 +227,7 @@ public class ComplexKeyIndexHandlingTest {
         cassandraUtils.dropIndex(TestingConstants.INDEX_NAME_CONSTANT);
 
         // Recreating index
-        cassandraUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT).waitForIndexRefresh();
+        cassandraUtils.createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT);
 
         // Checking data
         n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();

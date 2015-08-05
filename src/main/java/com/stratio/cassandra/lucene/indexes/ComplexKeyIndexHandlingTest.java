@@ -91,8 +91,7 @@ public class ComplexKeyIndexHandlingTest {
                       .insert(IndexesDataHelper.data18)
                       .insert(IndexesDataHelper.data19)
                       .insert(IndexesDataHelper.data20)
-                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
-                      .waitForIndexRefresh();
+                      .createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT);
 
         // Checking data
         int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
@@ -118,13 +117,12 @@ public class ComplexKeyIndexHandlingTest {
                       .insert(IndexesDataHelper.data13)
                       .insert(IndexesDataHelper.data14)
                       .insert(IndexesDataHelper.data15)
-                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT)
                       .insert(IndexesDataHelper.data16)
                       .insert(IndexesDataHelper.data17)
                       .insert(IndexesDataHelper.data18)
                       .insert(IndexesDataHelper.data19)
-                      .insert(IndexesDataHelper.data20)
-                      .waitForIndexRefresh();
+                      .insert(IndexesDataHelper.data20);
 
         // Checking data
         int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
@@ -151,12 +149,11 @@ public class ComplexKeyIndexHandlingTest {
                       .insert(IndexesDataHelper.data17)
                       .insert(IndexesDataHelper.data18)
                       .insert(IndexesDataHelper.data19)
-                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT)
                       .insert(IndexesDataHelper.data5)
                       .insert(IndexesDataHelper.data10)
                       .insert(IndexesDataHelper.data15)
-                      .insert(IndexesDataHelper.data20)
-                      .waitForIndexRefresh();
+                      .insert(IndexesDataHelper.data20);
 
         // Checking data
         int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
@@ -183,12 +180,11 @@ public class ComplexKeyIndexHandlingTest {
                       .insert(IndexesDataHelper.data17)
                       .insert(IndexesDataHelper.data18)
                       .insert(IndexesDataHelper.data20)
-                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT)
                       .insert(IndexesDataHelper.data1)
                       .insert(IndexesDataHelper.data7)
                       .insert(IndexesDataHelper.data13)
-                      .insert(IndexesDataHelper.data19)
-                      .waitForIndexRefresh();
+                      .insert(IndexesDataHelper.data19);
 
         // Checking data
         int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
@@ -200,7 +196,7 @@ public class ComplexKeyIndexHandlingTest {
     public void recreateIndexAfterInsertionsTest() {
 
         // Creating index
-        cassandraUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+        cassandraUtils.createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT)
                       .insert(IndexesDataHelper.data1)
                       .insert(IndexesDataHelper.data2)
                       .insert(IndexesDataHelper.data3)
@@ -220,8 +216,7 @@ public class ComplexKeyIndexHandlingTest {
                       .insert(IndexesDataHelper.data17)
                       .insert(IndexesDataHelper.data18)
                       .insert(IndexesDataHelper.data19)
-                      .insert(IndexesDataHelper.data20)
-                      .waitForIndexRefresh();
+                      .insert(IndexesDataHelper.data20);
 
         // Checking data
         int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
@@ -232,7 +227,7 @@ public class ComplexKeyIndexHandlingTest {
         cassandraUtils.dropIndex(TestingConstants.INDEX_NAME_CONSTANT);
 
         // Recreating index
-        cassandraUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT).waitForIndexRefresh();
+        cassandraUtils.createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT);
 
         // Checking data
         n = cassandraUtils.query(wildcard("ascii_1", "*")).count();

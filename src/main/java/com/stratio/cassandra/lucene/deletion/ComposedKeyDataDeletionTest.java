@@ -78,7 +78,7 @@ public class ComposedKeyDataDeletionTest {
                                        .insert(DeletionDataHelper.data8)
                                        .insert(DeletionDataHelper.data9)
                                        .insert(DeletionDataHelper.data10)
-                                       .waitForIndexRefresh();
+                                       ;
     }
 
     @After
@@ -89,7 +89,7 @@ public class ComposedKeyDataDeletionTest {
     @Test
     public void columnDeletion() {
 
-        cassandraUtils.deleteValueByCondition("bigint_1", "integer_1 = 1 and ascii_1 = 'ascii'").waitForIndexRefresh();
+        cassandraUtils.deleteValueByCondition("bigint_1", "integer_1 = 1 and ascii_1 = 'ascii'");
 
         List<Row> rows = cassandraUtils.filter(wildcard("ascii_1", "*")).get();
 
@@ -112,7 +112,7 @@ public class ComposedKeyDataDeletionTest {
     public void mapElementDeletion() {
 
         cassandraUtils.deleteValueByCondition("map_1['k1']", "integer_1 = 1 and ascii_1 = 'ascii'")
-                      .waitForIndexRefresh();
+                      ;
 
         List<Row> rows = cassandraUtils.filter(wildcard("ascii_1", "*")).get();
 
@@ -138,7 +138,7 @@ public class ComposedKeyDataDeletionTest {
     @Test
     public void listElementDeletion() {
 
-        cassandraUtils.deleteValueByCondition("list_1[0]", "integer_1 = 1 and ascii_1 = 'ascii'").waitForIndexRefresh();
+        cassandraUtils.deleteValueByCondition("list_1[0]", "integer_1 = 1 and ascii_1 = 'ascii'");
 
         List<Row> rows = cassandraUtils.filter(wildcard("ascii_1", "*")).get();
 
@@ -162,7 +162,7 @@ public class ComposedKeyDataDeletionTest {
     @Test
     public void totalPartitionDeletion() {
 
-        cassandraUtils.deleteByCondition("integer_1 = 1 and ascii_1 = 'ascii'").waitForIndexRefresh();
+        cassandraUtils.deleteByCondition("integer_1 = 1 and ascii_1 = 'ascii'");
 
         List<Row> rows = cassandraUtils.filter(wildcard("ascii_1", "*")).get();
 
