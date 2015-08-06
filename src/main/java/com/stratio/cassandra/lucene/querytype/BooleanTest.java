@@ -29,6 +29,18 @@ import static org.junit.Assert.*;
 public class BooleanTest extends AbstractWatchedTest {
 
     @Test
+    public void booleanQueryEmptyTest() {
+        int n = cassandraUtils.query(bool()).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void booleanQueryNotTest() {
+        int n = cassandraUtils.query(bool().not(match("uuid_1", "60297440-b4fa-11e3-8b5a-0002a5d5c51c"))).count();
+        assertEquals("Expected 4 result!", 4, n);
+    }
+
+    @Test
     public void booleanQueryMustTest() {
         int n = cassandraUtils.query(bool().must(wildcard("ascii_1", "frase*")).must(wildcard("inet_1", "127.0.*")))
                               .count();
@@ -80,6 +92,18 @@ public class BooleanTest extends AbstractWatchedTest {
         assertFalse("Expected different sorting!", equals);
     }
 
+
+    @Test
+    public void booleanFilterEmptyTest() {
+        int n = cassandraUtils.filter(bool()).count();
+        assertEquals("Expected 0 results!", 0, n);
+    }
+
+    @Test
+    public void booleanFilterNotTest() {
+        int n = cassandraUtils.filter(bool().not(match("uuid_1", "60297440-b4fa-11e3-8b5a-0002a5d5c51c"))).count();
+        assertEquals("Expected 4 result!", 4, n);
+    }
     @Test
     public void booleanFilterMustTest() {
         int n = cassandraUtils.filter(bool().must(wildcard("ascii_1", "frase*")).must(wildcard("inet_1", "127.0.*")))
