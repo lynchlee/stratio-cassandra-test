@@ -25,7 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static com.stratio.cassandra.lucene.search.SearchBuilders.match;
-import static com.stratio.cassandra.lucene.search.SearchBuilders.matchAll;
+import static com.stratio.cassandra.lucene.search.SearchBuilders.all;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -128,19 +128,19 @@ public class SearchWithLongWideRowsTest {
 
     @Test
     public void queryAll200Test() {
-        int n = cassandraUtils.query(matchAll()).limit(200).fetchSize(7).count();
+        int n = cassandraUtils.query(all()).limit(200).fetchSize(7).count();
         assertEquals("Expected 200 results!", 200, n);
     }
 
     @Test
     public void queryAll1200Test() {
-        int n = cassandraUtils.query(matchAll()).limit(201).fetchSize(4).count();
+        int n = cassandraUtils.query(all()).limit(201).fetchSize(4).count();
         assertEquals("Expected 200 results!", 200, n);
     }
 
     @Test
     public void queryAll199Test() {
-        int n = cassandraUtils.query(matchAll()).limit(199).fetchSize(13).count();
+        int n = cassandraUtils.query(all()).limit(199).fetchSize(13).count();
         assertEquals("Expected 199 results!", 199, n);
     }
 
@@ -172,19 +172,19 @@ public class SearchWithLongWideRowsTest {
 
     @Test
     public void filterAll200Test() {
-        int n = cassandraUtils.filter(matchAll()).limit(200).fetchSize(7).count();
+        int n = cassandraUtils.filter(all()).limit(200).fetchSize(7).count();
         assertEquals("Expected 200 results!", 200, n);
     }
 
     @Test
     public void filterAll1200Test() {
-        int n = cassandraUtils.filter(matchAll()).limit(201).fetchSize(4).count();
+        int n = cassandraUtils.filter(all()).limit(201).fetchSize(4).count();
         assertEquals("Expected 200 results!", 200, n);
     }
 
     @Test
     public void filterAll199Test() {
-        int n = cassandraUtils.filter(matchAll()).limit(199).fetchSize(13).count();
+        int n = cassandraUtils.filter(all()).limit(199).fetchSize(13).count();
         assertEquals("Expected 199 results!", 199, n);
     }
 }

@@ -27,7 +27,8 @@ import org.junit.runners.Suite.SuiteClasses;
 import java.util.Properties;
 
 @RunWith(Suite.class)
-@SuiteClasses({FuzzyTest.class,
+@SuiteClasses({AllTest.class,
+               FuzzyTest.class,
                WildcardTest.class,
                MatchTest.class,
                NoneTest.class,

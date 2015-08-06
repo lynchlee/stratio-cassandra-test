@@ -59,17 +59,13 @@ public abstract class AbstractWatchedTest {
                       .insert(QueryTypeDataHelper.data2)
                       .insert(QueryTypeDataHelper.data3)
                       .insert(QueryTypeDataHelper.data4)
-                      .insert(QueryTypeDataHelper.data5)
-                      ;
+                      .insert(QueryTypeDataHelper.data5);
     }
 
     @AfterClass
     public static void tearDownSuite() {
         cassandraUtils.dropIndex(TestingConstants.INDEX_NAME_CONSTANT)
-                      
                       .dropTable()
-                      
-                      .dropKeyspace()
-                      ;
+                      .dropKeyspace();
     }
 }
