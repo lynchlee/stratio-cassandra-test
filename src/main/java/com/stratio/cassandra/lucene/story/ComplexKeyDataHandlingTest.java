@@ -25,7 +25,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import static com.stratio.cassandra.lucene.search.SearchBuilders.wildcard;
-import static com.stratio.cassandra.lucene.search.SearchBuilders.range;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)

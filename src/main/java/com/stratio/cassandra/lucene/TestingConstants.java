@@ -19,7 +19,7 @@ public final class TestingConstants {
 
     public static final float INDEX_REFRESH_SECONDS = 1f;
 
-    public static final Long INDEX_WAIT_MILLISECONDS = 3000L;
+    public static final Long INDEX_WAIT_MILLISECONDS = 2000L;
 
     public static final Long READ_WAIT_MILLISECONDS = 0L;
 
@@ -39,6 +39,6 @@ public final class TestingConstants {
 
     public static final String INDEX_COLUMN_CONSTANT = "lucene";
 
-    public static final int FETCH_SIZE = 1000;
+    public static final int FETCH_SIZE = 2;
 
 }

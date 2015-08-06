@@ -16,15 +16,7 @@
 package com.stratio.cassandra.lucene.suite;
 
 import com.stratio.cassandra.lucene.TestingConstants;
-import com.stratio.cassandra.lucene.querytype.BooleanTest;
-import com.stratio.cassandra.lucene.querytype.FuzzyTest;
-import com.stratio.cassandra.lucene.querytype.MatchTest;
-import com.stratio.cassandra.lucene.querytype.PhraseTest;
-import com.stratio.cassandra.lucene.querytype.PrefixTest;
-import com.stratio.cassandra.lucene.querytype.RangeTest;
-import com.stratio.cassandra.lucene.querytype.RegexpTest;
-import com.stratio.cassandra.lucene.querytype.SortTest;
-import com.stratio.cassandra.lucene.querytype.WildcardTest;
+import com.stratio.cassandra.lucene.querytype.*;
 import com.stratio.cassandra.lucene.util.CassandraUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -38,6 +30,7 @@ import java.util.Properties;
 @SuiteClasses({FuzzyTest.class,
                WildcardTest.class,
                MatchTest.class,
+               NoneTest.class,
                PrefixTest.class,
                PhraseTest.class,
                RegexpTest.class,

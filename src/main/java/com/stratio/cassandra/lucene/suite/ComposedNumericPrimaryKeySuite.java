@@ -30,6 +30,7 @@ import java.util.Properties;
 @SuiteClasses({FuzzyTest.class,
                WildcardTest.class,
                MatchTest.class,
+               NoneTest.class,
                PrefixTest.class,
                PhraseTest.class,
                RegexpTest.class,
