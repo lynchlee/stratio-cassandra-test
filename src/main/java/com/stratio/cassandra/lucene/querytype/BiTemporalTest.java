@@ -449,7 +449,7 @@ public class BiTemporalTest {
     }
 
     @Test
-    public void biTemporalQueryIntersecsTimeStampFieldTest() {
+    public void biTemporalQueryIntersectsTimeStampFieldTest() {
 
         CassandraUtilsSelect select = cassandraUtils.query(biTemporalSearch("bitemporal").operation("intersects")
                                                                                          .vtFrom("2015/01/01 00:00:00.000")
@@ -463,7 +463,7 @@ public class BiTemporalTest {
     }
 
     @Test
-    public void biTemporalQueryIntersecsTimeStampFieldTest2() {
+    public void biTemporalQueryIntersectsTimeStampFieldTest2() {
 
         CassandraUtilsSelect select = cassandraUtils.query(biTemporalSearch("bitemporal").operation("intersects")
                                                                                          .vtFrom("2015/02/01 12:00:00.001")
@@ -477,7 +477,7 @@ public class BiTemporalTest {
     }
 
     @Test
-    public void biTemporalQueryIntersecsTimeStampFieldTest3() {
+    public void biTemporalQueryIntersectsTimeStampFieldTest3() {
 
         CassandraUtilsSelect select = cassandraUtils.query(biTemporalSearch("bitemporal").operation("intersects")
                                                                                          .vtFrom("2015/03/01 12:00:00.001")
@@ -491,7 +491,7 @@ public class BiTemporalTest {
     }
 
     @Test
-    public void biTemporalQueryIntersecsTimeStampFieldTest4() {
+    public void biTemporalQueryIntersectsTimeStampFieldTest4() {
 
         CassandraUtilsSelect select = cassandraUtils.query(biTemporalSearch("bitemporal").operation("intersects")
                                                                                          .vtFrom("2015/04/01 12:00:00.001")
@@ -505,7 +505,7 @@ public class BiTemporalTest {
     }
 
     @Test
-    public void biTemporalQueryIntersecsTimeStampFieldTest5() {
+    public void biTemporalQueryIntersectsTimeStampFieldTest5() {
 
         CassandraUtilsSelect select = cassandraUtils.query(biTemporalSearch("bitemporal").operation("intersects")
                                                                                          .vtFrom("2015/05/01 12:00:00.001")
@@ -519,7 +519,7 @@ public class BiTemporalTest {
     }
 
     @Test
-    public void biTemporalQueryIntersecsTimeStampFieldTest6() {
+    public void biTemporalQueryIntersectsTimeStampFieldTest6() {
 
         CassandraUtilsSelect select = cassandraUtils.query(biTemporalSearch("bitemporal").operation("intersects")
                                                                                          .vtFrom("2014/12/31 12:00:00.000")
@@ -533,7 +533,7 @@ public class BiTemporalTest {
     }
 
     @Test
-    public void biTemporalQueryIntersecsTimeStampFieldTest7() {
+    public void biTemporalQueryIntersectsTimeStampFieldTest7() {
         CassandraUtilsSelect select = cassandraUtils.query(biTemporalSearch("bitemporal").operation("intersects")
                                                                                          .vtFrom("2014/12/01 12:00:00.000")
                                                                                          .vtTo("2014/12/31 00:00:00.000")
@@ -546,7 +546,7 @@ public class BiTemporalTest {
     }
 
     @Test
-    public void biTemporalQueryIntersecsTimeStampFieldTest8() {
+    public void biTemporalQueryIntersectsTimeStampFieldTest8() {
 
         CassandraUtilsSelect select = cassandraUtils.query(biTemporalSearch("bitemporal").operation("intersects")
                                                                                          .vtFrom("2015/01/01 00:00:00.000")
@@ -560,7 +560,7 @@ public class BiTemporalTest {
     }
 
     @Test
-    public void biTemporalQueryIntersecsTimeStampFieldTest9() {
+    public void biTemporalQueryIntersectsTimeStampFieldTest9() {
 
         CassandraUtilsSelect select = cassandraUtils.query(biTemporalSearch("bitemporal").operation("intersects")
                                                                                          .vtFrom("2015/02/01 12:00:00.000")
@@ -573,7 +573,7 @@ public class BiTemporalTest {
                    isThisAndOnlyThis(select.intColumn("integer_1"), new int[]{1, 2}));
     }
 
-    private CassandraUtils setUpSuite2(String nowValue) {
+    private CassandraUtils setUpSuite2(Object nowValue) {
 
         SchemaBuilder schemaBuilder = schema().mapper("bitemporal",
                                                       bitemporalMapper("vt_from", "vt_to", "tt_from", "tt_to").pattern(
@@ -636,8 +636,8 @@ public class BiTemporalTest {
     //valid long max value queries
     @Test
     public void biTemporalQueryIsWithInNowValueToLongTest() {
-        //etstign with long value 1456876800 ==2016/03/02 00:00:00
-        String nowValue = "now_value:1456876800000";
+        //testing with long value 1456876800 ==2016/03/02 00:00:00
+        Long nowValue = 1456876800000l;
         CassandraUtils cu = this.setUpSuite2(nowValue);
         cu.insert(data1)
           .insert(data2)
@@ -652,7 +652,7 @@ public class BiTemporalTest {
                                                                              .ttTo("2015/04/16 00:00:00.000"));
 
         assertEquals("Expected 1 results!", 1, select.count());
-        assertTrue("Unexpected results!! Expected: {3}, getted: " + fromInteger(select.intColumn("integer_1")),
+        assertTrue("Unexpected results!! Expected: {3}, got: " + fromInteger(select.intColumn("integer_1")),
                    isThisAndOnlyThis(select.intColumn("integer_1"), new int[]{3}));
         tearDown(cu);
     }
@@ -660,8 +660,8 @@ public class BiTemporalTest {
     //inserting bigger to nowValue it must throw an IllegalArgumentException
     @Test(expected = WriteTimeoutException.class)
     public void biTemporalQueryIsWithInNowValueToLongTest2() {
-        //etstign with long value 1456876800 ==2016/03/02 00:00:00
-        String nowValue = "now_value:1456876800000";
+        //testing with long value 1456876800 ==2016/03/02 00:00:00
+        Long nowValue = 1456876800000l;
         CassandraUtils cu = this.setUpSuite2(nowValue);
 
         cu.insert(data6);
@@ -672,8 +672,8 @@ public class BiTemporalTest {
     //querying bigger than nowValue it must throw an IllegalArgumentException
     @Test(expected = InvalidQueryException.class)
     public void biTemporalQueryIsWithInNowValueToLongTest3() {
-        //etstign with long value 1456876800 ==2016/03/02 00:00:00
-        String nowValue = "now_value:1456876800000";
+        //testing with long value 1456876800 ==2016/03/02 00:00:00
+        Long nowValue = 1456876800000l;
         CassandraUtils cu = this.setUpSuite2(nowValue);
         cu.insert(data1);
         cu.insert(data2);
@@ -692,7 +692,7 @@ public class BiTemporalTest {
     @Test
     public void biTemporalQueryIsWithInNowValueToStringTest() {
         //testing with string value
-        String nowValue = "now_value:\"2016/03/02 00:00:00.000\"";
+        String nowValue = "2016/03/02 00:00:00.000";
         CassandraUtils cu = this.setUpSuite2(nowValue)
                                 .insert(data1)
                                 .insert(data2)
@@ -707,7 +707,7 @@ public class BiTemporalTest {
                                                                              .ttTo("2015/04/16 00:00:00.000"));
 
         assertEquals("Expected 1 results!", 1, select.count());
-        assertTrue("Unexpected results!! Expected: {3}, getted: " + fromInteger(select.intColumn("integer_1")),
+        assertTrue("Unexpected results!! Expected: {3}, got: " + fromInteger(select.intColumn("integer_1")),
                    isThisAndOnlyThis(select.intColumn("integer_1"), new int[]{3}));
         tearDown(cu);
     }
@@ -715,8 +715,8 @@ public class BiTemporalTest {
     //inserting bigger to nowValue it must throw an IllegalArgumentException
     @Test(expected = WriteTimeoutException.class)
     public void biTemporalQueryIsWithInNowValueToStringTest2() {
-        //etstign with long value
-        String nowValue = "now_value:\"2016/03/02 00:00:00.000\"";
+        //testing with long value
+        String nowValue = "2016/03/02 00:00:00.000";
         CassandraUtils cu = this.setUpSuite2(nowValue);
 
         //testing if inserting data translate it to Long.max
@@ -731,8 +731,8 @@ public class BiTemporalTest {
     //querying bigger than nowValue it must throw an IllegalArgumentException
     @Test(expected = InvalidQueryException.class)
     public void biTemporalQueryIsWithInNowValueToStringTest3() {
-        //etstign with long value
-        String nowValue = "now_value:\"2016/03/02 00:00:00.000\"";
+        //testing with long value
+        String nowValue = "2016/03/02 00:00:00.000";
         CassandraUtils cu = this.setUpSuite2(nowValue)
                                 .insert(data1)
                                 .insert(data2)
@@ -753,7 +753,7 @@ public class BiTemporalTest {
     @Test
     public void biTemporalQueryIsWithInNowValueToStringTest4() {
         //testing with string value
-        String nowValue = "now_value:\"2015/04/15 12:00:00.000\"";
+        String nowValue = "2015/04/15 12:00:00.000";
         CassandraUtils cu = this.setUpSuite2(nowValue)
                                 .insert(data1)
                                 .insert(data2)
@@ -767,15 +767,15 @@ public class BiTemporalTest {
                                                                              .ttTo("2015/04/02 00:00:00.000"));
 
         assertEquals("Expected 3 results!", 3, select.count());
-        assertTrue("Unexpected results!! Expected: {1,2,3}, getted: " + fromInteger(select.intColumn("integer_1")),
+        assertTrue("Unexpected results!! Expected: {1,2,3}, got: " + fromInteger(select.intColumn("integer_1")),
                    isThisAndOnlyThis(select.intColumn("integer_1"), new int[]{1, 2, 3}));
     }
 
-    //quering without limits to vt
+    //querying without limits to vt
     @Test
     public void biTemporalQueryIsWithInNowValueToStringTest5() {
         //testing with string value
-        String nowValue = "now_value:\"2015/04/15 12:00:00.000\"";
+        String nowValue = "2015/04/15 12:00:00.000";
         CassandraUtils cu = this.setUpSuite2(nowValue)
                                 .insert(data1)
                                 .insert(data2)
@@ -787,15 +787,15 @@ public class BiTemporalTest {
                                                                              .ttTo("2015/04/02 00:00:00.000"));
 
         assertEquals("Expected 3 results!", 3, select.count());
-        assertTrue("Unexpected results!! Expected: {1,2,3}, getted: " + fromInteger(select.intColumn("integer_1")),
+        assertTrue("Unexpected results!! Expected: {1,2,3}, got: " + fromInteger(select.intColumn("integer_1")),
                    isThisAndOnlyThis(select.intColumn("integer_1"), new int[]{1, 2, 3}));
     }
 
-    //quering without limits to tt
+    //querying without limits to tt
     @Test
     public void biTemporalQueryIsWithInNowValueToStringTest6() {
         //testing with string value
-        String nowValue = "now_value:\"2015/04/15 12:00:00.000\"";
+        String nowValue = "2015/04/15 12:00:00.000";
         CassandraUtils cu = this.setUpSuite2(nowValue)
                                 .insert(data1)
                                 .insert(data2)
@@ -807,7 +807,7 @@ public class BiTemporalTest {
                                                                              .vtTo("2015/03/02 00:00:00.000"));
 
         assertEquals("Expected 3 results!", 3, select.count());
-        assertTrue("Unexpected results!! Expected: {1,2,3}, getted: " + fromInteger(select.intColumn("integer_1")),
+        assertTrue("Unexpected results!! Expected: {1,2,3}, got: " + fromInteger(select.intColumn("integer_1")),
                    isThisAndOnlyThis(select.intColumn("integer_1"), new int[]{1, 2, 3}));
     }
 
@@ -823,7 +823,7 @@ public class BiTemporalTest {
         CassandraUtilsSelect select = cu.searchAll();
 
         assertEquals("Expected 5 results!", 5, select.count());
-        assertTrue("Unexpected results!! Expected: {1,2,3,4,5}, getted: " + fromInteger(select.intColumn("id")),
+        assertTrue("Unexpected results!! Expected: {1,2,3,4,5}, got: " + fromInteger(select.intColumn("id")),
                    isThisAndOnlyThis(select.intColumn("id"), new int[]{1, 2, 3, 4, 5}));
 
         Batch batch = QueryBuilder.batch();
@@ -857,7 +857,7 @@ public class BiTemporalTest {
                                                                                .ttTo(9223372036854775807l));
 
         assertEquals("Expected 5 results!", 5, select2.count());
-        assertTrue("Unexpected results!! Expected: {1,2,3,4,5}, getted: " + fromInteger(select2.intColumn("id")),
+        assertTrue("Unexpected results!! Expected: {1,2,3,4,5}, got: " + fromInteger(select2.intColumn("id")),
                    isThisAndOnlyThis(select2.intColumn("id"), new int[]{1, 2, 3, 4, 5}));
 
         CassandraUtilsSelect select3 = cu.filter(biTemporalSearch("bitemporal").operation("intersects")
@@ -870,17 +870,17 @@ public class BiTemporalTest {
         assertEquals("Expected 1 results!", 1, select3.count());
         Row row = select3.get().get(0);
 
-        assertTrue("Unexpected results!! Expected result : {id=\"1\"}, getted: " + row.getInt("id"),
+        assertTrue("Unexpected results!! Expected result : {id=\"1\"}, got: " + row.getInt("id"),
                    row.getInt("id") == 1);
-        assertTrue("Unexpected results!! Expected result : {data=\"v2\"}, getted: " + row.getString("data"),
+        assertTrue("Unexpected results!! Expected result : {data=\"v2\"}, got: " + row.getString("data"),
                    row.getString("data").equals("v2"));
-        assertTrue("Unexpected results!! Expected result : {vt_from=0}, getted: " + row.getLong("vt_from"),
+        assertTrue("Unexpected results!! Expected result : {vt_from=0}, got: " + row.getLong("vt_from"),
                    row.getLong("vt_from") == 0l);
-        assertTrue("Unexpected results!! Expected result : {vt_to=0}, getted: " + row.getLong("vt_to"),
+        assertTrue("Unexpected results!! Expected result : {vt_to=0}, got: " + row.getLong("vt_to"),
                    row.getLong("vt_to") == 9223372036854775807l);
-        assertTrue("Unexpected results!! Expected result : {tt_from=0}, getted: " + row.getLong("tt_from"),
+        assertTrue("Unexpected results!! Expected result : {tt_from=0}, got: " + row.getLong("tt_from"),
                    row.getLong("tt_from") == 20150102l);
-        assertTrue("Unexpected results!! Expected result : {tt_to=0}, getted: " + row.getLong("tt_to"),
+        assertTrue("Unexpected results!! Expected result : {tt_to=0}, got: " + row.getLong("tt_to"),
                    row.getLong("tt_to") == 9223372036854775807l);
 
     }

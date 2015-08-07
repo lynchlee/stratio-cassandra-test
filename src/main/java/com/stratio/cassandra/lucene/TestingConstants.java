@@ -19,7 +19,7 @@ public final class TestingConstants {
 
     public static final float INDEX_REFRESH_SECONDS = 1f;
 
-    public static final Long INDEX_WAIT_MILLISECONDS = 2000L;
+    public static final Long INDEX_WAIT_MILLISECONDS = 4000L;
 
     public static final Long READ_WAIT_MILLISECONDS = 0L;
 

@@ -273,7 +273,7 @@ public class CassandraUtils {
                                                      .append("'max_merge_mb':'5',")
                                                      .append("'max_cached_mb':'30',")
                                                      .append(" 'schema':'" + schema + "'")
-                                                     .append("}}'};");
+                                                     .append("};");
         execute(stBuilder);
         return this;
 
