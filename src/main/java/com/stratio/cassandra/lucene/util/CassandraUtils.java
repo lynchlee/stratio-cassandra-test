@@ -10,6 +10,7 @@ import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.stratio.cassandra.lucene.TestingConstants;
 import com.stratio.cassandra.lucene.schema.SchemaBuilder;
+import static com.stratio.cassandra.lucene.search.SearchBuilders.*;
 import com.stratio.cassandra.lucene.search.condition.builder.ConditionBuilder;
 import com.stratio.cassandra.lucene.search.sort.builder.SortFieldBuilder;
 import org.apache.log4j.Logger;
@@ -316,9 +317,10 @@ public class CassandraUtils {
     }
 
     public List<Row> selectAllFromIndexQueryWithFiltering(int limit, String name, Object value) {
+        String search = search().query(all()).refresh(true).toJson();
         return execute(QueryBuilder.select()
                                    .from(keyspace, table)
-                                   .where(QueryBuilder.eq(indexColumn, "{refresh:true}"))
+                                   .where(QueryBuilder.eq(indexColumn, search))
                                    .and(QueryBuilder.eq(name, value))
                                    .limit(limit)
                                    .allowFiltering()
@@ -382,7 +384,7 @@ public class CassandraUtils {
     }
 
     public CassandraUtilsSelect searchAll() {
-        return new CassandraUtilsSelect(this).search();
+        return new CassandraUtilsSelect(this).search().filter(all());
     }
 
     public CassandraUtilsSelect query(ConditionBuilder<?, ?> query) {

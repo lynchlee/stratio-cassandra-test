@@ -32,44 +32,26 @@ import static com.stratio.cassandra.lucene.search.SearchBuilders.biTemporalSearc
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by eduardoalonso on 30/06/15.
- */
-class DataHelper {
+@RunWith(JUnit4.class)
+public class BiTemporalTest {
+
+    private static final Logger logger = Logger.getLogger(AbstractWatchedTest.class);
+
+    private static long startingTime;
+
+    protected static CassandraUtils cassandraUtils;
 
     public static final Map<String, String> data1;
-
     public static final Map<String, String> data2;
-
     public static final Map<String, String> data3;
-
     public static final Map<String, String> data4;
-
     public static final Map<String, String> data5;
-
     public static final Map<String, String> data6;
-
     public static final Map<String, String> data7;
-
     public static final Map<String, String> data8;
-
     public static final Map<String, String> data9;
-
     public static final Map<String, String> data10;
-
     public static final Map<String, String> data11;
-
-    /*
-    public static final Map<String, String> data12;
-    public static final Map<String, String> data13;
-    public static final Map<String, String> data14;
-    public static final Map<String, String> data15;
-    public static final Map<String, String> data16;
-    public static final Map<String, String> data17;
-
-    public static final Map<String, String> data18;
-    public static final Map<String, String> data19;
-*/
 
     static {
 
@@ -157,16 +139,6 @@ class DataHelper {
         data11.put("tt_to", "9223372036854775807");
 
     }
-}
-
-@RunWith(JUnit4.class)
-public class BiTemporalTest {
-
-    private static final Logger logger = Logger.getLogger(AbstractWatchedTest.class);
-
-    private static long startingTime;
-
-    protected static CassandraUtils cassandraUtils;
 
     @Rule
     public TestRule watcher = new TestWatcher() {
@@ -205,11 +177,11 @@ public class BiTemporalTest {
         cassandraUtils.createKeyspace()
                       .createTable()
                       .createIndex(TestingConstants.INDEX_NAME_CONSTANT, schemaBuilder)
-                      .insert(DataHelper.data1)
-                      .insert(DataHelper.data2)
-                      .insert(DataHelper.data3)
-                      .insert(DataHelper.data4)
-                      .insert(DataHelper.data5);
+                      .insert(data1)
+                      .insert(data2)
+                      .insert(data3)
+                      .insert(data4)
+                      .insert(data5);
         System.out.println("finished seting up the testSuite");
     }
 
@@ -667,11 +639,11 @@ public class BiTemporalTest {
         //etstign with long value 1456876800 ==2016/03/02 00:00:00
         String nowValue = "now_value:1456876800000";
         CassandraUtils cu = this.setUpSuite2(nowValue);
-        cu.insert(DataHelper.data1)
-          .insert(DataHelper.data2)
-          .insert(DataHelper.data3)
-          .insert(DataHelper.data4)
-          .insert(DataHelper.data5);
+        cu.insert(data1)
+          .insert(data2)
+          .insert(data3)
+          .insert(data4)
+          .insert(data5);
 
         CassandraUtilsSelect select = cu.query(biTemporalSearch("bitemporal").operation("is_within")
                                                                              .vtFrom("2015/02/28 12:00:00.000")
@@ -692,7 +664,7 @@ public class BiTemporalTest {
         String nowValue = "now_value:1456876800000";
         CassandraUtils cu = this.setUpSuite2(nowValue);
 
-        cu.insert(DataHelper.data6);
+        cu.insert(data6);
 
         //tearDown(cu);
     }
@@ -703,11 +675,11 @@ public class BiTemporalTest {
         //etstign with long value 1456876800 ==2016/03/02 00:00:00
         String nowValue = "now_value:1456876800000";
         CassandraUtils cu = this.setUpSuite2(nowValue);
-        cu.insert(DataHelper.data1);
-        cu.insert(DataHelper.data2);
-        cu.insert(DataHelper.data3);
-        cu.insert(DataHelper.data4);
-        cu.insert(DataHelper.data5);
+        cu.insert(data1);
+        cu.insert(data2);
+        cu.insert(data3);
+        cu.insert(data4);
+        cu.insert(data5);
         cu.query(biTemporalSearch("bitemporal").operation("is_within")
                                                .vtFrom("2016/02/28 12:00:00.000")
                                                .vtTo("2016/04/02 00:00:00.000")
@@ -722,11 +694,11 @@ public class BiTemporalTest {
         //testing with string value
         String nowValue = "now_value:\"2016/03/02 00:00:00.000\"";
         CassandraUtils cu = this.setUpSuite2(nowValue)
-                                .insert(DataHelper.data1)
-                                .insert(DataHelper.data2)
-                                .insert(DataHelper.data3)
-                                .insert(DataHelper.data4)
-                                .insert(DataHelper.data5);
+                                .insert(data1)
+                                .insert(data2)
+                                .insert(data3)
+                                .insert(data4)
+                                .insert(data5);
         //testing if inserting data translate it to Long.max
         CassandraUtilsSelect select = cu.query(biTemporalSearch("bitemporal").operation("is_within")
                                                                              .vtFrom("2015/02/28 12:00:00.000")
@@ -748,7 +720,7 @@ public class BiTemporalTest {
         CassandraUtils cu = this.setUpSuite2(nowValue);
 
         //testing if inserting data translate it to Long.max
-        cu.insert(DataHelper.data6);
+        cu.insert(data6);
 
         tearDown(cu);
         //testing if querying data translate it to Long.max
@@ -762,11 +734,11 @@ public class BiTemporalTest {
         //etstign with long value
         String nowValue = "now_value:\"2016/03/02 00:00:00.000\"";
         CassandraUtils cu = this.setUpSuite2(nowValue)
-                                .insert(DataHelper.data1)
-                                .insert(DataHelper.data2)
-                                .insert(DataHelper.data3)
-                                .insert(DataHelper.data4)
-                                .insert(DataHelper.data5);
+                                .insert(data1)
+                                .insert(data2)
+                                .insert(data3)
+                                .insert(data4)
+                                .insert(data5);
         cu.query(biTemporalSearch("bitemporal").operation("is_within")
                                                .vtFrom("2016/02/28 12:00:00.000")
                                                .vtTo("2016/04/02 00:00:00.000")
@@ -783,9 +755,9 @@ public class BiTemporalTest {
         //testing with string value
         String nowValue = "now_value:\"2015/04/15 12:00:00.000\"";
         CassandraUtils cu = this.setUpSuite2(nowValue)
-                                .insert(DataHelper.data1)
-                                .insert(DataHelper.data2)
-                                .insert(DataHelper.data3);
+                                .insert(data1)
+                                .insert(data2)
+                                .insert(data3);
         //testing if inserting data translate it to Long.max
 
         CassandraUtilsSelect select = cu.query(biTemporalSearch("bitemporal").operation("intersects")
@@ -805,9 +777,9 @@ public class BiTemporalTest {
         //testing with string value
         String nowValue = "now_value:\"2015/04/15 12:00:00.000\"";
         CassandraUtils cu = this.setUpSuite2(nowValue)
-                                .insert(DataHelper.data1)
-                                .insert(DataHelper.data2)
-                                .insert(DataHelper.data3);
+                                .insert(data1)
+                                .insert(data2)
+                                .insert(data3);
         //testing if inserting data translate it to Long.max
 
         CassandraUtilsSelect select = cu.query(biTemporalSearch("bitemporal").operation("intersects")
@@ -825,9 +797,9 @@ public class BiTemporalTest {
         //testing with string value
         String nowValue = "now_value:\"2015/04/15 12:00:00.000\"";
         CassandraUtils cu = this.setUpSuite2(nowValue)
-                                .insert(DataHelper.data1)
-                                .insert(DataHelper.data2)
-                                .insert(DataHelper.data3);
+                                .insert(data1)
+                                .insert(data2)
+                                .insert(data3);
         //testing if inserting data translate it to Long.max
 
         CassandraUtilsSelect select = cu.query(biTemporalSearch("bitemporal").operation("intersects")
@@ -842,11 +814,11 @@ public class BiTemporalTest {
     @Test
     public void biTemporalQueryOverBigIntsWithDefaultPattern() {
         CassandraUtils cu = this.setUpSuite3()
-                                .insert(DataHelper.data7)
-                                .insert(DataHelper.data8)
-                                .insert(DataHelper.data9)
-                                .insert(DataHelper.data10)
-                                .insert(DataHelper.data11);
+                                .insert(data7)
+                                .insert(data8)
+                                .insert(data9)
+                                .insert(data10)
+                                .insert(data11);
 
         CassandraUtilsSelect select = cu.searchAll();
 
