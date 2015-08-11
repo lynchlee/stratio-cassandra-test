@@ -15,7 +15,14 @@
  */
 package com.stratio.cassandra.lucene.suite;
 
-import com.stratio.cassandra.lucene.story.*;
+import com.stratio.cassandra.lucene.story.ComplexKeyDataHandlingTest;
+import com.stratio.cassandra.lucene.story.ComplexKeyIndexHandlingTest;
+import com.stratio.cassandra.lucene.story.ComposedKeyDataHandlingTest;
+import com.stratio.cassandra.lucene.story.ComposedKeyIndexHandlingTest;
+import com.stratio.cassandra.lucene.story.MultipleKeyDataHandlingTest;
+import com.stratio.cassandra.lucene.story.MultipleKeyIndexHandlingTest;
+import com.stratio.cassandra.lucene.story.SimpleKeyDataHandlingTest;
+import com.stratio.cassandra.lucene.story.SimpleKeyIndexHandlingTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;

@@ -17,13 +17,18 @@ package com.stratio.cassandra.lucene.util;
 
 import com.stratio.cassandra.lucene.TestingConstants;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 public class CassandraUtilsBuilder {
 
-    private String host  = TestingConstants.CASSANDRA_LOCALHOST_CONSTANT;
+    private String host = TestingConstants.CASSANDRA_LOCALHOST_CONSTANT;
     private String table = TestingConstants.TABLE_NAME_CONSTANT;
-    private Map<String, String>       columns;
+    private Map<String, String> columns;
     private List<String> partitionKey;
     private List<String> clusteringKey;
     private String indexColumn = TestingConstants.INDEX_COLUMN_CONSTANT;

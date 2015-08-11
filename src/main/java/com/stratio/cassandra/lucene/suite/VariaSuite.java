@@ -15,7 +15,12 @@
  */
 package com.stratio.cassandra.lucene.suite;
 
-import com.stratio.cassandra.lucene.varia.*;
+import com.stratio.cassandra.lucene.varia.AllowFilteringWith1000MixedRowsTest;
+import com.stratio.cassandra.lucene.varia.AllowFilteringWith1000SimilarRowsTest;
+import com.stratio.cassandra.lucene.varia.SearchWithLongWideRowsTest;
+import com.stratio.cassandra.lucene.varia.TokenRangeWithSkinnyRowsTest;
+import com.stratio.cassandra.lucene.varia.TokenRangeWithWideRowsMultiClusteringTest;
+import com.stratio.cassandra.lucene.varia.TokenRangeWithWideRowsMultiPartitionTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;

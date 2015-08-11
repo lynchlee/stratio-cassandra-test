@@ -33,6 +33,7 @@ public class CassandraUtilsUpdate {
 
     public CassandraUtils execute() {
         parent.execute(update);
+        parent.refreshIndex();
         return parent;
     }
 }

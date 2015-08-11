@@ -24,8 +24,8 @@ import org.junit.Test;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static com.stratio.cassandra.lucene.search.SearchBuilders.match;
 import static com.stratio.cassandra.lucene.search.SearchBuilders.all;
+import static com.stratio.cassandra.lucene.search.SearchBuilders.match;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -66,8 +66,7 @@ public class SearchWithLongWideRowsTest {
                                        .build()
                                        .createKeyspace()
                                        .createTable()
-                                       .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
-                                       ;
+                                       .createIndex(TestingConstants.INDEX_NAME_CONSTANT);
         int count = 0;
         for (Integer p = 0; p < 2; p++) {
             for (Integer i = 1; i <= 100; i++) {
@@ -94,6 +93,7 @@ public class SearchWithLongWideRowsTest {
                 cassandraUtils.insert(data);
             }
         }
+        cassandraUtils.refreshIndex();
         System.out.println("INSERTIONS " + count);
     }
 

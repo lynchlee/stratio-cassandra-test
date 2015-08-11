@@ -29,6 +29,7 @@ import java.util.Map;
 
 import static com.stratio.cassandra.lucene.search.SearchBuilders.wildcard;
 import static org.junit.Assert.*;
+import static com.stratio.cassandra.lucene.deletion.DeletionDataHelper.*;
 
 @RunWith(JUnit4.class)
 public class SimpleKeyDataDeletionTest {
@@ -38,39 +39,34 @@ public class SimpleKeyDataDeletionTest {
     @Before
     public void before() {
 
-        cassandraUtils =
-                CassandraUtils.builder()
-                              .withTable(TestingConstants.TABLE_NAME_CONSTANT)
-                              .withIndexColumn(TestingConstants.INDEX_COLUMN_CONSTANT)
-                              .withPartitionKey("integer_1")
-                              .withClusteringKey()
-                              .withColumn("ascii_1", "ascii")
-                              .withColumn("bigint_1", "bigint")
-                              .withColumn("blob_1", "blob")
-                              .withColumn("boolean_1", "boolean")
-                              .withColumn("decimal_1", "decimal")
-                              .withColumn("date_1", "timestamp")
-                              .withColumn("double_1", "double")
-                              .withColumn("float_1", "float")
-                              .withColumn("integer_1", "int")
-                              .withColumn("inet_1", "inet")
-                              .withColumn("text_1", "text")
-                              .withColumn("varchar_1", "varchar")
-                              .withColumn("uuid_1", "uuid")
-                              .withColumn("timeuuid_1", "timeuuid")
-                              .withColumn("list_1", "list<text>")
-                              .withColumn("set_1", "set<text>")
-                              .withColumn("map_1", "map<text,text>")
-                              .withColumn("lucene", "text")
-                              .build()
-                              .createKeyspace()
-                              .createTable()
-                              .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
-                              .insert(DeletionDataHelper.data1)
-                              .insert(DeletionDataHelper.data2)
-                              .insert(DeletionDataHelper.data3)
-                              .insert(DeletionDataHelper.data4)
-                              .insert(DeletionDataHelper.data5);
+        cassandraUtils = CassandraUtils.builder()
+                                       .withTable(TestingConstants.TABLE_NAME_CONSTANT)
+                                       .withIndexColumn(TestingConstants.INDEX_COLUMN_CONSTANT)
+                                       .withPartitionKey("integer_1")
+                                       .withClusteringKey()
+                                       .withColumn("ascii_1", "ascii")
+                                       .withColumn("bigint_1", "bigint")
+                                       .withColumn("blob_1", "blob")
+                                       .withColumn("boolean_1", "boolean")
+                                       .withColumn("decimal_1", "decimal")
+                                       .withColumn("date_1", "timestamp")
+                                       .withColumn("double_1", "double")
+                                       .withColumn("float_1", "float")
+                                       .withColumn("integer_1", "int")
+                                       .withColumn("inet_1", "inet")
+                                       .withColumn("text_1", "text")
+                                       .withColumn("varchar_1", "varchar")
+                                       .withColumn("uuid_1", "uuid")
+                                       .withColumn("timeuuid_1", "timeuuid")
+                                       .withColumn("list_1", "list<text>")
+                                       .withColumn("set_1", "set<text>")
+                                       .withColumn("map_1", "map<text,text>")
+                                       .withColumn("lucene", "text")
+                                       .build()
+                                       .createKeyspace()
+                                       .createTable()
+                                       .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                                       .insert(data1,data2,data3,data4,data5);
     }
 
     @After
@@ -81,7 +77,7 @@ public class SimpleKeyDataDeletionTest {
     @Test
     public void columnDeletion() {
 
-        cassandraUtils.deleteValueByCondition("bigint_1", "integer_1 = 1");
+        cassandraUtils.deleteValueByCondition("bigint_1", "integer_1 = 1").refreshIndex();
 
         List<Row> rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
@@ -99,7 +95,7 @@ public class SimpleKeyDataDeletionTest {
     @Test
     public void mapElementDeletion() {
 
-        cassandraUtils.deleteValueByCondition("map_1['k1']", "integer_1 = 1");
+        cassandraUtils.deleteValueByCondition("map_1['k1']", "integer_1 = 1").refreshIndex();
 
         List<Row> rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
@@ -121,7 +117,7 @@ public class SimpleKeyDataDeletionTest {
     @Test
     public void listElementDeletion() {
 
-        cassandraUtils.deleteValueByCondition("list_1[0]", "integer_1 = 1");
+        cassandraUtils.deleteValueByCondition("list_1[0]", "integer_1 = 1").refreshIndex();
 
         List<Row> rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
@@ -143,7 +139,7 @@ public class SimpleKeyDataDeletionTest {
     @Test
     public void totalPartitionDeletion() {
 
-        cassandraUtils.deleteByCondition("integer_1 = 1");
+        cassandraUtils.deleteByCondition("integer_1 = 1").refreshIndex();
 
         List<Row> rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 

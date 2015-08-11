@@ -24,7 +24,7 @@ import java.util.concurrent.Executors;
 public class ReadingPerformance {
 
     private final static int NUMBER_OF_THREADS = 48;
-    private final static int NUMBER_OF_TASKS   = 100;
+    private final static int NUMBER_OF_TASKS = 100;
 
     public static void main(String[] args) {
 

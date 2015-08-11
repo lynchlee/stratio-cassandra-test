@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import static com.stratio.cassandra.lucene.search.SearchBuilders.wildcard;
+import static com.stratio.cassandra.lucene.story.StoryDataHelper.*;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
@@ -69,12 +70,10 @@ public class SimpleKeyIndexHandlingTest {
     @Test
     public void createIndexAfterInsertionsTest() {
 
-        cassandraUtils.insert(StoryDataHelper.data1)
-                      .insert(StoryDataHelper.data2)
-                      .insert(StoryDataHelper.data3)
-                      .insert(StoryDataHelper.data4)
-                      .insert(StoryDataHelper.data5)
-                      .createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT);
+        cassandraUtils.insert(data1, data2, data3, data4, data5)
+                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .waitForIndexing()
+                      .refreshIndex();
 
         // Checking data
         int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
@@ -85,12 +84,11 @@ public class SimpleKeyIndexHandlingTest {
     @Test
     public void createIndexDuringInsertionsTest() {
 
-        cassandraUtils.insert(StoryDataHelper.data1)
-                      .insert(StoryDataHelper.data2)
-                      .insert(StoryDataHelper.data3)
-                      .createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT)
-                      .insert(StoryDataHelper.data4)
-                      .insert(StoryDataHelper.data5);
+        cassandraUtils.insert(data1, data2, data3)
+                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .waitForIndexing()
+                      .insert(data4, data5)
+                      .refreshIndex();
 
         // Checking data
         int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
@@ -101,12 +99,10 @@ public class SimpleKeyIndexHandlingTest {
     @Test
     public void recreateIndexAfterInsertionsTest() {
 
-        cassandraUtils.createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT)
-                      .insert(StoryDataHelper.data1)
-                      .insert(StoryDataHelper.data2)
-                      .insert(StoryDataHelper.data3)
-                      .insert(StoryDataHelper.data4)
-                      .insert(StoryDataHelper.data5);
+        cassandraUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .waitForIndexing()
+                      .insert(data1, data2, data3, data4, data5)
+                      .refreshIndex();
 
         // Checking data
         int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
@@ -117,7 +113,7 @@ public class SimpleKeyIndexHandlingTest {
         cassandraUtils.dropIndex(TestingConstants.INDEX_NAME_CONSTANT);
 
         // Recreating index
-        cassandraUtils.createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT);
+        cassandraUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT).waitForIndexing().refreshIndex();
 
         // Checking data
         n = cassandraUtils.query(wildcard("ascii_1", "*")).count();

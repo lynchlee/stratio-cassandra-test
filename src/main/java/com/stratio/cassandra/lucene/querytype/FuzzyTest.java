@@ -15,7 +15,6 @@
  */
 package com.stratio.cassandra.lucene.querytype;
 
-import com.datastax.driver.core.exceptions.DriverException;
 import com.stratio.cassandra.lucene.IndexException;
 import org.junit.Test;
 import org.junit.runner.RunWith;

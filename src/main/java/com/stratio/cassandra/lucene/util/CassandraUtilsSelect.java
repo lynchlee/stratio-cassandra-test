@@ -6,12 +6,12 @@ import com.datastax.driver.core.querybuilder.Clause;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 import com.stratio.cassandra.lucene.TestingConstants;
-import com.stratio.cassandra.lucene.querytype.BooleanTest;
 import com.stratio.cassandra.lucene.search.SearchBuilder;
 import com.stratio.cassandra.lucene.search.SearchBuilders;
 import com.stratio.cassandra.lucene.search.condition.builder.ConditionBuilder;
 import com.stratio.cassandra.lucene.search.sort.builder.SortFieldBuilder;
 import org.apache.log4j.Logger;
+
 import java.util.LinkedList;
 import java.util.List;
 

@@ -17,7 +17,11 @@ package com.stratio.cassandra.lucene.util;
 
 import org.apache.log4j.Logger;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 public class RandomDataHelper {
 
@@ -72,11 +76,9 @@ public class RandomDataHelper {
         String[] inet = {"'8.8.8.8'", "'127.0.0.1'", "'192.168.1.1'"};
         values.put("inet", Arrays.asList(inet));
 
-        String[]
-                text =
-                {"'Frase con espacios articulos y los verbos suficientes'",
-                 "'Fasesinespacios'",
-                 "'Frase con algunos espacios y articulos colocados de forma diferente'"};
+        String[] text = {"'Frase con espacios articulos y los verbos suficientes'",
+                         "'Fasesinespacios'",
+                         "'Frase con algunos espacios y articulos colocados de forma diferente'"};
         values.put("text", Arrays.asList(text));
 
         String[] uuid = {"60297440-b4fa-11e3-8b5a-0002a5d5c51b", "6d773740-b4fa-11e3-bf12-0002a5d5c51b"};

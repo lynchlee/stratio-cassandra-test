@@ -22,7 +22,6 @@ package com.stratio.cassandra.lucene.varia;
 import com.datastax.driver.core.Row;
 import com.stratio.cassandra.lucene.TestingConstants;
 import com.stratio.cassandra.lucene.util.CassandraUtils;
-import org.apache.log4j.Logger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -41,35 +40,35 @@ public class AllowFilteringWith1000SimilarRowsTest extends Abstract1000Registers
     @BeforeClass
     public static void before() {
 
-        cassandraUtils =
-                CassandraUtils.builder()
-                              .withTable(TestingConstants.TABLE_NAME_CONSTANT)
-                              .withIndexColumn(TestingConstants.INDEX_COLUMN_CONSTANT)
-                              .withPartitionKey("integer_1")
-                              .withClusteringKey()
-                              .withColumn("ascii_1", "ascii")
-                              .withColumn("bigint_1", "bigint")
-                              .withColumn("blob_1", "blob")
-                              .withColumn("boolean_1", "boolean")
-                              .withColumn("decimal_1", "decimal")
-                              .withColumn("date_1", "timestamp")
-                              .withColumn("double_1", "double")
-                              .withColumn("float_1", "float")
-                              .withColumn("integer_1", "int")
-                              .withColumn("inet_1", "inet")
-                              .withColumn("text_1", "text")
-                              .withColumn("varchar_1", "varchar")
-                              .withColumn("uuid_1", "uuid")
-                              .withColumn("timeuuid_1", "timeuuid")
-                              .withColumn("list_1", "list<text>")
-                              .withColumn("set_1", "set<text>")
-                              .withColumn("map_1", "map<text,text>")
-                              .withColumn("lucene", "text")
-                              .build()
-                              .createKeyspace()
-                              .createTable()
-                              .createIndex(TestingConstants.INDEX_NAME_CONSTANT);
+        cassandraUtils = CassandraUtils.builder()
+                                       .withTable(TestingConstants.TABLE_NAME_CONSTANT)
+                                       .withIndexColumn(TestingConstants.INDEX_COLUMN_CONSTANT)
+                                       .withPartitionKey("integer_1")
+                                       .withClusteringKey()
+                                       .withColumn("ascii_1", "ascii")
+                                       .withColumn("bigint_1", "bigint")
+                                       .withColumn("blob_1", "blob")
+                                       .withColumn("boolean_1", "boolean")
+                                       .withColumn("decimal_1", "decimal")
+                                       .withColumn("date_1", "timestamp")
+                                       .withColumn("double_1", "double")
+                                       .withColumn("float_1", "float")
+                                       .withColumn("integer_1", "int")
+                                       .withColumn("inet_1", "inet")
+                                       .withColumn("text_1", "text")
+                                       .withColumn("varchar_1", "varchar")
+                                       .withColumn("uuid_1", "uuid")
+                                       .withColumn("timeuuid_1", "timeuuid")
+                                       .withColumn("list_1", "list<text>")
+                                       .withColumn("set_1", "set<text>")
+                                       .withColumn("map_1", "map<text,text>")
+                                       .withColumn("lucene", "text")
+                                       .build()
+                                       .createKeyspace()
+                                       .createTable()
+                                       .createIndex(TestingConstants.INDEX_NAME_CONSTANT);
         VariaDataHelper.generateCustomInsertions(1000, cassandraUtils);
+        cassandraUtils.refreshIndex();
     }
 
     @AfterClass
