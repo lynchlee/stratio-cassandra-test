@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.stratio.cassandra.lucene.schema.SchemaBuilders.bitemporalMapper;
@@ -38,6 +39,8 @@ public class BiTemporalTest {
     private static final Logger logger = Logger.getLogger(AbstractWatchedTest.class);
 
     private static long startingTime;
+    private static final String TIMESTAMP_PATTERN="timestamp";
+    private static final String SIMPLE_DATE_PATTERN="yyyy/MM/dd HH:mm:ss.SSS";
 
     protected static CassandraUtils cassandraUtils;
 
@@ -573,11 +576,10 @@ public class BiTemporalTest {
                    isThisAndOnlyThis(select.intColumn("integer_1"), new int[]{1, 2}));
     }
 
-    private CassandraUtils setUpSuite2(Object nowValue) {
+    private CassandraUtils setUpSuite2(Object nowValue,String pattern) {
 
-        SchemaBuilder schemaBuilder = schema().mapper("bitemporal",
-                                                      bitemporalMapper("vt_from", "vt_to", "tt_from", "tt_to").pattern(
-                                                              "yyyy/MM/dd HH:mm:ss.SSS").nowValue(nowValue));
+        SchemaBuilder schemaBuilder = schema().mapper("bitemporal",bitemporalMapper("vt_from", "vt_to", "tt_from", "tt_to").pattern(
+                                                              pattern).nowValue(nowValue));
 
         CassandraUtils cu = CassandraUtils.builder()
                                           .withHost(TestingConstants.CASSANDRA_LOCALHOST_CONSTANT)
@@ -601,7 +603,8 @@ public class BiTemporalTest {
     private CassandraUtils setUpSuite3() {
 
         SchemaBuilder schemaBuilder = schema().mapper("bitemporal",
-                                                      bitemporalMapper("vt_from", "vt_to", "tt_from", "tt_to"));
+                                                      bitemporalMapper("vt_from", "vt_to", "tt_from", "tt_to")
+                                                              .pattern(TIMESTAMP_PATTERN));
 
         CassandraUtils cu = CassandraUtils.builder()
                                           .withHost(TestingConstants.CASSANDRA_LOCALHOST_CONSTANT)
@@ -637,8 +640,9 @@ public class BiTemporalTest {
     @Test
     public void biTemporalQueryIsWithInNowValueToLongTest() {
         //testing with long value 1456876800 ==2016/03/02 00:00:00
-        Long nowValue = 1456876800000l;
-        CassandraUtils cu = this.setUpSuite2(nowValue);
+        String nowValue = "2016/03/02 00:00:00.000";
+
+        CassandraUtils cu = this.setUpSuite2(nowValue,SIMPLE_DATE_PATTERN);
         cu.insert(data1)
           .insert(data2)
           .insert(data3)
@@ -661,8 +665,8 @@ public class BiTemporalTest {
     @Test(expected = WriteTimeoutException.class)
     public void biTemporalQueryIsWithInNowValueToLongTest2() {
         //testing with long value 1456876800 ==2016/03/02 00:00:00
-        Long nowValue = 1456876800000l;
-        CassandraUtils cu = this.setUpSuite2(nowValue);
+        String nowValue = "2016/03/02 00:00:00.000";
+        CassandraUtils cu = this.setUpSuite2(nowValue,SIMPLE_DATE_PATTERN);
 
         cu.insert(data6);
 
@@ -673,8 +677,8 @@ public class BiTemporalTest {
     @Test(expected = InvalidQueryException.class)
     public void biTemporalQueryIsWithInNowValueToLongTest3() {
         //testing with long value 1456876800 ==2016/03/02 00:00:00
-        Long nowValue = 1456876800000l;
-        CassandraUtils cu = this.setUpSuite2(nowValue);
+        String nowValue = "2016/03/02 00:00:00.000";
+        CassandraUtils cu = this.setUpSuite2(nowValue,SIMPLE_DATE_PATTERN);
         cu.insert(data1);
         cu.insert(data2);
         cu.insert(data3);
@@ -693,7 +697,7 @@ public class BiTemporalTest {
     public void biTemporalQueryIsWithInNowValueToStringTest() {
         //testing with string value
         String nowValue = "2016/03/02 00:00:00.000";
-        CassandraUtils cu = this.setUpSuite2(nowValue)
+        CassandraUtils cu = this.setUpSuite2(nowValue,SIMPLE_DATE_PATTERN)
                                 .insert(data1)
                                 .insert(data2)
                                 .insert(data3)
@@ -717,13 +721,10 @@ public class BiTemporalTest {
     public void biTemporalQueryIsWithInNowValueToStringTest2() {
         //testing with long value
         String nowValue = "2016/03/02 00:00:00.000";
-        CassandraUtils cu = this.setUpSuite2(nowValue);
+        CassandraUtils cu = this.setUpSuite2(nowValue,SIMPLE_DATE_PATTERN);
 
         //testing if inserting data translate it to Long.max
         cu.insert(data6);
-
-        tearDown(cu);
-        //testing if querying data translate it to Long.max
 
         tearDown(cu);
     }
@@ -733,7 +734,7 @@ public class BiTemporalTest {
     public void biTemporalQueryIsWithInNowValueToStringTest3() {
         //testing with long value
         String nowValue = "2016/03/02 00:00:00.000";
-        CassandraUtils cu = this.setUpSuite2(nowValue)
+        CassandraUtils cu = this.setUpSuite2(nowValue,SIMPLE_DATE_PATTERN)
                                 .insert(data1)
                                 .insert(data2)
                                 .insert(data3)
@@ -754,7 +755,7 @@ public class BiTemporalTest {
     public void biTemporalQueryIsWithInNowValueToStringTest4() {
         //testing with string value
         String nowValue = "2015/04/15 12:00:00.000";
-        CassandraUtils cu = this.setUpSuite2(nowValue)
+        CassandraUtils cu = this.setUpSuite2(nowValue,SIMPLE_DATE_PATTERN)
                                 .insert(data1)
                                 .insert(data2)
                                 .insert(data3);
@@ -776,7 +777,7 @@ public class BiTemporalTest {
     public void biTemporalQueryIsWithInNowValueToStringTest5() {
         //testing with string value
         String nowValue = "2015/04/15 12:00:00.000";
-        CassandraUtils cu = this.setUpSuite2(nowValue)
+        CassandraUtils cu = this.setUpSuite2(nowValue,SIMPLE_DATE_PATTERN)
                                 .insert(data1)
                                 .insert(data2)
                                 .insert(data3);
@@ -796,7 +797,7 @@ public class BiTemporalTest {
     public void biTemporalQueryIsWithInNowValueToStringTest6() {
         //testing with string value
         String nowValue = "2015/04/15 12:00:00.000";
-        CassandraUtils cu = this.setUpSuite2(nowValue)
+        CassandraUtils cu = this.setUpSuite2(nowValue,SIMPLE_DATE_PATTERN)
                                 .insert(data1)
                                 .insert(data2)
                                 .insert(data3);
@@ -854,7 +855,25 @@ public class BiTemporalTest {
                                                                                .vtFrom(0)
                                                                                .vtTo(9223372036854775807l)
                                                                                .ttFrom(9223372036854775807l)
-                                                                               .ttTo(9223372036854775807l));
+                                                                               .ttTo(9223372036854775807l))
+                                                .refresh(true);
+
+
+        List<Row> results=select2.get();
+        System.out.println("RESULTS: ");
+
+        for (Row row: results)  {
+            StringBuilder stringBuilder= new StringBuilder();
+            stringBuilder.append("ROW[");
+            stringBuilder.append("id="+Integer.toString(row.getInt("id"))+", ");
+            stringBuilder.append("data="+row.getString("data")+", ");
+
+            stringBuilder.append("vt_from="+Long.toString(row.getLong("vt_from"))+", ");
+            stringBuilder.append("vt_to="+Long.toString(row.getLong("vt_to"))+", ");
+            stringBuilder.append("tt_from="+Long.toString(row.getLong("tt_from"))+", ");
+            stringBuilder.append("tt_to="+Long.toString(row.getLong("tt_to"))+" ];");
+            System.out.println(stringBuilder.toString());
+        }
 
         assertEquals("Expected 5 results!", 5, select2.count());
         assertTrue("Unexpected results!! Expected: {1,2,3,4,5}, got: " + fromInteger(select2.intColumn("id")),
