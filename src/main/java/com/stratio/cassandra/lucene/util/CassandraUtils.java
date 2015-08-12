@@ -7,20 +7,21 @@ import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.SimpleStatement;
 import com.datastax.driver.core.Statement;
+import com.datastax.driver.core.querybuilder.Batch;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.stratio.cassandra.lucene.TestingConstants;
 import com.stratio.cassandra.lucene.schema.SchemaBuilder;
-import static com.stratio.cassandra.lucene.search.SearchBuilders.*;
 import com.stratio.cassandra.lucene.search.condition.builder.ConditionBuilder;
 import com.stratio.cassandra.lucene.search.sort.builder.SortFieldBuilder;
 import org.apache.log4j.Logger;
 
-import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.stratio.cassandra.lucene.TestingConstants.*;
+import static com.stratio.cassandra.lucene.search.SearchBuilders.all;
+import static com.stratio.cassandra.lucene.search.SearchBuilders.search;
 
 public class CassandraUtils {
 
@@ -190,6 +191,14 @@ public class CassandraUtils {
         return this;
     }
 
+    public CassandraUtils refreshIndex() {
+//        session.execute(QueryBuilder.select()
+//                                    .from(keyspace, table)
+//                                    .where(eq(indexColumn, search().refresh(true).toJson()))
+//                                    .setConsistencyLevel(ConsistencyLevel.ALL));
+        return this;
+    }
+
     public CassandraUtils createKeyspace() {
         execute(new StringBuilder().append("CREATE KEYSPACE ")
                                    .append(keyspace)
@@ -233,12 +242,6 @@ public class CassandraUtils {
         return this;
     }
 
-    public CassandraUtils createIndexWaiting(String indexName) {
-        createIndex(indexName);
-        waitForIndexing();
-        return this;
-    }
-
     public CassandraUtils createIndex(String indexName) {
         execute(new StringBuilder().append("CREATE CUSTOM INDEX ")
                                    .append(indexName)
@@ -268,7 +271,9 @@ public class CassandraUtils {
                                                      .append(" (")
                                                      .append(indexColumn)
                                                      .append(") USING 'com.stratio.cassandra.lucene.Index' WITH OPTIONS = {")
-                                                     .append("'refresh_seconds':'0.1',")
+                                                     .append("'refresh_seconds':'" +
+                                                             TestingConstants.INDEX_REFRESH_SECONDS +
+                                                             "',")
                                                      .append("'ram_buffer_mb':'64',")
                                                      .append("'max_merge_mb':'5',")
                                                      .append("'max_cached_mb':'30',")
@@ -327,27 +332,32 @@ public class CassandraUtils {
                                    .setConsistencyLevel(consistencyLevel));
     }
 
-    public CassandraUtils insert(Map<String, String> params) {
+    @SafeVarargs
+    public final CassandraUtils insert(Map<String, String>... paramss) {
 
-        String columns = "";
-        String values = "";
-        for (String s : params.keySet()) {
-            if (!s.equals(indexColumn)) {
-                columns += s + ",";
-                values = values + params.get(s) + ",";
+        Batch batch = QueryBuilder.unloggedBatch();
+        for (Map<String, String> params : paramss) {
+            String columns = "";
+            String values = "";
+            for (String s : params.keySet()) {
+                if (!s.equals(indexColumn)) {
+                    columns += s + ",";
+                    values = values + params.get(s) + ",";
+                }
             }
+            columns = columns.substring(0, columns.length() - 1);
+            values = values.substring(0, values.length() - 1);
+
+            batch.add(new SimpleStatement(new StringBuilder().append("INSERT INTO ")
+                                                             .append(qualifiedTable)
+                                                             .append(" (")
+                                                             .append(columns)
+                                                             .append(") VALUES (")
+                                                             .append(values)
+                                                             .append(");")
+                                                             .toString()));
         }
-        columns = columns.substring(0, columns.length() - 1);
-        values = values.substring(0, values.length() - 1);
-
-        execute(new StringBuilder().append("INSERT INTO ")
-                                   .append(qualifiedTable)
-                                   .append(" (")
-                                   .append(columns)
-                                   .append(") VALUES (")
-                                   .append(values)
-                                   .append(");"));
-
+        execute(batch);
         return this;
     }
 

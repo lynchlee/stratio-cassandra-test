@@ -34,6 +34,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.stratio.cassandra.lucene.breakdown.QueryTypeDataHelper.*;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4.class)
@@ -46,41 +47,37 @@ public class BreakdownTest {
     @BeforeClass
     public static void setUpSuite() {
 
-        cassandraUtils =
-                CassandraUtils.builder()
-                              .withHost(TestingConstants.CASSANDRA_LOCALHOST_CONSTANT)
-                              .withTable(TestingConstants.TABLE_NAME_CONSTANT)
-                              .withIndexColumn(TestingConstants.INDEX_COLUMN_CONSTANT)
-                              .withPartitionKey("integer_1")
-                              .withClusteringKey()
-                              .withColumn("ascii_1", "ascii")
-                              .withColumn("bigint_1", "bigint")
-                              .withColumn("blob_1", "blob")
-                              .withColumn("boolean_1", "boolean")
-                              .withColumn("decimal_1", "decimal")
-                              .withColumn("date_1", "timestamp")
-                              .withColumn("double_1", "double")
-                              .withColumn("float_1", "float")
-                              .withColumn("integer_1", "int")
-                              .withColumn("inet_1", "inet")
-                              .withColumn("text_1", "text")
-                              .withColumn("varchar_1", "varchar")
-                              .withColumn("uuid_1", "uuid")
-                              .withColumn("timeuuid_1", "timeuuid")
-                              .withColumn("list_1", "list<text>")
-                              .withColumn("set_1", "set<text>")
-                              .withColumn("map_1", "map<text,text>")
-                              .withColumn("lucene", "text")
-                              .build();
+        cassandraUtils = CassandraUtils.builder()
+                                       .withHost(TestingConstants.CASSANDRA_LOCALHOST_CONSTANT)
+                                       .withTable(TestingConstants.TABLE_NAME_CONSTANT)
+                                       .withIndexColumn(TestingConstants.INDEX_COLUMN_CONSTANT)
+                                       .withPartitionKey("integer_1")
+                                       .withClusteringKey()
+                                       .withColumn("ascii_1", "ascii")
+                                       .withColumn("bigint_1", "bigint")
+                                       .withColumn("blob_1", "blob")
+                                       .withColumn("boolean_1", "boolean")
+                                       .withColumn("decimal_1", "decimal")
+                                       .withColumn("date_1", "timestamp")
+                                       .withColumn("double_1", "double")
+                                       .withColumn("float_1", "float")
+                                       .withColumn("integer_1", "int")
+                                       .withColumn("inet_1", "inet")
+                                       .withColumn("text_1", "text")
+                                       .withColumn("varchar_1", "varchar")
+                                       .withColumn("uuid_1", "uuid")
+                                       .withColumn("timeuuid_1", "timeuuid")
+                                       .withColumn("list_1", "list<text>")
+                                       .withColumn("set_1", "set<text>")
+                                       .withColumn("map_1", "map<text,text>")
+                                       .withColumn("lucene", "text")
+                                       .build();
 
         // Executing db queries
         cassandraUtils.createKeyspace()
                       .createTable()
                       .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
-                      .insert(QueryTypeDataHelper.data1)
-                      .insert(QueryTypeDataHelper.data2)
-                      .insert(QueryTypeDataHelper.data3)
-                      .insert(QueryTypeDataHelper.data4);
+                      .insert(data1, data2, data3, data4);
     }
 
     @AfterClass

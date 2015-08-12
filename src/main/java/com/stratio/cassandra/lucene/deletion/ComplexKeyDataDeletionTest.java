@@ -28,7 +28,7 @@ import org.junit.runners.JUnit4;
 import java.util.List;
 import java.util.Map;
 
-
+import static com.stratio.cassandra.lucene.deletion.DeletionDataHelper.*;
 import static com.stratio.cassandra.lucene.search.SearchBuilders.wildcard;
 import static org.junit.Assert.*;
 
@@ -70,27 +70,26 @@ public class ComplexKeyDataDeletionTest {
                                        .createKeyspace()
                                        .createTable()
                                        .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
-                                       .insert(DeletionDataHelper.data1)
-                                       .insert(DeletionDataHelper.data2)
-                                       .insert(DeletionDataHelper.data3)
-                                       .insert(DeletionDataHelper.data4)
-                                       .insert(DeletionDataHelper.data5)
-                                       .insert(DeletionDataHelper.data6)
-                                       .insert(DeletionDataHelper.data7)
-                                       .insert(DeletionDataHelper.data8)
-                                       .insert(DeletionDataHelper.data9)
-                                       .insert(DeletionDataHelper.data10)
-                                       .insert(DeletionDataHelper.data11)
-                                       .insert(DeletionDataHelper.data12)
-                                       .insert(DeletionDataHelper.data13)
-                                       .insert(DeletionDataHelper.data14)
-                                       .insert(DeletionDataHelper.data15)
-                                       .insert(DeletionDataHelper.data16)
-                                       .insert(DeletionDataHelper.data17)
-                                       .insert(DeletionDataHelper.data18)
-                                       .insert(DeletionDataHelper.data19)
-                                       .insert(DeletionDataHelper.data20)
-                                       ;
+                                       .insert(data1,
+                                               data2,
+                                               data3,
+                                               data4,
+                                               data5,
+                                               data6,
+                                               data7,
+                                               data8,
+                                               data9,
+                                               data10,
+                                               data11,
+                                               data12,
+                                               data13,
+                                               data14,
+                                               data15,
+                                               data16,
+                                               data17,
+                                               data18,
+                                               data19,
+                                               data20);
     }
 
     @After
@@ -102,7 +101,7 @@ public class ComplexKeyDataDeletionTest {
     public void columnDeletion() {
 
         cassandraUtils.deleteValueByCondition("bigint_1", "integer_1 = 1 and ascii_1 = 'ascii' and double_1 = 1")
-                      ;
+                      .refreshIndex();
 
         List<Row> rows = cassandraUtils.filter(wildcard("ascii_1", "*")).get();
 
@@ -125,7 +124,7 @@ public class ComplexKeyDataDeletionTest {
     public void mapElementDeletion() {
 
         cassandraUtils.deleteValueByCondition("map_1['k1']", "integer_1 = 1 and ascii_1 = 'ascii' and double_1 = 1")
-                      ;
+                      .refreshIndex();
 
         List<Row> rows = cassandraUtils.filter(wildcard("ascii_1", "*")).get();
 
@@ -152,7 +151,7 @@ public class ComplexKeyDataDeletionTest {
     public void listElementDeletion() {
 
         cassandraUtils.deleteValueByCondition("list_1[0]", "integer_1 = 1 and ascii_1 = 'ascii' and double_1 = 1")
-                      ;
+                      .refreshIndex();
 
         List<Row> rows = cassandraUtils.select().filter(wildcard("ascii_1", "*")).get();
 
@@ -177,7 +176,7 @@ public class ComplexKeyDataDeletionTest {
 
     @Test
     public void totalPartitionDeletion() {
-        cassandraUtils.deleteByCondition("integer_1 = 1 and ascii_1 = 'ascii' and double_1 = 1");
+        cassandraUtils.deleteByCondition("integer_1 = 1 and ascii_1 = 'ascii' and double_1 = 1").refreshIndex();
         int n = cassandraUtils.select().filter(wildcard("ascii_1", "*")).count();
         assertEquals("Expected 19 results!", 19, n);
 
@@ -185,7 +184,7 @@ public class ComplexKeyDataDeletionTest {
 
     @Test
     public void partialPartitionDeletion() {
-        cassandraUtils.deleteByCondition("integer_1 = 1 and ascii_1 = 'ascii'");
+        cassandraUtils.deleteByCondition("integer_1 = 1 and ascii_1 = 'ascii'").refreshIndex();
         int n = cassandraUtils.select().filter(wildcard("ascii_1", "*")).count();
         assertEquals("Expected 18 results!", 18, n);
     }

@@ -27,6 +27,8 @@ import org.junit.runner.Description;
 
 import java.util.Properties;
 
+import static com.stratio.cassandra.lucene.querytype.QueryTypeDataHelper.*;
+
 public abstract class AbstractWatchedTest {
 
     private static final Logger logger = Logger.getLogger(AbstractWatchedTest.class);
@@ -55,17 +57,12 @@ public abstract class AbstractWatchedTest {
         cassandraUtils.createKeyspace()
                       .createTable()
                       .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
-                      .insert(QueryTypeDataHelper.data1)
-                      .insert(QueryTypeDataHelper.data2)
-                      .insert(QueryTypeDataHelper.data3)
-                      .insert(QueryTypeDataHelper.data4)
-                      .insert(QueryTypeDataHelper.data5);
+                      .insert(data1, data2, data3, data4, data5)
+                      .refreshIndex();
     }
 
     @AfterClass
     public static void tearDownSuite() {
-        cassandraUtils.dropIndex(TestingConstants.INDEX_NAME_CONSTANT)
-                      .dropTable()
-                      .dropKeyspace();
+        cassandraUtils.dropIndex(TestingConstants.INDEX_NAME_CONSTANT).dropTable().dropKeyspace();
     }
 }

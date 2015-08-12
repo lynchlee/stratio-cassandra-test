@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import static com.stratio.cassandra.lucene.search.SearchBuilders.wildcard;
+import static com.stratio.cassandra.lucene.story.StoryDataHelper.*;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
@@ -61,15 +62,9 @@ public class MultipleKeyDataHandlingTest {
                                        .createKeyspace()
                                        .createTable()
                                        .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
-                                       .insert(StoryDataHelper.data1)
-                                       .insert(StoryDataHelper.data2)
-                                       .insert(StoryDataHelper.data3)
-                                       .insert(StoryDataHelper.data6)
-                                       .insert(StoryDataHelper.data7)
-                                       .insert(StoryDataHelper.data8)
-                                       .insert(StoryDataHelper.data9)
-                                       .insert(StoryDataHelper.data10)
-                                       ;
+                                       .insert(data1, data2, data3, data6, data7, data8, data9, data10)
+
+                                       .refreshIndex();
     }
 
     @After
@@ -81,49 +76,49 @@ public class MultipleKeyDataHandlingTest {
     public void singleInsertion() {
 
         // Data4 insertion
-        cassandraUtils.insert(StoryDataHelper.data4);
+        cassandraUtils.insert(data4).refreshIndex();
 
         int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
 
         assertEquals("Expected 9 results!", 9, n);
 
         // Data5 insertion
-        cassandraUtils.insert(StoryDataHelper.data5);
+        cassandraUtils.insert(data5).refreshIndex();
 
         n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
 
         assertEquals("Expected 10 results!", 10, n);
 
         // Data4 removal
-        cassandraUtils.deleteByCondition("integer_1 = 4 and ascii_1 = 'ascii'");
+        cassandraUtils.deleteByCondition("integer_1 = 4 and ascii_1 = 'ascii'").refreshIndex();
 
         n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
 
         assertEquals("Expected 9 results!", 9, n);
 
         // Data5 removal
-        cassandraUtils.deleteByCondition("integer_1 = 5 and ascii_1 = 'ascii'");
+        cassandraUtils.deleteByCondition("integer_1 = 5 and ascii_1 = 'ascii'").refreshIndex();
 
         n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
 
         assertEquals("Expected 8 results!", 8, n);
 
         // Data2 removal
-        cassandraUtils.deleteByCondition("integer_1 = 2 and ascii_1 = 'ascii'");
+        cassandraUtils.deleteByCondition("integer_1 = 2 and ascii_1 = 'ascii'").refreshIndex();
 
         n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
 
         assertEquals("Expected 7 results!", 7, n);
 
         // Data3 removal
-        cassandraUtils.deleteByCondition("integer_1 = 3 and ascii_1 = 'ascii'");
+        cassandraUtils.deleteByCondition("integer_1 = 3 and ascii_1 = 'ascii'").refreshIndex();
 
         n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
 
         assertEquals("Expected 6 results!", 6, n);
 
         // Data1 removal
-        cassandraUtils.deleteByCondition("integer_1 = 1 and ascii_1 = 'ascii'");
+        cassandraUtils.deleteByCondition("integer_1 = 1 and ascii_1 = 'ascii'").refreshIndex();
 
         n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
 
@@ -136,32 +131,32 @@ public class MultipleKeyDataHandlingTest {
         int n;
 
         // Data4 and data5 insertion
-        cassandraUtils.insert(StoryDataHelper.data4).insert(StoryDataHelper.data5);
+        cassandraUtils.insert(data4, data5).refreshIndex();
         n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
         assertEquals("Expected 10 results!", 10, n);
 
         // Data4 removal
-        cassandraUtils.deleteByCondition("integer_1 = 4 and ascii_1 = 'ascii'");
+        cassandraUtils.deleteByCondition("integer_1 = 4 and ascii_1 = 'ascii'").refreshIndex();
         n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
         assertEquals("Expected 9 results!", 9, n);
 
         // Data5 removal
-        cassandraUtils.deleteByCondition("integer_1 = 5 and ascii_1 = 'ascii'");
+        cassandraUtils.deleteByCondition("integer_1 = 5 and ascii_1 = 'ascii'").refreshIndex();
         n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
         assertEquals("Expected 8 results!", 8, n);
 
         // Data2 removal
-        cassandraUtils.deleteByCondition("integer_1 = 2 and ascii_1 = 'ascii'");
+        cassandraUtils.deleteByCondition("integer_1 = 2 and ascii_1 = 'ascii'").refreshIndex();
         n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
         assertEquals("Expected 7 results!", 7, n);
 
         // Data3 removal
-        cassandraUtils.deleteByCondition("integer_1 = 3 and ascii_1 = 'ascii'");
+        cassandraUtils.deleteByCondition("integer_1 = 3 and ascii_1 = 'ascii'").refreshIndex();
         n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
         assertEquals("Expected 6 results!", 6, n);
 
         // Data1 removal
-        cassandraUtils.deleteByCondition("integer_1 = 1 and ascii_1 = 'ascii'");
+        cassandraUtils.deleteByCondition("integer_1 = 1 and ascii_1 = 'ascii'").refreshIndex();
         n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
         assertEquals("Expected 5 results!", 5, n);
     }
@@ -172,14 +167,14 @@ public class MultipleKeyDataHandlingTest {
         // Data2 & data3 removal
         cassandraUtils.deleteByCondition("integer_1 = 2 and ascii_1 = 'ascii'")
                       .deleteByCondition("integer_1 = 3 and ascii_1 = 'ascii'")
-                      ;
+                      .refreshIndex();
 
         int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
 
         assertEquals("Expected 6 result!", 6, n);
 
         // Data1 removal
-        cassandraUtils.deleteByCondition("integer_1 = 1 and ascii_1 = 'ascii'");
+        cassandraUtils.deleteByCondition("integer_1 = 1 and ascii_1 = 'ascii'").refreshIndex();
 
         n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
 
@@ -196,7 +191,7 @@ public class MultipleKeyDataHandlingTest {
                       .where("integer_1", 1)
                       .and("ascii_1", "ascii")
                       .execute()
-                      ;
+                      .refreshIndex();
         n = cassandraUtils.query(wildcard("text_1", "text")).count();
         assertEquals("Expected 7 results!", 7, n);
         n = cassandraUtils.query(wildcard("text_1", "other")).count();
@@ -213,7 +208,7 @@ public class MultipleKeyDataHandlingTest {
                       .where("integer_1", 1000)
                       .and("ascii_1", "ascii")
                       .execute()
-                      ;
+                      .refreshIndex();
         n = cassandraUtils.query(wildcard("text_1", "new")).count();
         assertEquals("Expected 1 results!", 1, n);
     }

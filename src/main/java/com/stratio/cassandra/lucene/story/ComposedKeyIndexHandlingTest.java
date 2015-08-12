@@ -28,6 +28,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import static com.stratio.cassandra.lucene.search.SearchBuilders.wildcard;
+import static com.stratio.cassandra.lucene.story.StoryDataHelper.*;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
@@ -74,17 +75,10 @@ public class ComposedKeyIndexHandlingTest {
     @Test
     public void createIndexAfterInsertionsTest() {
 
-        cassandraUtils.insert(StoryDataHelper.data1)
-                      .insert(StoryDataHelper.data2)
-                      .insert(StoryDataHelper.data3)
-                      .insert(StoryDataHelper.data4)
-                      .insert(StoryDataHelper.data5)
-                      .insert(StoryDataHelper.data6)
-                      .insert(StoryDataHelper.data7)
-                      .insert(StoryDataHelper.data8)
-                      .insert(StoryDataHelper.data9)
-                      .insert(StoryDataHelper.data10)
-                      .createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT);
+        cassandraUtils.insert(data1, data2, data3, data4, data5, data6, data7, data8, data9, data10)
+                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .waitForIndexing()
+                      .refreshIndex();
 
         // Checking data
         int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
@@ -95,17 +89,11 @@ public class ComposedKeyIndexHandlingTest {
     @Test
     public void createIndexDuringInsertionsTest1() {
 
-        cassandraUtils.insert(StoryDataHelper.data1)
-                      .insert(StoryDataHelper.data2)
-                      .insert(StoryDataHelper.data3)
-                      .insert(StoryDataHelper.data4)
-                      .insert(StoryDataHelper.data5)
-                      .insert(StoryDataHelper.data6)
-                      .insert(StoryDataHelper.data7)
-                      .insert(StoryDataHelper.data8)
-                      .createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT)
-                      .insert(StoryDataHelper.data9)
-                      .insert(StoryDataHelper.data10);
+        cassandraUtils.insert(data1, data2, data3, data4, data5, data6, data7, data8)
+                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .waitForIndexing()
+                      .insert(data9, data10)
+                      .refreshIndex();
 
         // Checking data
         int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
@@ -116,17 +104,14 @@ public class ComposedKeyIndexHandlingTest {
     @Test
     public void createIndexDuringInsertionsTest2() {
 
-        cassandraUtils.insert(StoryDataHelper.data1)
-                      .insert(StoryDataHelper.data2)
-                      .insert(StoryDataHelper.data3)
-                      .insert(StoryDataHelper.data4)
-                      .insert(StoryDataHelper.data6)
-                      .insert(StoryDataHelper.data7)
-                      .insert(StoryDataHelper.data8)
-                      .insert(StoryDataHelper.data9)
-                      .createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT)
-                      .insert(StoryDataHelper.data5)
-                      .insert(StoryDataHelper.data10);
+        cassandraUtils.insert(data1, data2)
+                      .insert(data3, data4)
+                      .insert(data6, data7)
+                      .insert(data8, data9)
+                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .waitForIndexing()
+                      .insert(data5, data10)
+                      .refreshIndex();
 
         // Checking data
         int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
@@ -137,17 +122,11 @@ public class ComposedKeyIndexHandlingTest {
     @Test
     public void createIndexDuringInsertionsTest3() {
 
-        cassandraUtils.insert(StoryDataHelper.data2)
-                      .insert(StoryDataHelper.data3)
-                      .insert(StoryDataHelper.data4)
-                      .insert(StoryDataHelper.data5)
-                      .insert(StoryDataHelper.data6)
-                      .insert(StoryDataHelper.data7)
-                      .insert(StoryDataHelper.data8)
-                      .insert(StoryDataHelper.data9)
-                      .createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT)
-                      .insert(StoryDataHelper.data1)
-                      .insert(StoryDataHelper.data10);
+        cassandraUtils.insert(data2, data3, data4, data5, data6, data7, data8, data9)
+                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .waitForIndexing()
+                      .insert(data1, data10)
+                      .refreshIndex();
 
         // Checking data
         int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
@@ -158,17 +137,10 @@ public class ComposedKeyIndexHandlingTest {
     @Test
     public void recreateIndexAfterInsertionsTest() {
 
-        cassandraUtils.createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT)
-                      .insert(StoryDataHelper.data1)
-                      .insert(StoryDataHelper.data2)
-                      .insert(StoryDataHelper.data3)
-                      .insert(StoryDataHelper.data4)
-                      .insert(StoryDataHelper.data5)
-                      .insert(StoryDataHelper.data6)
-                      .insert(StoryDataHelper.data7)
-                      .insert(StoryDataHelper.data8)
-                      .insert(StoryDataHelper.data9)
-                      .insert(StoryDataHelper.data10);
+        cassandraUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .waitForIndexing()
+                      .insert(data1, data2, data3, data4, data5, data6, data7, data8, data9, data10)
+                      .refreshIndex();
 
         // Checking data
         int n = cassandraUtils.query(wildcard("ascii_1", "*")).count();
@@ -179,7 +151,7 @@ public class ComposedKeyIndexHandlingTest {
         cassandraUtils.dropIndex(TestingConstants.INDEX_NAME_CONSTANT);
 
         // Recreating index
-        cassandraUtils.createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT);
+        cassandraUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT).waitForIndexing().refreshIndex();
 
         // Checking data
         n = cassandraUtils.query(wildcard("ascii_1", "*")).count();

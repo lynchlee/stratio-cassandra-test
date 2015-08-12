@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import static com.stratio.cassandra.lucene.search.SearchBuilders.wildcard;
+import static com.stratio.cassandra.lucene.story.StoryDataHelper.*;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
@@ -70,27 +71,29 @@ public class ComplexKeyIndexHandlingTest {
     @Test
     public void createIndexAfterInsertionsTest() {
 
-        cassandraUtils.insert(StoryDataHelper.data1)
-                      .insert(StoryDataHelper.data2)
-                      .insert(StoryDataHelper.data3)
-                      .insert(StoryDataHelper.data4)
-                      .insert(StoryDataHelper.data5)
-                      .insert(StoryDataHelper.data6)
-                      .insert(StoryDataHelper.data7)
-                      .insert(StoryDataHelper.data8)
-                      .insert(StoryDataHelper.data9)
-                      .insert(StoryDataHelper.data10)
-                      .insert(StoryDataHelper.data11)
-                      .insert(StoryDataHelper.data12)
-                      .insert(StoryDataHelper.data13)
-                      .insert(StoryDataHelper.data14)
-                      .insert(StoryDataHelper.data15)
-                      .insert(StoryDataHelper.data16)
-                      .insert(StoryDataHelper.data17)
-                      .insert(StoryDataHelper.data18)
-                      .insert(StoryDataHelper.data19)
-                      .insert(StoryDataHelper.data20)
-                      .createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT);
+        cassandraUtils.insert(data1,
+                              data2,
+                              data3,
+                              data4,
+                              data5,
+                              data6,
+                              data7,
+                              data8,
+                              data9,
+                              data10,
+                              data11,
+                              data12,
+                              data13,
+                              data14,
+                              data15,
+                              data16,
+                              data17,
+                              data18,
+                              data19,
+                              data20)
+                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .waitForIndexing()
+                      .refreshIndex();
 
         // Checking data
         int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
@@ -101,27 +104,25 @@ public class ComplexKeyIndexHandlingTest {
     @Test
     public void createIndexDuringInsertionsTest1() {
 
-        cassandraUtils.insert(StoryDataHelper.data1)
-                      .insert(StoryDataHelper.data2)
-                      .insert(StoryDataHelper.data3)
-                      .insert(StoryDataHelper.data4)
-                      .insert(StoryDataHelper.data5)
-                      .insert(StoryDataHelper.data6)
-                      .insert(StoryDataHelper.data7)
-                      .insert(StoryDataHelper.data8)
-                      .insert(StoryDataHelper.data9)
-                      .insert(StoryDataHelper.data10)
-                      .insert(StoryDataHelper.data11)
-                      .insert(StoryDataHelper.data12)
-                      .insert(StoryDataHelper.data13)
-                      .insert(StoryDataHelper.data14)
-                      .insert(StoryDataHelper.data15)
-                      .createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT)
-                      .insert(StoryDataHelper.data16)
-                      .insert(StoryDataHelper.data17)
-                      .insert(StoryDataHelper.data18)
-                      .insert(StoryDataHelper.data19)
-                      .insert(StoryDataHelper.data20);
+        cassandraUtils.insert(data1,
+                              data2,
+                              data3,
+                              data4,
+                              data5,
+                              data6,
+                              data7,
+                              data8,
+                              data9,
+                              data10,
+                              data11,
+                              data12,
+                              data13,
+                              data14,
+                              data15)
+                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .waitForIndexing()
+                      .insert(data16, data17, data18, data19, data20)
+                      .refreshIndex();
 
         // Checking data
         int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
@@ -133,27 +134,26 @@ public class ComplexKeyIndexHandlingTest {
     public void createIndexDuringInsertionsTest2() {
 
         // Preparing initial data
-        cassandraUtils.insert(StoryDataHelper.data1)
-                      .insert(StoryDataHelper.data2)
-                      .insert(StoryDataHelper.data3)
-                      .insert(StoryDataHelper.data4)
-                      .insert(StoryDataHelper.data6)
-                      .insert(StoryDataHelper.data7)
-                      .insert(StoryDataHelper.data8)
-                      .insert(StoryDataHelper.data9)
-                      .insert(StoryDataHelper.data11)
-                      .insert(StoryDataHelper.data12)
-                      .insert(StoryDataHelper.data13)
-                      .insert(StoryDataHelper.data14)
-                      .insert(StoryDataHelper.data16)
-                      .insert(StoryDataHelper.data17)
-                      .insert(StoryDataHelper.data18)
-                      .insert(StoryDataHelper.data19)
-                      .createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT)
-                      .insert(StoryDataHelper.data5)
-                      .insert(StoryDataHelper.data10)
-                      .insert(StoryDataHelper.data15)
-                      .insert(StoryDataHelper.data20);
+        cassandraUtils.insert(data1,
+                              data2,
+                              data3,
+                              data4,
+                              data6,
+                              data7,
+                              data8,
+                              data9,
+                              data11,
+                              data12,
+                              data13,
+                              data14,
+                              data16,
+                              data17,
+                              data18,
+                              data19)
+                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .waitForIndexing()
+                      .insert(data5, data10, data15, data20)
+                      .refreshIndex();
 
         // Checking data
         int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
@@ -165,27 +165,26 @@ public class ComplexKeyIndexHandlingTest {
     public void createIndexDuringInsertionsTest3() {
 
         // Preparing initial data
-        cassandraUtils.insert(StoryDataHelper.data2)
-                      .insert(StoryDataHelper.data3)
-                      .insert(StoryDataHelper.data4)
-                      .insert(StoryDataHelper.data5)
-                      .insert(StoryDataHelper.data6)
-                      .insert(StoryDataHelper.data8)
-                      .insert(StoryDataHelper.data9)
-                      .insert(StoryDataHelper.data10)
-                      .insert(StoryDataHelper.data11)
-                      .insert(StoryDataHelper.data12)
-                      .insert(StoryDataHelper.data14)
-                      .insert(StoryDataHelper.data15)
-                      .insert(StoryDataHelper.data16)
-                      .insert(StoryDataHelper.data17)
-                      .insert(StoryDataHelper.data18)
-                      .insert(StoryDataHelper.data20)
-                      .createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT)
-                      .insert(StoryDataHelper.data1)
-                      .insert(StoryDataHelper.data7)
-                      .insert(StoryDataHelper.data13)
-                      .insert(StoryDataHelper.data19);
+        cassandraUtils.insert(data2,
+                              data3,
+                              data4,
+                              data5,
+                              data6,
+                              data8,
+                              data9,
+                              data10,
+                              data11,
+                              data12,
+                              data14,
+                              data15,
+                              data16,
+                              data17,
+                              data18,
+                              data20)
+                      .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .waitForIndexing()
+                      .insert(data1, data7, data13, data19)
+                      .refreshIndex();
 
         // Checking data
         int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
@@ -196,27 +195,29 @@ public class ComplexKeyIndexHandlingTest {
     @Test
     public void recreateIndexAfterInsertionsTest() {
 
-        cassandraUtils.createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT)
-                      .insert(StoryDataHelper.data1)
-                      .insert(StoryDataHelper.data2)
-                      .insert(StoryDataHelper.data3)
-                      .insert(StoryDataHelper.data4)
-                      .insert(StoryDataHelper.data5)
-                      .insert(StoryDataHelper.data6)
-                      .insert(StoryDataHelper.data7)
-                      .insert(StoryDataHelper.data8)
-                      .insert(StoryDataHelper.data9)
-                      .insert(StoryDataHelper.data10)
-                      .insert(StoryDataHelper.data11)
-                      .insert(StoryDataHelper.data12)
-                      .insert(StoryDataHelper.data13)
-                      .insert(StoryDataHelper.data14)
-                      .insert(StoryDataHelper.data15)
-                      .insert(StoryDataHelper.data16)
-                      .insert(StoryDataHelper.data17)
-                      .insert(StoryDataHelper.data18)
-                      .insert(StoryDataHelper.data19)
-                      .insert(StoryDataHelper.data20);
+        cassandraUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT)
+                      .waitForIndexing()
+                      .insert(data1,
+                              data2,
+                              data3,
+                              data4,
+                              data5,
+                              data6,
+                              data7,
+                              data8,
+                              data9,
+                              data10,
+                              data11,
+                              data12,
+                              data13,
+                              data14,
+                              data15,
+                              data16,
+                              data17,
+                              data18,
+                              data19,
+                              data20)
+                      .refreshIndex();
 
         // Checking data
         int n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();
@@ -227,7 +228,7 @@ public class ComplexKeyIndexHandlingTest {
         cassandraUtils.dropIndex(TestingConstants.INDEX_NAME_CONSTANT);
 
         // Recreating index
-        cassandraUtils.createIndexWaiting(TestingConstants.INDEX_NAME_CONSTANT);
+        cassandraUtils.createIndex(TestingConstants.INDEX_NAME_CONSTANT).waitForIndexing().refreshIndex();
 
         // Checking data
         n = cassandraUtils.filter(wildcard("ascii_1", "*")).count();

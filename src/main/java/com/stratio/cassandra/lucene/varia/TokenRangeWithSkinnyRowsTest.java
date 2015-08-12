@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import static com.stratio.cassandra.lucene.varia.VariaDataHelper.*;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnit4.class)
@@ -59,27 +60,27 @@ public class TokenRangeWithSkinnyRowsTest {
                                        .createKeyspace()
                                        .createTable()
                                        .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
-                                       .insert(VariaDataHelper.data1)
-                                       .insert(VariaDataHelper.data2)
-                                       .insert(VariaDataHelper.data3)
-                                       .insert(VariaDataHelper.data4)
-                                       .insert(VariaDataHelper.data5)
-                                       .insert(VariaDataHelper.data6)
-                                       .insert(VariaDataHelper.data7)
-                                       .insert(VariaDataHelper.data8)
-                                       .insert(VariaDataHelper.data9)
-                                       .insert(VariaDataHelper.data10)
-                                       .insert(VariaDataHelper.data11)
-                                       .insert(VariaDataHelper.data12)
-                                       .insert(VariaDataHelper.data13)
-                                       .insert(VariaDataHelper.data14)
-                                       .insert(VariaDataHelper.data15)
-                                       .insert(VariaDataHelper.data16)
-                                       .insert(VariaDataHelper.data17)
-                                       .insert(VariaDataHelper.data18)
-                                       .insert(VariaDataHelper.data19)
-                                       .insert(VariaDataHelper.data20)
-                                       ;
+                                       .insert(data1,
+                                               data2,
+                                               data3,
+                                               data4,
+                                               data5,
+                                               data6,
+                                               data7,
+                                               data8,
+                                               data9,
+                                               data10,
+                                               data11,
+                                               data12,
+                                               data13,
+                                               data14,
+                                               data15,
+                                               data16,
+                                               data17,
+                                               data18,
+                                               data19,
+                                               data20)
+                                       .refreshIndex();
     }
 
     @AfterClass

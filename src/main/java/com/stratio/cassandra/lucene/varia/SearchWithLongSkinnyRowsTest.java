@@ -63,8 +63,7 @@ public class SearchWithLongSkinnyRowsTest {
                                        .build()
                                        .createKeyspace()
                                        .createTable()
-                                       .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
-                                       ;
+                                       .createIndex(TestingConstants.INDEX_NAME_CONSTANT);
         int count = 0;
         for (Integer p = 0; p < 2; p++) {
             for (Integer i = 1; i <= 100; i++) {
@@ -127,10 +126,6 @@ public class SearchWithLongSkinnyRowsTest {
         int n = cassandraUtils.query(all()).limit(1000).count();
         assertEquals("Expected 100 results!", 100, n);
     }
-
-
-
-
 
     @Test
     public void filter1Test() {

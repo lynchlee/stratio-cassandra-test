@@ -15,23 +15,17 @@
  */
 package com.stratio.cassandra.lucene.suite;
 
+import com.stratio.cassandra.lucene.bitemporal.BitemporalTest;
+import com.stratio.cassandra.lucene.indexes.ComplexKeyIndexHandlingTest;
+import com.stratio.cassandra.lucene.indexes.ComposedKeyIndexHandlingTest;
+import com.stratio.cassandra.lucene.indexes.MultipleKeyIndexHandlingTest;
+import com.stratio.cassandra.lucene.indexes.SimpleKeyIndexHandlingTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ComplexNumericPrimaryKeySuite.class,
-               ComposedNumericPrimaryKeySuite.class,
-               DeletionSuite.class,
-               IndexesSuite.class,
-               MultipleNumericPrimaryKeySuite.class,
-               SingleNumericPrimaryKeySuite.class,
-               SingleStringPrimaryKeySuite.class,
-               SingleTextPrimaryKeySuite.class,
-               VariaSuite.class,
-               BreakDownSuite.class,
-               StoriesSuite.class,
-               BitemporalSuite.class})
-public class AllSuite {
+@SuiteClasses({BitemporalTest.class})
+public class BitemporalSuite {
 
 }

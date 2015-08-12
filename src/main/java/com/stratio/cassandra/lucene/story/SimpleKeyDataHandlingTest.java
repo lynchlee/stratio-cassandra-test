@@ -28,6 +28,7 @@ import org.junit.runners.JUnit4;
 import java.util.List;
 
 import static com.stratio.cassandra.lucene.search.SearchBuilders.wildcard;
+import static com.stratio.cassandra.lucene.story.StoryDataHelper.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
@@ -65,10 +66,8 @@ public class SimpleKeyDataHandlingTest {
                                        .createKeyspace()
                                        .createTable()
                                        .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
-                                       .insert(StoryDataHelper.data1)
-                                       .insert(StoryDataHelper.data2)
-                                       .insert(StoryDataHelper.data3)
-                                       ;
+                                       .insert(data1, data2, data3)
+                                       .refreshIndex();
     }
 
     @After
@@ -80,21 +79,21 @@ public class SimpleKeyDataHandlingTest {
     public void singleInsertion() {
 
         // Data4 insertion
-        cassandraUtils.insert(StoryDataHelper.data4);
+        cassandraUtils.insert(data4).refreshIndex();
 
         List<Row> rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
         assertEquals("Expected 4 results!", 4, rows.size());
 
         // Data5 insertion
-        cassandraUtils.insert(StoryDataHelper.data5);
+        cassandraUtils.insert(data5).refreshIndex();
 
         rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
         assertEquals("Expected 5 results!", 5, rows.size());
 
         // Data4 removal
-        cassandraUtils.deleteByCondition("integer_1 = 4");
+        cassandraUtils.deleteByCondition("integer_1 = 4").refreshIndex();
 
         rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
@@ -102,7 +101,7 @@ public class SimpleKeyDataHandlingTest {
         assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 4));
 
         // Data5 removal
-        cassandraUtils.deleteByCondition("integer_1 = 5");
+        cassandraUtils.deleteByCondition("integer_1 = 5").refreshIndex();
 
         rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
@@ -110,7 +109,7 @@ public class SimpleKeyDataHandlingTest {
         assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 5));
 
         // Data2 removal
-        cassandraUtils.deleteByCondition("integer_1 = 2");
+        cassandraUtils.deleteByCondition("integer_1 = 2").refreshIndex();
 
         rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
@@ -118,7 +117,7 @@ public class SimpleKeyDataHandlingTest {
         assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 2));
 
         // Data3 removal
-        cassandraUtils.deleteByCondition("integer_1 = 3");
+        cassandraUtils.deleteByCondition("integer_1 = 3").refreshIndex();
 
         rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
@@ -126,7 +125,7 @@ public class SimpleKeyDataHandlingTest {
         assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 3));
 
         // Data1 removal
-        cassandraUtils.deleteByCondition("integer_1 = 1");
+        cassandraUtils.deleteByCondition("integer_1 = 1").refreshIndex();
 
         rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
@@ -138,14 +137,14 @@ public class SimpleKeyDataHandlingTest {
     public void multipleInsertion() {
 
         // Data4 and data5 insertion
-        cassandraUtils.insert(StoryDataHelper.data4).insert(StoryDataHelper.data5);
+        cassandraUtils.insert(data4, data5).refreshIndex();
 
         List<Row> rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
         assertEquals("Expected 5 results!", 5, rows.size());
 
         // Data4 removal
-        cassandraUtils.deleteByCondition("integer_1 = 4");
+        cassandraUtils.deleteByCondition("integer_1 = 4").refreshIndex();
 
         rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
@@ -153,7 +152,7 @@ public class SimpleKeyDataHandlingTest {
         assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 4));
 
         // Data5 removal
-        cassandraUtils.deleteByCondition("integer_1 = 5");
+        cassandraUtils.deleteByCondition("integer_1 = 5").refreshIndex();
 
         rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
@@ -161,7 +160,7 @@ public class SimpleKeyDataHandlingTest {
         assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 5));
 
         // Data2 removal
-        cassandraUtils.deleteByCondition("integer_1 = 2");
+        cassandraUtils.deleteByCondition("integer_1 = 2").refreshIndex();
 
         rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
@@ -169,7 +168,7 @@ public class SimpleKeyDataHandlingTest {
         assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 2));
 
         // Data3 removal
-        cassandraUtils.deleteByCondition("integer_1 = 3");
+        cassandraUtils.deleteByCondition("integer_1 = 3").refreshIndex();
 
         rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
@@ -177,7 +176,7 @@ public class SimpleKeyDataHandlingTest {
         assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 3));
 
         // Data1 removal
-        cassandraUtils.deleteByCondition("integer_1 = 1");
+        cassandraUtils.deleteByCondition("integer_1 = 1").refreshIndex();
 
         rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
@@ -189,7 +188,7 @@ public class SimpleKeyDataHandlingTest {
     public void multipleDeletion() {
 
         // Data2 & data3 removal
-        cassandraUtils.deleteByCondition("integer_1 = 2").deleteByCondition("integer_1 = 3");
+        cassandraUtils.deleteByCondition("integer_1 = 2").deleteByCondition("integer_1 = 3").refreshIndex();
 
         List<Row> rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
@@ -197,7 +196,7 @@ public class SimpleKeyDataHandlingTest {
         assertFalse("Element not expected!", IndexHandlingUtils.containsElementByIntegerKey(rows, 3));
 
         // Data1 removal
-        cassandraUtils.deleteByCondition("integer_1 = 1");
+        cassandraUtils.deleteByCondition("integer_1 = 1").refreshIndex();
 
         rows = cassandraUtils.query(wildcard("ascii_1", "*")).get();
 
@@ -210,11 +209,7 @@ public class SimpleKeyDataHandlingTest {
         int n = cassandraUtils.query(wildcard("text_1", "text")).count();
         assertEquals("Expected 3 results!", 3, n);
 
-        cassandraUtils.update()
-                      .set("text_1", "other")
-                      .where("integer_1", 2)
-                      .execute()
-                      ;
+        cassandraUtils.update().set("text_1", "other").where("integer_1", 2).execute();
         n = cassandraUtils.query(wildcard("text_1", "text")).count();
         assertEquals("Expected 2 results!", 2, n);
         n = cassandraUtils.query(wildcard("text_1", "other")).count();
@@ -226,11 +221,7 @@ public class SimpleKeyDataHandlingTest {
         int n = cassandraUtils.query(wildcard("text_1", "text")).count();
         assertEquals("Expected 3 results!", 3, n);
 
-        cassandraUtils.update()
-                      .set("text_1", "new")
-                      .where("integer_1", 1000)
-                      .execute()
-                      ;
+        cassandraUtils.update().set("text_1", "new").where("integer_1", 1000).execute();
         n = cassandraUtils.query(wildcard("text_1", "new")).count();
         assertEquals("Expected 1 results!", 1, n);
     }

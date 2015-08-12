@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import static com.stratio.cassandra.lucene.varia.VariaDataHelper.*;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -63,27 +64,27 @@ public class TokenRangeWithWideRowsMultiClusteringTest {
                                        .createKeyspace()
                                        .createTable()
                                        .createIndex(TestingConstants.INDEX_NAME_CONSTANT)
-                                       .insert(VariaDataHelper.data1)
-                                       .insert(VariaDataHelper.data2)
-                                       .insert(VariaDataHelper.data3)
-                                       .insert(VariaDataHelper.data4)
-                                       .insert(VariaDataHelper.data5)
-                                       .insert(VariaDataHelper.data6)
-                                       .insert(VariaDataHelper.data7)
-                                       .insert(VariaDataHelper.data8)
-                                       .insert(VariaDataHelper.data9)
-                                       .insert(VariaDataHelper.data10)
-                                       .insert(VariaDataHelper.data11)
-                                       .insert(VariaDataHelper.data12)
-                                       .insert(VariaDataHelper.data13)
-                                       .insert(VariaDataHelper.data14)
-                                       .insert(VariaDataHelper.data15)
-                                       .insert(VariaDataHelper.data16)
-                                       .insert(VariaDataHelper.data17)
-                                       .insert(VariaDataHelper.data18)
-                                       .insert(VariaDataHelper.data19)
-                                       .insert(VariaDataHelper.data20)
-                                       ;
+                                       .insert(data1,
+                                               data2,
+                                               data3,
+                                               data4,
+                                               data5,
+                                               data6,
+                                               data7,
+                                               data8,
+                                               data9,
+                                               data10,
+                                               data11,
+                                               data12,
+                                               data13,
+                                               data14,
+                                               data15,
+                                               data16,
+                                               data17,
+                                               data18,
+                                               data19,
+                                               data20)
+                                       .refreshIndex();
     }
 
     @AfterClass
@@ -153,91 +154,73 @@ public class TokenRangeWithWideRowsMultiClusteringTest {
 
     @Test
     public void tokenSearchTest9() {
-        int n = cassandraUtils.searchAll()
-                              .and("AND TOKEN(integer_1) = TOKEN(1)")
-                              .count();
+        int n = cassandraUtils.searchAll().and("AND TOKEN(integer_1) = TOKEN(1)").count();
         assertEquals("Expected 4 results!", 4, n);
     }
 
     @Test
     public void tokenSearchTest10() {
-        int n = cassandraUtils.searchAll()
-                              .count();
+        int n = cassandraUtils.searchAll().count();
         assertEquals("Expected 20 results!", 20, n);
     }
 
     @Test
     public void tokenClusteringSearchTest1() {
-        int n = cassandraUtils.searchAll()
-                              .and("AND integer_1 = 1 AND ascii_1 = 'ascii_bis' AND double_1 > 1")
-                              .count();
+        int n = cassandraUtils.searchAll().and("AND integer_1 = 1 AND ascii_1 = 'ascii_bis' AND double_1 > 1").count();
         assertEquals("Expected 1 results!", 1, n);
     }
 
     @Test
     public void tokenClusteringSearchTest2() {
-        int n = cassandraUtils.searchAll()
-                              .and("AND integer_1 = 1 AND ascii_1 = 'ascii_bis' AND double_1 >= 1").count();
+        int n = cassandraUtils.searchAll().and("AND integer_1 = 1 AND ascii_1 = 'ascii_bis' AND double_1 >= 1").count();
         assertEquals("Expected 2 results!", 2, n);
     }
 
     @Test
     public void tokenClusteringSearchTest3() {
-        int n = cassandraUtils.searchAll()
-                              .and("AND integer_1 = 1 AND ascii_1 = 'ascii_bis' AND double_1 < 2").count();
+        int n = cassandraUtils.searchAll().and("AND integer_1 = 1 AND ascii_1 = 'ascii_bis' AND double_1 < 2").count();
         assertEquals("Expected 1 results!", 1, n);
     }
 
     @Test
     public void tokenClusteringSearchTest4() {
-        int n = cassandraUtils.searchAll()
-                              .and("AND integer_1 = 1 AND ascii_1 = 'ascii_bis' AND double_1 <= 2").count();
+        int n = cassandraUtils.searchAll().and("AND integer_1 = 1 AND ascii_1 = 'ascii_bis' AND double_1 <= 2").count();
         assertEquals("Expected 2 results!", 2, n);
     }
 
     @Test
     public void tokenClusteringSearchTest5() {
-        int n = cassandraUtils.searchAll()
-                              .and("AND integer_1 = 1 AND ascii_1 = 'ascii_bis' AND double_1 = 1").count();
+        int n = cassandraUtils.searchAll().and("AND integer_1 = 1 AND ascii_1 = 'ascii_bis' AND double_1 = 1").count();
         assertEquals("Expected 1 results!", 1, n);
     }
 
     @Test
     public void tokenClusteringSearchTest6() {
-        int n = cassandraUtils.searchAll()
-                              .and("AND integer_1 = 1 AND ascii_1 = 'ascii_bis' AND double_1 = 2").count();
+        int n = cassandraUtils.searchAll().and("AND integer_1 = 1 AND ascii_1 = 'ascii_bis' AND double_1 = 2").count();
         assertEquals("Expected 1 results!", 1, n);
     }
 
     @Test
     public void tokenWideClusteringSearchTest1() {
-        int n = cassandraUtils.searchAll()
-                              .and("AND integer_1 = 2 AND ascii_1 > 'ascii'")
-                              .count();
+        int n = cassandraUtils.searchAll().and("AND integer_1 = 2 AND ascii_1 > 'ascii'").count();
         assertEquals("Expected 2 results!", 2, n);
     }
 
     @Test
     public void tokenWideClusteringSearchTest2() {
-        int n = cassandraUtils.searchAll()
-                              .and("AND integer_1 = 2 AND ascii_1 >= 'ascii'")
-                              .count();
+        int n = cassandraUtils.searchAll().and("AND integer_1 = 2 AND ascii_1 >= 'ascii'").count();
         assertEquals("Expected 4 results!", 4, n);
     }
 
     @Test
     public void tokenWideClusteringSearchTest3() {
-        int n = cassandraUtils.searchAll()
-                              .and("AND integer_1 = 2 AND ascii_1 < 'ascii'")
-                              .count();
+        int n = cassandraUtils.searchAll().and("AND integer_1 = 2 AND ascii_1 < 'ascii'").count();
         assertEquals("Expected 0 results!", 0, n);
     }
 
     @Test
     public void tokenWideClusteringSearchTest4() {
-        int n = cassandraUtils.searchAll()
-                              .and("AND integer_1 = 2 AND ascii_1 <= 'ascii'")
-                              .count();
+        int n = cassandraUtils.searchAll().and("AND integer_1 = 2 AND ascii_1 <= 'ascii'").count();
         assertEquals("Expected 2 results!", 2, n);
     }
 }

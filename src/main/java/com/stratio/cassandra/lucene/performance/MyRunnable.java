@@ -29,7 +29,7 @@ public class MyRunnable implements Runnable {
     public static long numQueries;
     public static long totalQueryTime;
 
-    private        String  name;
+    private String name;
     private static Session session;
 
     public MyRunnable(String name, Session session) {

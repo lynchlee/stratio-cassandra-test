@@ -37,8 +37,7 @@ import java.util.Properties;
                RegexpTest.class,
                RangeTest.class,
                BooleanTest.class,
-               SortTest.class
-              })
+               SortTest.class})
 public class ComposedNumericPrimaryKeySuite {
 
     private static CassandraUtils cassandraUtils;
@@ -46,31 +45,30 @@ public class ComposedNumericPrimaryKeySuite {
     @BeforeClass
     public static void before() {
 
-        cassandraUtils =
-                CassandraUtils.builder()
-                              .withTable(TestingConstants.TABLE_NAME_CONSTANT)
-                              .withIndexColumn(TestingConstants.INDEX_COLUMN_CONSTANT)
-                              .withPartitionKey("integer_1", "double_1")
-                              .withClusteringKey()
-                              .withColumn("ascii_1", "ascii")
-                              .withColumn("bigint_1", "bigint")
-                              .withColumn("blob_1", "blob")
-                              .withColumn("boolean_1", "boolean")
-                              .withColumn("decimal_1", "decimal")
-                              .withColumn("date_1", "timestamp")
-                              .withColumn("double_1", "double")
-                              .withColumn("float_1", "float")
-                              .withColumn("integer_1", "int")
-                              .withColumn("inet_1", "inet")
-                              .withColumn("text_1", "text")
-                              .withColumn("varchar_1", "varchar")
-                              .withColumn("uuid_1", "uuid")
-                              .withColumn("timeuuid_1", "timeuuid")
-                              .withColumn("list_1", "list<text>")
-                              .withColumn("set_1", "set<text>")
-                              .withColumn("map_1", "map<text,text>")
-                              .withColumn("lucene", "text")
-                              .build();
+        cassandraUtils = CassandraUtils.builder()
+                                       .withTable(TestingConstants.TABLE_NAME_CONSTANT)
+                                       .withIndexColumn(TestingConstants.INDEX_COLUMN_CONSTANT)
+                                       .withPartitionKey("integer_1", "double_1")
+                                       .withClusteringKey()
+                                       .withColumn("ascii_1", "ascii")
+                                       .withColumn("bigint_1", "bigint")
+                                       .withColumn("blob_1", "blob")
+                                       .withColumn("boolean_1", "boolean")
+                                       .withColumn("decimal_1", "decimal")
+                                       .withColumn("date_1", "timestamp")
+                                       .withColumn("double_1", "double")
+                                       .withColumn("float_1", "float")
+                                       .withColumn("integer_1", "int")
+                                       .withColumn("inet_1", "inet")
+                                       .withColumn("text_1", "text")
+                                       .withColumn("varchar_1", "varchar")
+                                       .withColumn("uuid_1", "uuid")
+                                       .withColumn("timeuuid_1", "timeuuid")
+                                       .withColumn("list_1", "list<text>")
+                                       .withColumn("set_1", "set<text>")
+                                       .withColumn("map_1", "map<text,text>")
+                                       .withColumn("lucene", "text")
+                                       .build();
 
         // Add to context ready for suite's tests usage
         Properties context = new Properties();
