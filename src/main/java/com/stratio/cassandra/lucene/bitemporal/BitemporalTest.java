@@ -1,5 +1,26 @@
 package com.stratio.cassandra.lucene.bitemporal;
 
+import static com.stratio.cassandra.lucene.schema.SchemaBuilders.bitemporalMapper;
+import static com.stratio.cassandra.lucene.schema.SchemaBuilders.schema;
+import static com.stratio.cassandra.lucene.search.SearchBuilders.bitemporalSearch;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TestRule;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.exceptions.InvalidQueryException;
@@ -12,26 +33,6 @@ import com.stratio.cassandra.lucene.querytype.AbstractWatchedTest;
 import com.stratio.cassandra.lucene.schema.SchemaBuilder;
 import com.stratio.cassandra.lucene.util.CassandraUtils;
 import com.stratio.cassandra.lucene.util.CassandraUtilsSelect;
-import org.apache.log4j.Logger;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestRule;
-import org.junit.rules.TestWatcher;
-import org.junit.runner.Description;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import static com.stratio.cassandra.lucene.schema.SchemaBuilders.bitemporalMapper;
-import static com.stratio.cassandra.lucene.schema.SchemaBuilders.schema;
-import static com.stratio.cassandra.lucene.search.SearchBuilders.bitemporalSearch;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4.class)
 public class BitemporalTest {
@@ -223,235 +224,11 @@ public class BitemporalTest {
         }
     }
 
-    @Test
-    public void bitemporalQueryIsWithInTimeStampFieldTest() {
-
-        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").operation("is_within")
-                                                                                         .vtFrom("2014/12/31 12:00:00.000")
-                                                                                         .vtTo("2015/02/02 00:00:00.000")
-                                                                                         .ttFrom("2015/01/14 00:00:00.000")
-                                                                                         .ttTo("2015/02/16 00:00:00.000"));
-
-        assertEquals("Expected 1 results!", 1, select.count());
-        assertTrue("Unexpected results!! Expected: {1}, got: " + fromInteger(select.intColumn("integer_1")),
-                   isThisAndOnlyThis(select.intColumn("integer_1"), new int[]{1}));
-    }
 
     @Test
-    public void bitemporalQueryIsWithInTimeStampFieldTest2() {
+    public void biTemporalQueryIntersectsTimeStampFieldTest() {
 
-        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").operation("is_within")
-                                                                                         .vtFrom("2015/01/31 12:00:00.000")
-                                                                                         .vtTo("2015/03/02 00:00:00.000")
-                                                                                         .ttFrom("2015/02/14 00:00:00.000")
-                                                                                         .ttTo("2015/03/16 00:00:00.000"));
-
-        assertEquals("Expected 1 results!", 1, select.count());
-        assertTrue("Unexpected results!! Expected: {2}, got: " + fromInteger(select.intColumn("integer_1")),
-                   isThisAndOnlyThis(select.intColumn("integer_1"), new int[]{2}));
-    }
-
-    @Test
-    public void bitemporalQueryIsWithInTimeStampFieldTest3() {
-
-        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").operation("is_within")
-                                                                                         .vtFrom("2015/02/28 12:00:00.000")
-                                                                                         .vtTo("2015/04/02 00:00:00.000")
-                                                                                         .ttFrom("2015/03/14 00:00:00.000")
-                                                                                         .ttTo("2015/04/16 00:00:00.000"));
-
-        assertEquals("Expected 1 results!", 1, select.count());
-        assertTrue("Unexpected results!! Expected: {3}, got: " + fromInteger(select.intColumn("integer_1")),
-                   isThisAndOnlyThis(select.intColumn("integer_1"), new int[]{3}));
-    }
-
-    @Test
-    public void bitemporalQueryIsWithInTimeStampFieldTest4() {
-
-        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").operation("is_within")
-                                                                                         .vtFrom("2015/03/31 12:00:00.000")
-                                                                                         .vtTo("2015/05/02 00:00:00.000")
-                                                                                         .ttFrom("2015/04/14 00:00:00.000")
-                                                                                         .ttTo("2015/05/16 00:00:00.000"));
-
-        assertEquals("Expected 1 results!", 1, select.count());
-        assertTrue("Unexpected results!! Expected: {4}, got: " + fromInteger(select.intColumn("integer_1")),
-                   isThisAndOnlyThis(select.intColumn("integer_1"), new int[]{4}));
-    }
-
-    @Test
-    public void bitemporalQueryIsWithInTimeStampFieldTes5() {
-
-        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").operation("is_within")
-                                                                                         .vtFrom("2015/04/31 12:00:00.000")
-                                                                                         .vtTo("2015/06/02 00:00:00.000")
-                                                                                         .ttFrom("2015/05/14 00:00:00.000")
-                                                                                         .ttTo("2015/06/16 00:00:00.000"));
-
-        assertEquals("Expected 1 results!", 1, select.count());
-        assertTrue("Unexpected results!! Expected: {5}, got: " + fromInteger(select.intColumn("integer_1")),
-                   isThisAndOnlyThis(select.intColumn("integer_1"), new int[]{5}));
-    }
-
-    @Test
-    public void bitemporalQueryIsWithInTimeStampFieldTes6() {
-
-        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").operation("is_within")
-                                                                                         .vtFrom("2014/12/31 12:00:00.000")
-                                                                                         .vtTo("2015/03/02 00:00:00.000")
-                                                                                         .ttFrom("2015/01/14 00:00:00.000")
-                                                                                         .ttTo("2015/04/02 00:00:00.000"));
-
-        assertEquals("Expected 2 results!", 2, select.count());
-        assertTrue("Unexpected results!! Expected: {1,2}, got: " + fromInteger(select.intColumn("integer_1")),
-                   isThisAndOnlyThis(select.intColumn("integer_1"), new int[]{1, 2}));
-    }
-
-    @Test
-    public void bitemporalQueryIsWithInTimeStampFieldTes7() {
-
-        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").operation("is_within")
-                                                                                         .vtFrom("2015/03/02 12:00:00.000")
-                                                                                         .vtTo("2015/03/10 00:00:00.000")
-                                                                                         .ttFrom("2015/01/14 00:00:00.000")
-                                                                                         .ttTo("2015/04/02 00:00:00.000"));
-
-        assertEquals("Expected 0 results!", 0, select.count());
-        assertTrue("Unexpected results!! Expected: {}, got: " + fromInteger(select.intColumn("integer_1")),
-                   isThisAndOnlyThis(select.intColumn("integer_1"), new int[]{}));
-    }
-
-    @Test
-    public void bitemporalQueryIsWithInTimeStampFieldTes8() {
-
-        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").operation("is_within")
-                                                                                         .vtFrom("2014/03/02 12:00:00.000")
-                                                                                         .vtTo("2015/03/10 00:00:00.000")
-                                                                                         .ttFrom("2015/01/14 00:00:00.000")
-                                                                                         .ttTo("2015/01/16 00:00:00.000"));
-
-        assertEquals("Expected 0 results!", 0, select.count());
-        assertTrue("Unexpected results!! Expected: {}, got: " + fromInteger(select.intColumn("integer_1")),
-                   isThisAndOnlyThis(select.intColumn("integer_1"), new int[]{}));
-    }
-
-    @Test
-    public void bitemporalQueryIsWithInTimeStampFieldTest9() {
-
-        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").operation("is_within")
-                                                                                         .vtFrom("2014/12/31 12:00:00.000")
-                                                                                         .vtTo("2015/06/02 00:00:00.000")
-                                                                                         .ttFrom("2015/01/14 00:00:00.000")
-                                                                                         .ttTo("2015/06/16 00:00:00.000"));
-
-        assertEquals("Expected 5 results!", 5, select.count());
-        assertTrue("Unexpected results!! Expected: {1,2,3,4,5}, got: " + fromInteger(select.intColumn("integer_1")),
-                   isThisAndOnlyThis(select.intColumn("integer_1"), new int[]{1, 2, 3, 4, 5}));
-    }
-
-    @Test
-    public void bitemporalQueryContainsTimeStampFieldTest() {
-
-        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").operation("contains")
-                                                                                         .vtFrom("2015/01/02 12:00:00.000")
-                                                                                         .vtTo("2015/01/30 00:00:00.000")
-                                                                                         .ttFrom("2015/01/16 00:00:00.000")
-                                                                                         .ttTo("2015/02/14 00:00:00.000"));
-
-        assertEquals("Expected 1 results!", 1, select.count());
-        assertTrue("Unexpected results!! Expected: {1}, got: " + fromInteger(select.intColumn("integer_1")),
-                   isThisAndOnlyThis(select.intColumn("integer_1"), new int[]{1}));
-    }
-
-    @Test
-    public void bitemporalQueryContainsTimeStampFieldTest2() {
-        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").operation("contains")
-                                                                                         .vtFrom("2015/02/02 12:00:00.000")
-                                                                                         .vtTo("2015/02/28 00:00:00.000")
-                                                                                         .ttFrom("2015/02/16 00:00:00.000")
-                                                                                         .ttTo("2015/03/14 00:00:00.000"));
-
-        assertEquals("Expected 1 results!", 1, select.count());
-        assertTrue("Unexpected results!! Expected: {2}, got: " + fromInteger(select.intColumn("integer_1")),
-                   isThisAndOnlyThis(select.intColumn("integer_1"), new int[]{2}));
-    }
-
-    @Test
-    public void bitemporalQueryContainsTimeStampFieldTest3() {
-        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").operation("contains")
-                                                                                         .vtFrom("2015/03/02 12:00:00.000")
-                                                                                         .vtTo("2015/03/30 00:00:00.000")
-                                                                                         .ttFrom("2015/03/16 00:00:00.000")
-                                                                                         .ttTo("2015/04/14 00:00:00.000"));
-
-        assertEquals("Expected 1 results!", 1, select.count());
-        assertTrue("Unexpected results!! Expected: {3}, got: " + fromInteger(select.intColumn("integer_1")),
-                   isThisAndOnlyThis(select.intColumn("integer_1"), new int[]{3}));
-    }
-
-    @Test
-    public void bitemporalQueryContainsTimeStampFieldTest4() {
-
-        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").operation("contains")
-                                                                                         .vtFrom("2015/04/02 12:00:00.000")
-                                                                                         .vtTo("2015/04/30 00:00:00.000")
-                                                                                         .ttFrom("2015/04/16 00:00:00.000")
-                                                                                         .ttTo("2015/05/14 00:00:00.000"));
-
-        assertEquals("Expected 1 results!", 1, select.count());
-        assertTrue("Unexpected results!! Expected: {4}, got: " + fromInteger(select.intColumn("integer_1")),
-                   isThisAndOnlyThis(select.intColumn("integer_1"), new int[]{4}));
-    }
-
-    @Test
-    public void bitemporalQueryContainsTimeStampFieldTest5() {
-
-        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").operation("contains")
-                                                                                         .vtFrom("2015/05/02 12:00:00.000")
-                                                                                         .vtTo("2015/05/30 00:00:00.000")
-                                                                                         .ttFrom("2015/05/16 00:00:00.000")
-                                                                                         .ttTo("2015/06/14 00:00:00.000"));
-
-        assertEquals("Expected 1 results!", 1, select.count());
-        assertTrue("Unexpected results!! Expected: {5}, got: " + fromInteger(select.intColumn("integer_1")),
-                   isThisAndOnlyThis(select.intColumn("integer_1"), new int[]{5}));
-    }
-
-    @Test
-    public void bitemporalQueryContainsTimeStampFieldTest6() {
-        //vt out of any example, tt inside first data, it must return 0
-
-        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").operation("contains")
-                                                                                         .vtFrom("2014/10/31 12:00:00.000")
-                                                                                         .vtTo("2014/11/02 00:00:00.000")
-                                                                                         .ttFrom("2015/01/14 00:00:00.000")
-                                                                                         .ttTo("2015/06/16 00:00:00.000"));
-
-        assertEquals("Expected 0 results!", 0, select.count());
-        assertTrue("Unexpected results!! Expected: {}, got: " + fromInteger(select.intColumn("integer_1")),
-                   isThisAndOnlyThis(select.intColumn("integer_1"), new int[]{}));
-    }
-
-    @Test
-    public void bitemporalQueryContainsTimeStampFieldTest7() {
-        //vt inside a  data example, tt outside any data, it must return 0
-
-        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").operation("contains")
-                                                                                         .vtFrom("2015/05/02 12:00:00.000")
-                                                                                         .vtTo("2015/05/30 00:00:00.000")
-                                                                                         .ttFrom("2014/05/16 00:00:00.000")
-                                                                                         .ttTo("2014/06/14 00:00:00.000"));
-
-        assertEquals("Expected 0 results!", 0, select.count());
-        assertTrue("Unexpected results!! Expected: {}, got: " + fromInteger(select.intColumn("integer_1")),
-                   isThisAndOnlyThis(select.intColumn("integer_1"), new int[]{}));
-    }
-
-    @Test
-    public void bitemporalQueryIntersectsTimeStampFieldTest() {
-
-        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").operation("intersects")
-                                                                                         .vtFrom("2015/01/01 00:00:00.000")
+        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").vtFrom("2015/01/01 00:00:00.000")
                                                                                          .vtTo("2015/02/01 12:00:00.000")
                                                                                          .ttFrom("2015/01/15 12:00:00.001")
                                                                                          .ttTo("2015/02/15 12:00:00.000"));
@@ -462,10 +239,9 @@ public class BitemporalTest {
     }
 
     @Test
-    public void bitemporalQueryIntersectsTimeStampFieldTest2() {
+    public void biTemporalQueryIntersectsTimeStampFieldTest2() {
 
-        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").operation("intersects")
-                                                                                         .vtFrom("2015/02/01 12:00:00.001")
+        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").vtFrom("2015/02/01 12:00:00.001")
                                                                                          .vtTo("2015/03/01 12:00:00.000")
                                                                                          .ttFrom("2015/02/15 12:00:00.001")
                                                                                          .ttTo("2015/03/15 12:00:00.000"));
@@ -476,10 +252,9 @@ public class BitemporalTest {
     }
 
     @Test
-    public void bitemporalQueryIntersectsTimeStampFieldTest3() {
+    public void biTemporalQueryIntersectsTimeStampFieldTest3() {
 
-        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").operation("intersects")
-                                                                                         .vtFrom("2015/03/01 12:00:00.001")
+        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").vtFrom("2015/03/01 12:00:00.001")
                                                                                          .vtTo("2015/04/01 12:00:00.000")
                                                                                          .ttFrom("2015/03/15 12:00:00.001")
                                                                                          .ttTo("2015/04/15 12:00:00.000"));
@@ -490,10 +265,9 @@ public class BitemporalTest {
     }
 
     @Test
-    public void bitemporalQueryIntersectsTimeStampFieldTest4() {
+    public void biTemporalQueryIntersectsTimeStampFieldTest4() {
 
-        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").operation("intersects")
-                                                                                         .vtFrom("2015/04/01 12:00:00.001")
+        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").vtFrom("2015/04/01 12:00:00.001")
                                                                                          .vtTo("2015/05/01 12:00:00.000")
                                                                                          .ttFrom("2015/04/15 12:00:00.001")
                                                                                          .ttTo("2015/05/15 12:00:00.000"));
@@ -504,10 +278,9 @@ public class BitemporalTest {
     }
 
     @Test
-    public void bitemporalQueryIntersectsTimeStampFieldTest5() {
+    public void biTemporalQueryIntersectsTimeStampFieldTest5() {
 
-        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").operation("intersects")
-                                                                                         .vtFrom("2015/05/01 12:00:00.001")
+        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").vtFrom("2015/05/01 12:00:00.001")
                                                                                          .vtTo("2015/06/01 12:00:00.000")
                                                                                          .ttFrom("2015/05/15 12:00:00.001")
                                                                                          .ttTo("2015/06/15 12:00:00.000"));
@@ -518,10 +291,9 @@ public class BitemporalTest {
     }
 
     @Test
-    public void bitemporalQueryIntersectsTimeStampFieldTest6() {
+    public void biTemporalQueryIntersectsTimeStampFieldTest6() {
 
-        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").operation("intersects")
-                                                                                         .vtFrom("2014/12/31 12:00:00.000")
+        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").vtFrom("2014/12/31 12:00:00.000")
                                                                                          .vtTo("2015/03/02 00:00:00.000")
                                                                                          .ttFrom("2015/01/14 00:00:00.000")
                                                                                          .ttTo("2015/04/02 00:00:00.000"));
@@ -532,9 +304,8 @@ public class BitemporalTest {
     }
 
     @Test
-    public void bitemporalQueryIntersectsTimeStampFieldTest7() {
-        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").operation("intersects")
-                                                                                         .vtFrom("2014/12/01 12:00:00.000")
+    public void biTemporalQueryIntersectsTimeStampFieldTest7() {
+        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").vtFrom("2014/12/01 12:00:00.000")
                                                                                          .vtTo("2014/12/31 00:00:00.000")
                                                                                          .ttFrom("2015/01/14 00:00:00.000")
                                                                                          .ttTo("2015/04/02 00:00:00.000"));
@@ -545,10 +316,9 @@ public class BitemporalTest {
     }
 
     @Test
-    public void bitemporalQueryIntersectsTimeStampFieldTest8() {
+    public void biTemporalQueryIntersectsTimeStampFieldTest8() {
 
-        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").operation("intersects")
-                                                                                         .vtFrom("2015/01/01 00:00:00.000")
+        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").vtFrom("2015/01/01 00:00:00.000")
                                                                                          .vtTo("2015/02/01 12:00:00.001")
                                                                                          .ttFrom("2015/01/15 12:00:00.001")
                                                                                          .ttTo("2015/02/15 12:00:00.001"));
@@ -559,10 +329,9 @@ public class BitemporalTest {
     }
 
     @Test
-    public void bitemporalQueryIntersectsTimeStampFieldTest9() {
+    public void biTemporalQueryIntersectsTimeStampFieldTest9() {
 
-        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").operation("intersects")
-                                                                                         .vtFrom("2015/02/01 12:00:00.000")
+        CassandraUtilsSelect select = cassandraUtils.query(bitemporalSearch("bitemporal").vtFrom("2015/02/01 12:00:00.000")
                                                                                          .vtTo("2015/03/01 12:00:00.000")
                                                                                          .ttFrom("2015/02/15 12:00:00.000")
                                                                                          .ttTo("2015/03/15 12:00:00.000"));
@@ -632,29 +401,11 @@ public class BitemporalTest {
 
     }
 
-    //valid long max value queries
-    @Test
-    public void bitemporalQueryIsWithInNowValueToLongTest() {
-        //testing with long value 1456876800 ==2016/03/02 00:00:00
 
-        String nowValue = "2016/03/02 00:00:00.000";
-        CassandraUtils cu = this.setUpSuite2(nowValue,SIMPLE_DATE_PATTERN);
-        cu.insert(data1, data2, data3, data4, data5);
-        CassandraUtilsSelect select = cu.query(bitemporalSearch("bitemporal").operation("is_within")
-                                                                             .vtFrom("2015/02/28 12:00:00.000")
-                                                                             .vtTo("2015/04/02 00:00:00.000")
-                                                                             .ttFrom("2015/03/14 00:00:00.000")
-                                                                             .ttTo("2015/04/16 00:00:00.000"));
-
-        assertEquals("Expected 1 results!", 1, select.count());
-        assertTrue("Unexpected results!! Expected: {3}, got: " + fromInteger(select.intColumn("integer_1")),
-                   isThisAndOnlyThis(select.intColumn("integer_1"), new int[]{3}));
-        tearDown(cu);
-    }
 
     //inserting bigger to nowValue it
     @Test
-    public void bitemporalQueryIsWithInNowValueToLongTest2() {
+    public void biTemporalQueryIsWithInNowValueToLongTest2() {
         //testing with long value 1456876800 ==2016/03/02 00:00:00
         String nowValue = "2016/03/02 00:00:00.000";
         CassandraUtils cu = this.setUpSuite2(nowValue,SIMPLE_DATE_PATTERN);
@@ -664,79 +415,25 @@ public class BitemporalTest {
         tearDown(cu);
     }
 
-    //querying bigger than nowValue it must throw an IllegalArgumentException
-    @Test(expected = InvalidQueryException.class)
-    public void bitemporalQueryIsWithInNowValueToLongTest3() {
-        //testing with long value 1456876800 ==2016/03/02 00:00:00
 
-        String nowValue = "2016/03/02 00:00:00.000";
-        CassandraUtils cu = this.setUpSuite2(nowValue,SIMPLE_DATE_PATTERN);
-        cu.insert(data1, data2, data3, data4, data5);
 
-        cu.query(bitemporalSearch("bitemporal").operation("is_within")
-                                               .vtFrom("2016/02/28 12:00:00.000")
-                                               .vtTo("2016/04/02 00:00:00.000")
-                                               .ttFrom("2016/03/14 00:00:00.000")
-                                               .ttTo("2016/04/16 00:00:00.000")).count();
-        tearDown(cu);
-    }
-
-    //valid String max value queries
-    @Test
-    public void bitemporalQueryIsWithInNowValueToStringTest() {
-        //testing with string value
-        String nowValue = "2016/03/02 00:00:00.000";
-        CassandraUtils cu = this.setUpSuite2(nowValue, SIMPLE_DATE_PATTERN)
-                                .insert(data1, data2, data3, data4, data5);
-
-        //testing if inserting data translate it to Long.max
-        CassandraUtilsSelect select = cu.query(bitemporalSearch("bitemporal").operation("is_within")
-                                                                             .vtFrom("2015/02/28 12:00:00.000")
-                                                                             .vtTo("2015/04/02 00:00:00.000")
-                                                                             .ttFrom("2015/03/14 00:00:00.000")
-                                                                             .ttTo("2015/04/16 00:00:00.000"));
-
-        assertEquals("Expected 1 results!", 1, select.count());
-        assertTrue("Unexpected results!! Expected: {3}, got: " + fromInteger(select.intColumn("integer_1")),
-                   isThisAndOnlyThis(select.intColumn("integer_1"), new int[]{3}));
-        tearDown(cu);
-    }
 
     //inserting bigger to nowValue it must throw an IllegalArgumentException
     @Test
-    public void bitemporalQueryIsWithInNowValueToStringTest2() {
+    public void biTemporalQueryIsWithInNowValueToStringTest2() {
         //testing with long value
         String nowValue = "2016/03/02 00:00:00.000";
         CassandraUtils cu = this.setUpSuite2(nowValue,SIMPLE_DATE_PATTERN);
 
         //testing if inserting data translate it to Long.max
         cu.insert(data6);
-
-        tearDown(cu);
-    }
-
-    //querying bigger than nowValue it must throw an IllegalArgumentException
-    @Test(expected = InvalidQueryException.class)
-    public void bitemporalQueryIsWithInNowValueToStringTest3() {
-        //testing with long value
-        String nowValue = "2016/03/02 00:00:00.000";
-
-        CassandraUtils cu = this.setUpSuite2(nowValue,SIMPLE_DATE_PATTERN)
-                                .insert(data1, data2, data3, data4, data5);
-
-        cu.query(bitemporalSearch("bitemporal").operation("is_within")
-                                               .vtFrom("2016/02/28 12:00:00.000")
-                                               .vtTo("2016/04/02 00:00:00.000")
-                                               .ttFrom("2016/03/14 00:00:00.000")
-                                               .ttTo("2016/04/16 00:00:00.000")).count();
-        //testing if inserting data translate it to Long.max
 
         tearDown(cu);
     }
 
     //valid String max value queries settign nowValue to max date in data3
     @Test
-    public void bitemporalQueryIsWithInNowValueToStringTest4() {
+    public void biTemporalQueryIsWithInNowValueToStringTest4() {
         //testing with string value
         String nowValue = "2015/04/15 12:00:00.000";
 
@@ -745,8 +442,7 @@ public class BitemporalTest {
 
         //testing if inserting data translate it to Long.max
 
-        CassandraUtilsSelect select = cu.query(bitemporalSearch("bitemporal").operation("intersects")
-                                                                             .vtFrom("2014/12/31 12:00:00.000")
+        CassandraUtilsSelect select = cu.query(bitemporalSearch("bitemporal").vtFrom("2014/12/31 12:00:00.000")
                                                                              .vtTo("2015/03/02 00:00:00.000")
                                                                              .ttFrom("2015/01/14 00:00:00.000")
                                                                              .ttTo("2015/04/02 00:00:00.000"));
@@ -758,7 +454,7 @@ public class BitemporalTest {
 
     //querying without limits to vt
     @Test
-    public void bitemporalQueryIsWithInNowValueToStringTest5() {
+    public void biTemporalQueryIsWithInNowValueToStringTest5() {
         //testing with string value
         String nowValue = "2015/04/15 12:00:00.000";
 
@@ -767,8 +463,7 @@ public class BitemporalTest {
 
         //testing if inserting data translate it to Long.max
 
-        CassandraUtilsSelect select = cu.query(bitemporalSearch("bitemporal").operation("intersects")
-                                                                             .ttFrom("2015/01/14 00:00:00.000")
+        CassandraUtilsSelect select = cu.query(bitemporalSearch("bitemporal").ttFrom("2015/01/14 00:00:00.000")
                                                                              .ttTo("2015/04/02 00:00:00.000"));
 
         assertEquals("Expected 3 results!", 3, select.count());
@@ -778,7 +473,7 @@ public class BitemporalTest {
 
     //querying without limits to tt
     @Test
-    public void bitemporalQueryIsWithInNowValueToStringTest6() {
+    public void biTemporalQueryIsWithInNowValueToStringTest6() {
         //testing with string value
         String nowValue = "2015/04/15 12:00:00.000";
 
@@ -787,8 +482,7 @@ public class BitemporalTest {
 
         //testing if inserting data translate it to Long.max
 
-        CassandraUtilsSelect select = cu.query(bitemporalSearch("bitemporal").operation("intersects")
-                                                                             .vtFrom("2014/12/31 12:00:00.000")
+        CassandraUtilsSelect select = cu.query(bitemporalSearch("bitemporal").vtFrom("2014/12/31 12:00:00.000")
                                                                              .vtTo("2015/03/02 00:00:00.000"));
 
         assertEquals("Expected 3 results!", 3, select.count());
@@ -797,7 +491,7 @@ public class BitemporalTest {
     }
 
     @Test
-    public void bitemporalQueryOverBigIntsWithDefaultPattern() {
+    public void biTemporalQueryOverBigIntsWithDefaultPattern() {
         CassandraUtils cu = this.setUpSuite3().insert(data7, data8, data9, data10, data11);
 
         CassandraUtilsSelect select = cu.searchAll();
@@ -830,8 +524,7 @@ public class BitemporalTest {
 
         assertTrue("batch execution didnt worked", result.wasApplied());
 
-        CassandraUtilsSelect select2 = cu.filter(bitemporalSearch("bitemporal").operation("intersects")
-                                                                               .vtFrom(0)
+        CassandraUtilsSelect select2 = cu.filter(bitemporalSearch("bitemporal").vtFrom(0)
                                                                                .vtTo(9223372036854775807l)
                                                                                .ttFrom(9223372036854775807l)
                                                                                .ttTo(9223372036854775807l))
@@ -858,8 +551,7 @@ public class BitemporalTest {
         assertTrue("Unexpected results!! Expected: {1,2,3,4,5}, got: " + fromInteger(select2.intColumn("id")),
                    isThisAndOnlyThis(select2.intColumn("id"), new int[]{1, 2, 3, 4, 5}));
 
-        CassandraUtilsSelect select3 = cu.filter(bitemporalSearch("bitemporal").operation("intersects")
-                                                                               .vtFrom(0)
+        CassandraUtilsSelect select3 = cu.filter(bitemporalSearch("bitemporal").vtFrom(0)
                                                                                .vtTo(9223372036854775807l)
                                                                                .ttFrom(9223372036854775807l)
                                                                                .ttTo(9223372036854775807l))
