@@ -15,13 +15,13 @@
  */
 package com.stratio.cassandra.lucene.suite;
 
-import com.stratio.cassandra.lucene.bitemporal.BitemporalTest;
+import com.stratio.cassandra.lucene.issues.Issue18;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({BitemporalTest.class})
-public class BitemporalSuite {
+@SuiteClasses({Issue18.class})
+public class IssuesSuite {
 
 }

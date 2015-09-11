@@ -29,9 +29,9 @@ import org.junit.runners.Suite.SuiteClasses;
                SingleStringPrimaryKeySuite.class,
                SingleTextPrimaryKeySuite.class,
                VariaSuite.class,
-               BreakDownSuite.class,
                StoriesSuite.class,
-               BitemporalSuite.class})
+               BitemporalSuite.class,
+               IssuesSuite.class})
 public class AllSuite {
 
 }

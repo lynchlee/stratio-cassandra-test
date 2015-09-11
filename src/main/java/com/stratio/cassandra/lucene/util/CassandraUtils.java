@@ -156,14 +156,7 @@ public class CassandraUtils {
 
     protected List<Row> execute(String query, int fetchSize) {
         if (!query.endsWith(";")) query += ";";
-        logger.debug("CQL: " + query + " - " + fetchSize);
-        if (TestingConstants.READ_WAIT_MILLISECONDS > 0) {
-            try {
-                Thread.sleep(TestingConstants.READ_WAIT_MILLISECONDS);
-            } catch (InterruptedException e) {
-                logger.error("Interruption caught during a Thread.sleep; index might be unstable");
-            }
-        }
+        logger.debug("CQL: " + query);
         Statement statement = new SimpleStatement(query);
         statement.setFetchSize(fetchSize);
         return session.execute(statement).all();
