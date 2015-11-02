@@ -1,15 +1,34 @@
+/*
+ * Licensed to STRATIO (C) under one or more contributor license agreements.
+ * See the NOTICE file distributed with this work for additional information
+ * regarding copyright ownership.  The STRATIO (C) licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package com.stratio.cassandra.lucene.bitemporal;
 
-import static com.stratio.cassandra.lucene.schema.SchemaBuilders.bitemporalMapper;
-import static com.stratio.cassandra.lucene.schema.SchemaBuilders.schema;
-import static com.stratio.cassandra.lucene.search.SearchBuilders.bitemporalSearch;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.datastax.driver.core.ResultSet;
+import com.datastax.driver.core.Row;
+import com.datastax.driver.core.querybuilder.Batch;
+import com.datastax.driver.core.querybuilder.Insert;
+import com.datastax.driver.core.querybuilder.QueryBuilder;
+import com.datastax.driver.core.querybuilder.Update;
+import com.stratio.cassandra.lucene.TestingConstants;
+import com.stratio.cassandra.lucene.querytype.AbstractWatchedTest;
+import com.stratio.cassandra.lucene.schema.SchemaBuilder;
+import com.stratio.cassandra.lucene.util.CassandraUtils;
+import com.stratio.cassandra.lucene.util.CassandraUtilsSelect;
 import org.apache.log4j.Logger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -21,18 +40,15 @@ import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.exceptions.InvalidQueryException;
-import com.datastax.driver.core.querybuilder.Batch;
-import com.datastax.driver.core.querybuilder.Insert;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
-import com.datastax.driver.core.querybuilder.Update;
-import com.stratio.cassandra.lucene.TestingConstants;
-import com.stratio.cassandra.lucene.querytype.AbstractWatchedTest;
-import com.stratio.cassandra.lucene.schema.SchemaBuilder;
-import com.stratio.cassandra.lucene.util.CassandraUtils;
-import com.stratio.cassandra.lucene.util.CassandraUtilsSelect;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import static com.stratio.cassandra.lucene.schema.SchemaBuilders.bitemporalMapper;
+import static com.stratio.cassandra.lucene.schema.SchemaBuilders.schema;
+import static com.stratio.cassandra.lucene.search.SearchBuilders.bitemporalSearch;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4.class)
 public class BitemporalTest {

@@ -31,7 +31,8 @@ import org.junit.runners.Suite.SuiteClasses;
                VariaSuite.class,
                BreakDownSuite.class,
                StoriesSuite.class,
-               BitemporalSuite.class})
+               BitemporalSuite.class,
+               ValidationSuite.class})
 public class AllSuite {
 
 }

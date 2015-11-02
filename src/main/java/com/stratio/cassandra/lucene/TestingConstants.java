@@ -17,7 +17,7 @@ package com.stratio.cassandra.lucene;
 
 public final class TestingConstants {
 
-    public static final float INDEX_REFRESH_SECONDS = 60f;
+    public static final float INDEX_REFRESH_SECONDS = 1f;
 
     public static final Long INDEX_WAIT_MILLISECONDS = 2000L;
 

@@ -3,6 +3,7 @@ package com.stratio.cassandra.lucene.util;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ConsistencyLevel;
 import com.datastax.driver.core.Metadata;
+import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.SimpleStatement;
@@ -14,6 +15,7 @@ import com.stratio.cassandra.lucene.schema.SchemaBuilder;
 import com.stratio.cassandra.lucene.search.condition.builder.ConditionBuilder;
 import com.stratio.cassandra.lucene.search.sort.builder.SortFieldBuilder;
 import org.apache.log4j.Logger;
+
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -69,7 +71,7 @@ public class CassandraUtils {
         return new CassandraUtilsBuilder();
     }
 
-    public CassandraUtils(String host,
+    public  CassandraUtils(String host,
                           String keyspace,
                           String table,
                           Map<String, String> columns,
@@ -129,32 +131,36 @@ public class CassandraUtils {
                 result = result + s + ",";
             }
         }
-        result = result.substring(0, result.length() - 1);
-
+        if (result.length()>0){
+            result = result.substring(0, result.length() - 1);
+        }
         return result;
     }
 
     protected List<Row> execute(StringBuilder sb) {
-        return execute(sb.toString(), TestingConstants.FETCH_SIZE);
+        return execute(sb.toString(), TestingConstants.FETCH_SIZE).all();
     }
 
     protected List<Row> execute(StringBuilder sb, int fetchSize) {
-        return execute(sb.toString(), fetchSize);
+        return execute(sb.toString(), fetchSize).all();
     }
 
     protected List<Row> execute(Statement statement) {
-        return execute(statement.toString(), TestingConstants.FETCH_SIZE);
+        return execute(statement.toString(), TestingConstants.FETCH_SIZE).all();
     }
 
     protected List<Row> execute(Statement statement, int fetchSize) {
-        return execute(statement.toString(), fetchSize);
+        return execute(statement.toString(), fetchSize).all();
     }
 
-    protected List<Row> execute(String query) {
+    public List<Row> execute(String query) {
+        return execute(query, TestingConstants.FETCH_SIZE).all();
+    }
+
+    public ResultSet executeQuery(String query) {
         return execute(query, TestingConstants.FETCH_SIZE);
     }
-
-    protected List<Row> execute(String query, int fetchSize) {
+    protected ResultSet execute(String query, int fetchSize) {
         if (!query.endsWith(";")) query += ";";
         logger.debug("CQL: " + query + " - " + fetchSize);
         if (TestingConstants.READ_WAIT_MILLISECONDS > 0) {
@@ -166,8 +172,9 @@ public class CassandraUtils {
         }
         Statement statement = new SimpleStatement(query);
         statement.setFetchSize(fetchSize);
-        return session.execute(statement).all();
+        return session.execute(statement);
     }
+
 
     public Session getSession() {
         return session;

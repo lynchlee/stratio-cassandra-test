@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.stratio.cassandra.lucene.querytype;
 
 import com.datastax.driver.core.Row;
