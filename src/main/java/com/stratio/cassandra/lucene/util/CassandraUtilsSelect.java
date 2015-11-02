@@ -10,7 +10,6 @@ import com.stratio.cassandra.lucene.search.SearchBuilder;
 import com.stratio.cassandra.lucene.search.SearchBuilders;
 import com.stratio.cassandra.lucene.search.condition.builder.ConditionBuilder;
 import com.stratio.cassandra.lucene.search.sort.builder.SortFieldBuilder;
-import org.apache.log4j.Logger;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -19,8 +18,6 @@ import java.util.List;
  * Created by adelapena on 09/10/14.
  */
 public class CassandraUtilsSelect {
-
-    private static final Logger logger = Logger.getLogger(CassandraUtilsSelect.class);
 
     private CassandraUtils parent;
     private SearchBuilder searchBuilder;
@@ -132,6 +129,11 @@ public class CassandraUtilsSelect {
             sb.append(" ");
         }
         return parent.execute(sb, fetchSize);
+    }
+
+    public Row getFirst() {
+        List<Row> rows = get();
+        return rows.isEmpty() ? null : rows.get(0);
     }
 
     public int count() {

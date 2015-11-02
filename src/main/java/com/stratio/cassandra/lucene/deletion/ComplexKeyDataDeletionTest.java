@@ -18,7 +18,6 @@ package com.stratio.cassandra.lucene.deletion;
 import com.datastax.driver.core.Row;
 import com.stratio.cassandra.lucene.TestingConstants;
 import com.stratio.cassandra.lucene.util.CassandraUtils;
-import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,8 +33,6 @@ import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
 public class ComplexKeyDataDeletionTest {
-
-    private static final Logger logger = Logger.getLogger(ComplexKeyDataDeletionTest.class);
 
     private CassandraUtils cassandraUtils;
 

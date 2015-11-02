@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import static com.stratio.cassandra.lucene.search.SearchBuilders.all;
 import static com.stratio.cassandra.lucene.search.SearchBuilders.sortField;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -86,5 +87,33 @@ public class SortTest extends AbstractWatchedTest {
         Integer[] expectedIntValues = new Integer[]{-1, -2, -5, -4, -3};
         assertArrayEquals("Wrong doubles sort!", expectedDoubleValues, returnedDoubleValues);
         assertArrayEquals("Wrong integers sort!", expectedIntValues, returnedIntValues);
+    }
+
+    public void sortWithFilter() {
+        Integer[] returnedValues = cassandraUtils.filter(all())
+                                                 .sort(sortField("integer_1").reverse(false))
+                                                 .intColumn("integer_1");
+        assertEquals("Expected 5 results!", 5, returnedValues.length);
+        Integer[] expectedValues = new Integer[]{-5, -4, -3, -2, -1};
+        assertArrayEquals("Wrong sort!", expectedValues, returnedValues);
+    }
+
+    public void sortWithQuery() {
+        Integer[] returnedValues = cassandraUtils.query(all())
+                                                 .sort(sortField("integer_1").reverse(false))
+                                                 .intColumn("integer_1");
+        assertEquals("Expected 5 results!", 5, returnedValues.length);
+        Integer[] expectedValues = new Integer[]{-5, -4, -3, -2, -1};
+        assertArrayEquals("Wrong sort!", expectedValues, returnedValues);
+    }
+
+    public void sortWithFilterAndQuery() {
+        Integer[] returnedValues = cassandraUtils.filter(all())
+                                                 .query(all())
+                                                 .sort(sortField("integer_1").reverse(false))
+                                                 .intColumn("integer_1");
+        assertEquals("Expected 5 results!", 5, returnedValues.length);
+        Integer[] expectedValues = new Integer[]{-5, -4, -3, -2, -1};
+        assertArrayEquals("Wrong sort!", expectedValues, returnedValues);
     }
 }

@@ -17,6 +17,7 @@
 package com.stratio.cassandra.lucene.querytype;
 
 import com.datastax.driver.core.Row;
+import com.stratio.cassandra.lucene.TestingConstants;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -73,21 +74,30 @@ public class BooleanTest extends AbstractWatchedTest {
     @Test
     public void booleanQueryMustWithBoostTest() {
 
-        List<Row> firstRows = cassandraUtils.query(bool().must(fuzzy("inet_1", "127.1.1.1").boost(0.9))
-                                                         .must(fuzzy("inet_1", "127.1.0.1").boost(0.1))
-                                                         .not(match("integer_1", 1), match("integer_1", -4))).get();
-        assertEquals("Expected 3 results!", 3, firstRows.size());
+        List<Row> rows1 = cassandraUtils.query(bool().must(fuzzy("inet_1", "127.1.1.1").boost(9.9))
+                                                     .must(fuzzy("inet_1", "127.1.0.1").boost(0.001))
+                                                     .not(match("integer_1", 1)).not(match("integer_1", -4))).get();
+        assertEquals("Expected 3 results!", 3, rows1.size());
 
-        List<Row> secondRows = cassandraUtils.query(bool().must(fuzzy("inet_1", "127.1.1.1").boost(0.0))
-                                                          .must(fuzzy("inet_1", "127.1.0.1").boost(0.9))
-                                                          .not(match("integer_1", 1), match("integer_1", -4))).get();
-        assertEquals("Expected 3 results!", 3, secondRows.size());
+        List<Row> rows2 = cassandraUtils.query(bool().must(fuzzy("inet_1", "127.1.1.1").boost(0.001))
+                                                     .must(fuzzy("inet_1", "127.1.0.1").boost(9.9))
+                                                     .not(match("integer_1", 1)).not(match("integer_1", -4))).get();
+        assertEquals("Expected 3 results!", 3, rows2.size());
 
-        assertEquals("Expected same number of results ", firstRows.size(), secondRows.size());
+        assertEquals("Expected same number of results ", rows1.size(), rows2.size());
+
         boolean equals = true;
-        for (int i = 0; i < firstRows.size(); i++) {
-            Integer firstResult = firstRows.get(i).getInt("integer_1");
-            Integer secondResult = secondRows.get(i).getInt("integer_1");
+        for (int i = 0; i < rows1.size(); i++) {
+            String firstResult = rows1.get(i).getString(TestingConstants.INDEX_COLUMN_CONSTANT);
+            String secondResult = rows2.get(i).getString(TestingConstants.INDEX_COLUMN_CONSTANT);
+            equals &= firstResult.equals(secondResult);
+        }
+        assertFalse("Expected different scoring!", equals);
+
+        equals = true;
+        for (int i = 0; i < rows1.size(); i++) {
+            Integer firstResult = rows1.get(i).getInt("integer_1");
+            Integer secondResult = rows2.get(i).getInt("integer_1");
             equals &= firstResult.equals(secondResult);
         }
         assertFalse("Expected different sorting!", equals);
