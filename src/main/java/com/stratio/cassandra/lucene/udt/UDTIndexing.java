@@ -29,6 +29,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.util.Arrays;
+
 import static com.stratio.cassandra.lucene.search.SearchBuilders.match;
 import static com.stratio.cassandra.lucene.search.SearchBuilders.range;
 import static org.junit.Assert.assertEquals;
@@ -301,7 +303,7 @@ public class UDTIndexing {
         assertEquals("Expected " + expected.length + " results but received: " + received.length,
                      expected.length,
                      received.length);
-        assertTrue("Unexpected results!! Expected: " + expected.toString() + ",but got: " + received.toString(),
+        assertTrue("Unexpected results!! Expected: " + Arrays.toString(expected) + ",but got: " + received.toString(),
                    isThisAndOnlyThis(received, expected));
 
     }
