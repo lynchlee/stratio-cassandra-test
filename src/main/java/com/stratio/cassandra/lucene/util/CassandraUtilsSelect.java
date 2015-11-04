@@ -169,7 +169,15 @@ public class CassandraUtilsSelect {
         }
         return values;
     }
-
+    public String[] stringColumn(String name) {
+        List<Row> rows = get();
+        String[] values = new String[rows.size()];
+        int count = 0;
+        for (Row row : rows) {
+            values[count++] = row.getString(name);
+        }
+        return values;
+    }
     public Double[] doubleColumn(String name) {
         List<Row> rows = get();
         Double[] values = new Double[rows.size()];

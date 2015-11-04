@@ -1,6 +1,6 @@
 package com.stratio.cassandra.lucene.suite;
 
-import com.stratio.cassandra.lucene.validation.UDTValidationTest;
+import com.stratio.cassandra.lucene.udt.UDTValidationTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -9,6 +9,6 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses(UDTValidationTest.class)
-public class ValidationSuite {
+public class UDTSuite {
 
 }
